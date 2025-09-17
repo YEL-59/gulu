@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="space-y-16">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+      <section className="relative bg-gradient-brand text-white">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center space-y-8">
@@ -33,7 +33,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/auth/signup">
-                <Button size="lg" className="bg-white text-primary-600 hover:bg-gray-100 text-lg px-8 py-4">
+                <Button size="lg" className="bg-gradient-button hover:shadow-glow-orange text-white text-lg px-8 py-4 transition-all duration-300">
                   Start Selling Today
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -53,19 +53,19 @@ export default function Home() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-primary-600">10K+</div>
-            <div className="text-gray-600 mt-2">Active Sellers</div>
+            <div className="text-text-secondary mt-2">Active Sellers</div>
           </div>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-primary-600">50K+</div>
-            <div className="text-gray-600 mt-2">Products</div>
+            <div className="text-text-secondary mt-2">Products</div>
           </div>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-primary-600">100K+</div>
-            <div className="text-gray-600 mt-2">Orders Processed</div>
+            <div className="text-text-secondary mt-2">Orders Processed</div>
           </div>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-primary-600">25+</div>
-            <div className="text-gray-600 mt-2">Countries</div>
+            <div className="text-text-secondary mt-2">Countries</div>
           </div>
         </div>
       </section>
@@ -73,10 +73,10 @@ export default function Home() {
       {/* Features Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+          <h2 className="text-3xl md:text-4xl font-bold text-text-primary">
             Everything You Need to Succeed
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-text-secondary max-w-2xl mx-auto">
             Powerful tools and features designed to help you build, manage, and scale your business
           </p>
         </div>
@@ -88,7 +88,7 @@ export default function Home() {
               <CardTitle>Multi-Role System</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Separate dashboards for admins, wholesalers, resellers, and customers with role-based permissions.
               </p>
             </CardContent>
@@ -100,7 +100,7 @@ export default function Home() {
               <CardTitle>Custom Storefronts</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Create beautiful, customizable storefronts that reflect your brand and attract customers.
               </p>
             </CardContent>
@@ -112,7 +112,7 @@ export default function Home() {
               <CardTitle>Inventory Management</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Real-time inventory tracking with automated stock updates and low-stock alerts.
               </p>
             </CardContent>
@@ -124,7 +124,7 @@ export default function Home() {
               <CardTitle>Secure Payments</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Escrow-based payment system with automatic payouts and refund protection.
               </p>
             </CardContent>
@@ -136,7 +136,7 @@ export default function Home() {
               <CardTitle>Analytics & Reports</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Comprehensive analytics, sales reports, and profit tracking to grow your business.
               </p>
             </CardContent>
@@ -148,7 +148,7 @@ export default function Home() {
               <CardTitle>Automated Workflows</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Auto-invoicing, order processing, and notification systems to save time.
               </p>
             </CardContent>
@@ -160,10 +160,10 @@ export default function Home() {
       <section className="bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary">
               How Gulu Works
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
               Simple steps to start your dropshipping business
             </p>
           </div>
@@ -174,7 +174,7 @@ export default function Home() {
                 <span className="text-white font-bold text-xl">1</span>
               </div>
               <h3 className="text-xl font-semibold">Sign Up & Choose Role</h3>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Register as a wholesaler to sell products or as a reseller to create your storefront
               </p>
             </div>
@@ -184,7 +184,7 @@ export default function Home() {
                 <span className="text-white font-bold text-xl">2</span>
               </div>
               <h3 className="text-xl font-semibold">List Products or Build Store</h3>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Wholesalers upload products, resellers curate and customize their storefronts
               </p>
             </div>
@@ -194,7 +194,7 @@ export default function Home() {
                 <span className="text-white font-bold text-xl">3</span>
               </div>
               <h3 className="text-xl font-semibold">Start Earning</h3>
-              <p className="text-gray-600">
+              <p className="text-text-secondary">
                 Process orders automatically and receive secure payments through our escrow system
               </p>
             </div>
@@ -213,7 +213,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/signup">
-              <Button size="lg" className="bg-white text-primary-600 hover:bg-gray-100 text-lg px-8 py-4">
+              <Button size="lg" className="bg-gradient-button hover:shadow-glow-orange text-white text-lg px-8 py-4 transition-all duration-300">
                 Get Started Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>

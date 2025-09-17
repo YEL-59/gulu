@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -14,12 +14,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { 
-  User, 
-  Settings, 
-  LogOut, 
-  ShoppingCart, 
-  Store, 
+import {
+  User,
+  Settings,
+  LogOut,
+  ShoppingCart,
+  Store,
   Package,
   BarChart3,
   Menu,
@@ -73,16 +73,16 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/products" className="text-gray-700 hover:text-primary-600 font-medium">
+            <Link href="/products" className="text-text-primary hover:text-primary-600 font-medium">
               Products
             </Link>
-            <Link href="/stores" className="text-gray-700 hover:text-primary-600 font-medium">
+            <Link href="/stores" className="text-text-primary hover:text-primary-600 font-medium">
               Stores
             </Link>
-            <Link href="/categories" className="text-gray-700 hover:text-primary-600 font-medium">
+            <Link href="/categories" className="text-text-primary hover:text-primary-600 font-medium">
               Categories
             </Link>
-            
+
             {/* Authentication */}
             {status === 'loading' ? (
               <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
@@ -217,7 +217,7 @@ export default function Navbar() {
               >
                 Categories
               </Link>
-              
+
               {session ? (
                 <div className="pt-4 pb-3 border-t border-gray-200">
                   <div className="flex items-center px-3">
