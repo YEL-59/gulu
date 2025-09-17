@@ -14,16 +14,25 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import SvgIcon, {
+  SearchIcon,
+  UserIcon,
+  HeartIcon,
+  CartIcon,
+  MenuIcon,
+  CloseIcon,
+  FacebookIcon,
+  TwitterIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  ChevronDownIcon
+} from '@/components/icons/SvgIcon'
 import {
-  User,
   Settings,
   LogOut,
-  ShoppingCart,
   Store,
   Package,
-  BarChart3,
-  Menu,
-  X
+  BarChart3
 } from 'lucide-react'
 import { USER_ROLES } from '@/constants/roles'
 
@@ -58,29 +67,70 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-primary-500 shadow-lg">
+      {/* Top Bar with Social Icons */}
+      <div className="bg-primary-500 text-white py-2 text-sm border-b border-primary-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <span>Follow us on:</span>
+              <div className="flex space-x-2">
+                <FacebookIcon className="w-4 h-4 hover:text-blue-300 cursor-pointer transition-colors" />
+                <TwitterIcon className="w-4 h-4 hover:text-blue-300 cursor-pointer transition-colors" />
+                <InstagramIcon className="w-4 h-4 hover:text-pink-300 cursor-pointer transition-colors" />
+                <LinkedinIcon className="w-4 h-4 hover:text-blue-300 cursor-pointer transition-colors" />
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-xs">USD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Logo and Brand */}
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">G</span>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#F36E16' }}>
+                <span className="text-white font-bold text-xl">G</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">Gulu</span>
+              <span className="text-2xl font-bold text-white">Wobuy</span>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/products" className="text-text-primary hover:text-primary-600 font-medium">
-              Products
+          {/* Search Bar */}
+          <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search for anything..."
+                className="w-full h-12 pl-4 pr-12 bg-white rounded-lg border-0 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-accent-500 focus:outline-none"
+              />
+              <button className="absolute right-2 top-2 h-8 w-8 rounded-md flex items-center justify-center transition-colors hover:opacity-90" >
+                <SearchIcon className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          </div>
+
+          {/* Right Side Icons */}
+          <div className="hidden md:flex items-center space-x-6">
+            {/* Wishlist */}
+            <Link href="/wishlist" className="relative">
+              <HeartIcon className="w-6 h-6 text-white hover:text-orange-300 transition-colors" />
+              <span className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" style={{ backgroundColor: '#F36E16' }}>
+                3
+              </span>
             </Link>
-            <Link href="/stores" className="text-text-primary hover:text-primary-600 font-medium">
-              Stores
-            </Link>
-            <Link href="/categories" className="text-text-primary hover:text-primary-600 font-medium">
-              Categories
+
+            {/* Shopping Cart */}
+            <Link href="/cart" className="relative">
+              <CartIcon className="w-6 h-6 text-white hover:text-orange-300 transition-colors" />
+              <span className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" style={{ backgroundColor: '#F36E16' }}>
+                5
+              </span>
             </Link>
 
             {/* Authentication */}
@@ -186,8 +236,9 @@ export default function Navbar() {
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white hover:bg-white/10"
             >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMobileMenuOpen ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
             </Button>
           </div>
         </div>

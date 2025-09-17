@@ -51,14 +51,16 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: 16 113 255;
+  /* #1071FF */
+  --primary-foreground: 255 255 255;
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
+  --accent: 243 110 22;
+  /* #F36E16 */
+  --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
@@ -116,7 +118,195 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Custom utility classes for your brand colors */
+@layer utilities {
+  .bg-primary-50 {
+    background-color: #f0f4ff;
+  }
+
+  .bg-primary-100 {
+    background-color: #e0eaff;
+  }
+
+  .bg-primary-200 {
+    background-color: #c7d2fe;
+  }
+
+  .bg-primary-300 {
+    background-color: #a5b4fc;
+  }
+
+  .bg-primary-400 {
+    background-color: #818cf8;
+  }
+
+  .bg-primary-500 {
+    background-color: #1071FF;
+  }
+
+  .bg-primary-600 {
+    background-color: #0d5ce6;
+  }
+
+  .bg-primary-700 {
+    background-color: #0a47cc;
+  }
+
+  .bg-primary-800 {
+    background-color: #0833b3;
+  }
+
+  .bg-primary-900 {
+    background-color: #062099;
+  }
+
+  .bg-primary-950 {
+    background-color: #04155c;
+  }
+
+  .bg-accent-50 {
+    background-color: #fef7ed;
+  }
+
+  .bg-accent-100 {
+    background-color: #fdedd5;
+  }
+
+  .bg-accent-200 {
+    background-color: #fbd8aa;
+  }
+
+  .bg-accent-300 {
+    background-color: #f8bc74;
+  }
+
+  .bg-accent-400 {
+    background-color: #f5953c;
+  }
+
+  .bg-accent-500 {
+    background-color: #F36E16;
+  }
+
+  .bg-accent-600 {
+    background-color: #e05506;
+  }
+
+  .bg-accent-700 {
+    background-color: #ba4008;
+  }
+
+  .bg-accent-800 {
+    background-color: #94330e;
+  }
+
+  .bg-accent-900 {
+    background-color: #782c0f;
+  }
+
+  .bg-accent-950 {
+    background-color: #411405;
+  }
+
+  .text-text-primary {
+    color: #242424;
+  }
+
+  .text-text-secondary {
+    color: #505050;
+  }
+
+  .text-text-muted {
+    color: #6B7280;
+  }
+
+  .text-text-light {
+    color: #9CA3AF;
+  }
+
+  .text-primary-50 {
+    color: #f0f4ff;
+  }
+
+  .text-primary-100 {
+    color: #e0eaff;
+  }
+
+  .text-primary-200 {
+    color: #c7d2fe;
+  }
+
+  .text-primary-300 {
+    color: #a5b4fc;
+  }
+
+  .text-primary-400 {
+    color: #818cf8;
+  }
+
+  .text-primary-500 {
+    color: #1071FF;
+  }
+
+  .text-primary-600 {
+    color: #0d5ce6;
+  }
+
+  .text-primary-700 {
+    color: #0a47cc;
+  }
+
+  .text-primary-800 {
+    color: #0833b3;
+  }
+
+  .text-primary-900 {
+    color: #062099;
+  }
+
+  .text-primary-950 {
+    color: #04155c;
+  }
+
+  .border-primary-500 {
+    border-color: #1071FF;
+  }
+
+  .border-accent-500 {
+    border-color: #F36E16;
+  }
+
+  .bg-gradient-brand {
+    background: linear-gradient(135deg, #1071FF 0%, #0d5ce6 100%);
+  }
+
+  .bg-gradient-button {
+    background: linear-gradient(135deg, #F36E16 0%, #e05506 100%);
+  }
+
+  .bg-gradient-hero {
+    background: linear-gradient(135deg, #1071FF 0%, #F36E16 100%);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(16, 113, 255, 0.3);
+  }
+
+  .shadow-glow-lg {
+    box-shadow: 0 0 40px rgba(16, 113, 255, 0.4);
+  }
+
+  .shadow-glow-orange {
+    box-shadow: 0 0 20px rgba(243, 110, 22, 0.3);
+  }
+
+  .shadow-glow-orange-lg {
+    box-shadow: 0 0 40px rgba(243, 110, 22, 0.4);
   }
 }
