@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import AuthCard from '@/components/auth/AuthCard'
 import { ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react'
 
-export default function OTPVerificationPage() {
+function OTPVerificationContent() {
     const [otp, setOtp] = useState(['', '', '', '', '', ''])
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
@@ -196,5 +196,20 @@ export default function OTPVerificationPage() {
                 </div>
             </form>
         </AuthCard>
+    )
+}
+
+export default function OTPVerificationPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                    <p className="text-text-secondary">Loading...</p>
+                </div>
+            </div>
+        }>
+            <OTPVerificationContent />
+        </Suspense>
     )
 }

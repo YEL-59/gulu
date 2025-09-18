@@ -1,12 +1,13 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import AuthCard from '@/components/auth/AuthCard'
 import { CheckCircle, ArrowRight, Mail, Shield, UserCheck } from 'lucide-react'
 
-export default function SuccessPage() {
+function SuccessContent() {
     const searchParams = useSearchParams()
     const type = searchParams.get('type') || 'default'
 
@@ -141,5 +142,20 @@ export default function SuccessPage() {
                 )}
             </div>
         </AuthCard>
+    )
+}
+
+export default function SuccessPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                    <p className="text-text-secondary">Loading...</p>
+                </div>
+            </div>
+        }>
+            <SuccessContent />
+        </Suspense>
     )
 }

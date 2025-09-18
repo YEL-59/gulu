@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import AuthCard from '@/components/auth/AuthCard'
 import { CheckCircle, AlertCircle, RefreshCw, Mail } from 'lucide-react'
 
-export default function VerifyAccountPage() {
+function VerifyAccountContent() {
     const [status, setStatus] = useState('loading') // loading, success, error, expired
     const [error, setError] = useState('')
     const [isResending, setIsResending] = useState(false)
@@ -274,5 +274,20 @@ export default function VerifyAccountPage() {
                 </div>
             </div>
         </AuthCard>
+    )
+}
+
+export default function VerifyAccountPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                    <p className="text-text-secondary">Loading...</p>
+                </div>
+            </div>
+        }>
+            <VerifyAccountContent />
+        </Suspense>
     )
 }
