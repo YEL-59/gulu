@@ -4,267 +4,128 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import AuthCard from '@/components/auth/AuthCard'
-import { Eye, EyeOff, Mail, Lock, User, Building, AlertCircle } from 'lucide-react'
-import { USER_ROLES } from '@/constants/roles'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { signupSchema } from '@/schemas/signup.schemas'
 
 export default function SignUpPage() {
-    const [showPassword, setShowPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState('')
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        role: '',
-        companyName: '',
-        agreeToTerms: false
+
+    const form = useForm({
+        resolver: zodResolver(signupSchema),
+        defaultValues: {
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
+        }
     })
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    const onSubmit = async (values) => {
         setIsLoading(true)
-        setError('')
-
-        // Validation
-        if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match')
-            setIsLoading(false)
-            return
-        }
-
-        if (!formData.agreeToTerms) {
-            setError('You must agree to the terms and conditions')
-            setIsLoading(false)
-            return
-        }
-
         try {
-            // API call to register user
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    email: formData.email,
-                    password: formData.password,
-                    role: formData.role,
-                    companyName: formData.companyName
-                })
-            })
-
-            if (response.ok) {
-                // Redirect to success page
-                window.location.href = '/auth/success?type=signup'
-            } else {
-                const data = await response.json()
-                setError(data.message || 'Registration failed')
-            }
-        } catch (err) {
-            setError('Something went wrong. Please try again.')
+            // Handle form submission
+            console.log('Form submitted:', values)
+            // Add your API call here
+        } catch (error) {
+            console.error('Sign up error:', error)
         } finally {
             setIsLoading(false)
         }
     }
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
-
-    const needsCompanyName = formData.role === USER_ROLES.WHOLESALER || formData.role === USER_ROLES.RESELLER
-
     return (
-        <AuthCard
-            title="Create Your Account"
-            description="Join Gulu and start your dropshipping journey today"
-        >
-            <form onSubmit={handleSubmit} className="space-y-4">
-                {error && (
-                    <Alert variant="destructive">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                )}
+        <div className="min-h-screen flex items-center justify-center bg-white p-4">
+            <div className="w-full max-w-md">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-text-primary mb-2">Create an account</h1>
+                    <p className="text-text-secondary">Enter your details below</p>
+                </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name</Label>
-                        <div className="relative">
-                            <User className="absolute left-3 top-3 h-4 w-4 text-text-secondary" />
-                            <Input
-                                id="firstName"
-                                name="firstName"
-                                placeholder="John"
-                                value={formData.firstName}
-                                onChange={handleInputChange}
-                                className="pl-10"
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name</Label>
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Name Input */}
+                    <div>
                         <Input
-                            id="lastName"
-                            name="lastName"
-                            placeholder="Doe"
-                            value={formData.lastName}
+                            name="name"
+                            placeholder="Name"
+                            value={formData.name}
                             onChange={handleInputChange}
+                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
                             required
                         />
                     </div>
-                </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-text-secondary" />
+                    {/* Email Input */}
+                    <div>
                         <Input
-                            id="email"
                             name="email"
                             type="email"
-                            placeholder="john@example.com"
+                            placeholder="Email or Phone Number"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="pl-10"
+                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
                             required
                         />
                     </div>
-                </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor="role">Account Type</Label>
-                    <Select value={formData.role} onValueChange={(value) =>
-                        setFormData(prev => ({ ...prev, role: value }))
-                    }>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select your role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value={USER_ROLES.WHOLESALER}>
-                                Wholesaler - I want to sell products
-                            </SelectItem>
-                            <SelectItem value={USER_ROLES.RESELLER}>
-                                Reseller - I want to create a storefront
-                            </SelectItem>
-                            <SelectItem value={USER_ROLES.CUSTOMER}>
-                                Customer - I want to buy products
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                {needsCompanyName && (
-                    <div className="space-y-2">
-                        <Label htmlFor="companyName">Company Name</Label>
-                        <div className="relative">
-                            <Building className="absolute left-3 top-3 h-4 w-4 text-text-secondary" />
-                            <Input
-                                id="companyName"
-                                name="companyName"
-                                placeholder="Your Company Ltd."
-                                value={formData.companyName}
-                                onChange={handleInputChange}
-                                className="pl-10"
-                                required={needsCompanyName}
-                            />
-                        </div>
-                    </div>
-                )}
-
-                <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-text-secondary" />
+                    {/* Password Input */}
+                    <div>
                         <Input
-                            id="password"
                             name="password"
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="Create a strong password"
+                            type="password"
+                            placeholder="Password"
                             value={formData.password}
                             onChange={handleInputChange}
-                            className="pl-10 pr-10"
+                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
                             required
                         />
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-3 text-text-secondary hover:text-text-primary"
-                        >
-                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
                     </div>
-                </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm Password</Label>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-text-secondary" />
-                        <Input
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            placeholder="Confirm your password"
-                            value={formData.confirmPassword}
-                            onChange={handleInputChange}
-                            className="pl-10 pr-10"
-                            required
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute right-3 top-3 text-text-secondary hover:text-text-primary"
-                        >
-                            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
+                    {/* Create Account Button */}
+                    <Button
+                        type="submit"
+                        className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white font-bold text-sm uppercase tracking-wide rounded-none"
+                    >
+                        CREATE ACCOUNT
+                    </Button>
+
+                    {/* Or Divider */}
+                    <div className="flex items-center justify-center space-x-4">
+                        <div className="flex-1 h-px bg-gray-300"></div>
+                        <span className="text-text-secondary text-sm">Or</span>
+                        <div className="flex-1 h-px bg-gray-300"></div>
                     </div>
-                </div>
 
-                <div className="flex items-start space-x-2">
-                    <Checkbox
-                        id="terms"
-                        checked={formData.agreeToTerms}
-                        onCheckedChange={(checked) =>
-                            setFormData(prev => ({ ...prev, agreeToTerms: checked }))
-                        }
-                        className="mt-1"
-                    />
-                    <Label htmlFor="terms" className="text-sm text-text-secondary leading-relaxed">
-                        I agree to the{' '}
-                        <Link href="/terms" className="text-primary-600 hover:text-primary-700">
-                            Terms of Service
-                        </Link>{' '}
-                        and{' '}
-                        <Link href="/privacy" className="text-primary-600 hover:text-primary-700">
-                            Privacy Policy
+                    {/* Google Sign Up Button */}
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full h-12 border border-gray-300 bg-white hover:bg-gray-50 text-text-primary font-medium rounded-none flex items-center justify-center space-x-3"
+                    >
+                        {/* Google Logo */}
+                        <div className="flex items-center space-x-1">
+                            <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">G</span>
+                            </div>
+                            <div className="w-1 h-1 bg-yellow-500 rounded-full"></div>
+                            <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                            <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+                        </div>
+                        <span>Sign up with Google</span>
+                    </Button>
+
+                    {/* Footer Link */}
+                    <div className="text-center text-sm text-text-secondary">
+                        Already have account?{' '}
+                        <Link href="/auth/signin" className="text-primary-500 hover:text-primary-600 font-medium">
+                            Log in
                         </Link>
-                    </Label>
-                </div>
-
-                <Button
-                    type="submit"
-                    className="w-full bg-gradient-button hover:shadow-glow-orange transition-all duration-300"
-                    disabled={isLoading}
-                >
-                    {isLoading ? 'Creating Account...' : 'Create Account'}
-                </Button>
-
-                <div className="text-center text-sm text-text-secondary">
-                    Already have an account?{' '}
-                    <Link href="/auth/signin" className="text-primary-600 hover:text-primary-700 font-medium">
-                        Sign in
-                    </Link>
-                </div>
-            </form>
-        </AuthCard>
+                    </div>
+                </form>
+            </div>
+        </div>
     )
 }

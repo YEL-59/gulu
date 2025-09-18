@@ -25,8 +25,13 @@ import SvgIcon, {
   TwitterIcon,
   InstagramIcon,
   LinkedinIcon,
-  ChevronDownIcon
+  YoutubeIcon,
+  TelegramIcon,
+  ChevronDownIcon,
+  PinterestIcon,
+  LogoIcon
 } from '@/components/icons/SvgIcon'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
   Settings,
   LogOut,
@@ -39,6 +44,7 @@ import { USER_ROLES } from '@/constants/roles'
 export default function Navbar() {
   const { data: session, status } = useSession()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [selectedCurrency, setSelectedCurrency] = useState('USD')
 
   const getRoleColor = (role) => {
     switch (role) {
@@ -69,33 +75,68 @@ export default function Navbar() {
   return (
     <nav className="bg-primary-500 shadow-lg">
       {/* Top Bar with Social Icons */}
-      <div className="bg-primary-500 text-white py-2 text-sm border-b border-primary-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-primary-500 text-white py-0 text-sm border-b border-[#3688ff]">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
-              <span>Follow us on:</span>
-              <div className="flex space-x-2">
-                <FacebookIcon className="w-4 h-4 hover:text-blue-300 cursor-pointer transition-colors" />
-                <TwitterIcon className="w-4 h-4 hover:text-blue-300 cursor-pointer transition-colors" />
-                <InstagramIcon className="w-4 h-4 hover:text-pink-300 cursor-pointer transition-colors" />
-                <LinkedinIcon className="w-4 h-4 hover:text-blue-300 cursor-pointer transition-colors" />
+              <span className="hidden sm:inline">Follow us:</span>
+              <div className="flex space-x-3">
+                <a href="#" className="hover:text-blue-300 transition-colors">
+                  <FacebookIcon className="w-4 h-4" />
+                </a>
+                <a href="#" className="hover:text-blue-300 transition-colors">
+                  <TwitterIcon className="w-4 h-4" />
+                </a>
+                <a href="#" className="hover:text-pink-300 transition-colors">
+                  <InstagramIcon className="w-4 h-4" />
+                </a>
+                <a href="#" className="hover:text-blue-300 transition-colors">
+                  <PinterestIcon className="w-4 h-4" />
+                </a>
+                <a href="#" className="hover:text-red-300 transition-colors">
+                  <YoutubeIcon className="w-4 h-4" />
+                </a>
+                {/* <a href="#" className="hover:text-blue-300 transition-colors">
+                  <TelegramIcon className="w-4 h-4" />
+                </a> */}
               </div>
             </div>
-            <div className="text-right">
-              <span className="text-xs">USD</span>
+
+            <div className="flex items-center space-x-4">
+
+
+              {/* Currency Selector */}
+              <div className="flex items-center space-x-2">
+
+                <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                  <SelectTrigger className="w-20 h-6 text-xs  border-0 shadow-none ">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent >
+                    <SelectItem value="USD">USD </SelectItem>
+                    <SelectItem value="BDT">BDT </SelectItem>
+                    <SelectItem value="EUR">EUR </SelectItem>
+                    <SelectItem value="GBP">GBP </SelectItem>
+                    <SelectItem value="INR">INR </SelectItem>
+                    <SelectItem value="CNY">CNY </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 py-2 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#F36E16' }}>
-                <span className="text-white font-bold text-xl">G</span>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" >
+                <LogoIcon className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-bold text-white">Wobuy</span>
             </Link>
@@ -109,8 +150,8 @@ export default function Navbar() {
                 placeholder="Search for anything..."
                 className="w-full h-12 pl-4 pr-12 bg-white rounded-lg border-0 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-accent-500 focus:outline-none"
               />
-              <button className="absolute right-2 top-2 h-8 w-8 rounded-md flex items-center justify-center transition-colors hover:opacity-90" >
-                <SearchIcon className="w-4 h-4 text-white" />
+              <button className="absolute right-2 top-2 h-8 w-8  rounded-md flex items-center justify-center transition-colors" >
+                <SearchIcon className="w-4 h-4 text-black" />
               </button>
             </div>
           </div>
@@ -221,11 +262,11 @@ export default function Navbar() {
             ) : (
               <div className="flex items-center space-x-4">
                 <Link href="/auth/signin">
-                  <Button variant="ghost">Sign In</Button>
+                  <Button variant="ghost" className="text-white font-normal">Sign In</Button>
                 </Link>
-                <Link href="/auth/signup">
+                {/* <Link href="/auth/signup">
                   <Button>Sign Up</Button>
-                </Link>
+                </Link> */}
               </div>
             )}
           </div>
