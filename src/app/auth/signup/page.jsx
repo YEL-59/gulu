@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signupSchema } from '@/schemas/signup.schemas'
+import { GoogleIcon } from '@/components/icons/SvgIcon'
 
 export default function SignUpPage() {
     const [isLoading, setIsLoading] = useState(false)
@@ -37,7 +38,7 @@ export default function SignUpPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-white p-4">
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-xl border border-gray-300 rounded-lg p-8">
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-text-primary mb-2">Create an account</h1>
@@ -103,68 +104,49 @@ export default function SignUpPage() {
                             )}
                         />
 
-                        {/* Confirm Password Input */}
-                        <FormField
-                            control={form.control}
-                            name="confirmPassword"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Input
-                                            type="password"
-                                            placeholder="Confirm Password"
-                                            {...field}
-                                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+
 
                         {/* Create Account Button */}
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white font-bold text-sm uppercase tracking-wide rounded-none disabled:opacity-50"
+                            className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white font-normal text-sm uppercase tracking-wide rounded-md"
                         >
-                            {isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+                            {isLoading ? "CREATING ACCOUNT..." : "CREATE ACCOUNT"}
                         </Button>
+
+                        {/* Or Divider */}
+                        <div className="flex items-center justify-center space-x-4">
+                            <div className="flex-1 h-px bg-gray-300"></div>
+                            <span className="text-text-secondary text-sm">Or</span>
+                            <div className="flex-1 h-px bg-gray-300"></div>
+                        </div>
+
+                        {/* Google Sign In Button */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full h-12 border border-gray-300 bg-white  hover:bg-gray-50 text-text-primary font-medium rounded-md hover:text-text-primary flex items-center justify-center space-x-3"
+                        >
+                            {/* Google Logo */}
+                            <div className="flex items-center space-x-1">
+                                <GoogleIcon />
+
+                            </div>
+                            <span>Sign in with Google</span>
+                        </Button>
+
+                        {/* Footer Link */}
+                        <div className="text-center text-sm text-text-secondary">
+                            Allready have an account?{' '}
+                            <Link href="/auth/signin" className="text-primary-500 hover:text-primary-600 font-medium">
+                                Sign in
+                            </Link>
+                        </div>
                     </form>
                 </Form>
 
-                {/* Or Divider */}
-                <div className="flex items-center justify-center space-x-4 mt-6">
-                    <div className="flex-1 h-px bg-gray-300"></div>
-                    <span className="text-text-secondary text-sm">Or</span>
-                    <div className="flex-1 h-px bg-gray-300"></div>
-                </div>
 
-                {/* Google Sign Up Button */}
-                <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full h-12 border border-gray-300 bg-white hover:bg-gray-50 text-text-primary font-medium rounded-none flex items-center justify-center space-x-3 mt-6"
-                >
-                    {/* Google Logo */}
-                    <div className="flex items-center space-x-1">
-                        <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">G</span>
-                        </div>
-                        <div className="w-1 h-1 bg-yellow-500 rounded-full"></div>
-                        <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                        <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
-                    </div>
-                    <span>Sign up with Google</span>
-                </Button>
-
-                {/* Footer Link */}
-                <div className="text-center text-sm text-text-secondary mt-6">
-                    Already have account?{' '}
-                    <Link href="/auth/signin" className="text-primary-500 hover:text-primary-600 font-medium">
-                        Log in
-                    </Link>
-                </div>
             </div>
         </div>
     )

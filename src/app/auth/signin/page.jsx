@@ -39,7 +39,7 @@ export default function SignInPage() {
             <div className="w-full max-w-xl border border-gray-300 rounded-lg p-8 ">
                 {/* Header */}
                 <div className="text-start mb-8">
-                    <h1 className="text-3xl font-normal text-text-primary mb-2">Create an account</h1>
+                    <h1 className="text-3xl font-medium text-text-primary mb-2">Login your account</h1>
                     <p className="text-text-secondary">Enter your details below</p>
                 </div>
 
@@ -85,7 +85,7 @@ export default function SignInPage() {
                         />
 
                         {/* Forgot Password Link */}
-                        <div className="text-right">
+                        <div className="text-left -mt-5">
                             <Link href="/auth/forgot-password" className="text-primary-500 hover:text-primary-600 text-sm font-normal">
                                 Forgot password?
                             </Link>
