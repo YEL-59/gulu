@@ -45,86 +45,126 @@ export default function SignUpPage() {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Name Input */}
-                    <div>
-                        <Input
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        {/* Name Input */}
+                        <FormField
+                            control={form.control}
                             name="name"
-                            placeholder="Name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
-                            required
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input
+                                            placeholder="Name"
+                                            {...field}
+                                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                    </div>
 
-                    {/* Email Input */}
-                    <div>
-                        <Input
+                        {/* Email Input */}
+                        <FormField
+                            control={form.control}
                             name="email"
-                            type="email"
-                            placeholder="Email or Phone Number"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
-                            required
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input
+                                            type="email"
+                                            placeholder="Email or Phone Number"
+                                            {...field}
+                                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                    </div>
 
-                    {/* Password Input */}
-                    <div>
-                        <Input
+                        {/* Password Input */}
+                        <FormField
+                            control={form.control}
                             name="password"
-                            type="password"
-                            placeholder="Password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
-                            required
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input
+                                            type="password"
+                                            placeholder="Password"
+                                            {...field}
+                                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                    </div>
 
-                    {/* Create Account Button */}
-                    <Button
-                        type="submit"
-                        className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white font-bold text-sm uppercase tracking-wide rounded-none"
-                    >
-                        CREATE ACCOUNT
-                    </Button>
+                        {/* Confirm Password Input */}
+                        <FormField
+                            control={form.control}
+                            name="confirmPassword"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <Input
+                                            type="password"
+                                            placeholder="Confirm Password"
+                                            {...field}
+                                            className="border-0 border-b border-gray-300 rounded-none px-0 py-3 text-text-primary placeholder-text-secondary focus:border-primary-500 focus:ring-0 bg-transparent"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    {/* Or Divider */}
-                    <div className="flex items-center justify-center space-x-4">
-                        <div className="flex-1 h-px bg-gray-300"></div>
-                        <span className="text-text-secondary text-sm">Or</span>
-                        <div className="flex-1 h-px bg-gray-300"></div>
-                    </div>
+                        {/* Create Account Button */}
+                        <Button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white font-bold text-sm uppercase tracking-wide rounded-none disabled:opacity-50"
+                        >
+                            {isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+                        </Button>
+                    </form>
+                </Form>
 
-                    {/* Google Sign Up Button */}
-                    <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full h-12 border border-gray-300 bg-white hover:bg-gray-50 text-text-primary font-medium rounded-none flex items-center justify-center space-x-3"
-                    >
-                        {/* Google Logo */}
-                        <div className="flex items-center space-x-1">
-                            <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                                <span className="text-white text-xs font-bold">G</span>
-                            </div>
-                            <div className="w-1 h-1 bg-yellow-500 rounded-full"></div>
-                            <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                            <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+                {/* Or Divider */}
+                <div className="flex items-center justify-center space-x-4 mt-6">
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                    <span className="text-text-secondary text-sm">Or</span>
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                </div>
+
+                {/* Google Sign Up Button */}
+                <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full h-12 border border-gray-300 bg-white hover:bg-gray-50 text-text-primary font-medium rounded-none flex items-center justify-center space-x-3 mt-6"
+                >
+                    {/* Google Logo */}
+                    <div className="flex items-center space-x-1">
+                        <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">G</span>
                         </div>
-                        <span>Sign up with Google</span>
-                    </Button>
-
-                    {/* Footer Link */}
-                    <div className="text-center text-sm text-text-secondary">
-                        Already have account?{' '}
-                        <Link href="/auth/signin" className="text-primary-500 hover:text-primary-600 font-medium">
-                            Log in
-                        </Link>
+                        <div className="w-1 h-1 bg-yellow-500 rounded-full"></div>
+                        <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                        <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
                     </div>
-                </form>
+                    <span>Sign up with Google</span>
+                </Button>
+
+                {/* Footer Link */}
+                <div className="text-center text-sm text-text-secondary mt-6">
+                    Already have account?{' '}
+                    <Link href="/auth/signin" className="text-primary-500 hover:text-primary-600 font-medium">
+                        Log in
+                    </Link>
+                </div>
             </div>
         </div>
     )
