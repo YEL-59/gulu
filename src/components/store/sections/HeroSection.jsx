@@ -104,7 +104,7 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch ">
           {/* Main Slider */}
           <div className="lg:col-span-2">
-            <div className="relative">
+            <div className="relative ">
               <div
                 className={`relative rounded-lg overflow-hidden shadow ${currentSlideData.bgColor} transition-all duration-500`}
               >
@@ -125,7 +125,7 @@ export default function HeroSection() {
                     </h1>
 
                     {/* Description */}
-                    <div className="space-y-1">
+                    <div className="space-y-1 ">
                       {currentSlideData.description.map((line, index) => (
                         <p key={index} className="text-gray-700 text-lg">
                           {line}
