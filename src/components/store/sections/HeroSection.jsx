@@ -100,99 +100,79 @@ export default function HeroSection() {
 
   return (
     <section className="py-8">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 h-auto lg:h-[500px]">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch ">
           {/* Main Slider */}
           <div className="lg:col-span-2">
-            <div className="relative ">
-              <div
-                className={`relative rounded-lg overflow-hidden shadow ${currentSlideData.bgColor} transition-all duration-500`}
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12">
-                  {/* Left Content */}
-                  <div className="flex flex-col justify-center space-y-6">
-                    {/* Tagline */}
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-0.5 bg-blue-400"></div>
-                      <span className="text-blue-600 text-sm font-medium uppercase tracking-wide">
-                        {currentSlideData.tagline}
-                      </span>
-                    </div>
-
-                    {/* Title */}
-                    <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                      {currentSlideData.title}
-                    </h1>
-
-                    {/* Description */}
-                    <div className="space-y-1 h-[140px]">
-                      {currentSlideData.description.map((line, index) => (
-                        <p key={index} className="text-gray-700 text-lg">
-                          {line}
-                        </p>
-                      ))}
-                    </div>
-
-                    {/* CTA Button */}
-                    <div className="pt-4">
-                      <Button
-                        size="lg"
-                        className="bg-accent-500 hover:bg-accent-600 text-white font-semibold px-8 py-3 rounded-lg flex items-center space-x-2"
-                      >
-                        <span>{currentSlideData.buttonText}</span>
-                        <ArrowRight className="h-5 w-5" />
-                      </Button>
-                    </div>
-
-                    {/* Navigation Dots - Inside Content */}
-                    <div className="flex justify-start mt-6 space-x-3">
-                      {sliderData.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => goToSlide(index)}
-                          className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                            index === currentSlide
-                              ? "bg-gray-800 scale-110"
-                              : "bg-gray-300 hover:bg-gray-400"
-                          }`}
-                        />
-                      ))}
-                    </div>
+            <div
+              className={`relative rounded-lg overflow-hidden shadow ${currentSlideData.bgColor} transition-all duration-500`}
+            >
+              {/* FIXED HEIGHT WRAPPER */}
+              <div className="h-[500px] flex flex-col lg:flex-row gap-8 p-8 lg:p-12">
+                {/* Left Content */}
+                <div className="flex flex-col justify-center space-y-6 flex-1">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-0.5 bg-blue-400"></div>
+                    <span className="text-blue-600 text-sm font-medium uppercase tracking-wide">
+                      {currentSlideData.tagline}
+                    </span>
                   </div>
 
-                  {/* Right Image */}
-                  <div className="flex items-center justify-center relative">
-                    <img
-                      src={currentSlideData.image}
-                      alt={currentSlideData.title}
-                      className="w-full h-96 lg:h-[500px] object-contain"
-                    />
+                  <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+                    {currentSlideData.title}
+                  </h1>
 
-                    {/* Price Badge */}
-                    <div className="absolute top-4 right-4">
-                      <div className="bg-blue-600 text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg">
-                        <span className="font-bold text-lg">
-                          {currentSlideData.price}
-                        </span>
-                      </div>
+                  {/* FIXED DESCRIPTION HEIGHT */}
+                  <div className="space-y-1 h-[100px] overflow-hidden">
+                    {currentSlideData.description.map((line, index) => (
+                      <p key={index} className="text-gray-700 text-lg">
+                        {line}
+                      </p>
+                    ))}
+                  </div>
+
+                  <div className="pt-4">
+                    <Button
+                      size="lg"
+                      className="bg-accent-500 hover:bg-accent-600 text-white font-semibold px-8 py-3 rounded-lg flex items-center space-x-2"
+                    >
+                      <span>{currentSlideData.buttonText}</span>
+                      <ArrowRight className="h-5 w-5" />
+                    </Button>
+                  </div>
+
+                  {/* Dots */}
+                  <div className="flex justify-start mt-6 space-x-3">
+                    {sliderData.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => goToSlide(index)}
+                        className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                          index === currentSlide
+                            ? "bg-gray-800 scale-110"
+                            : "bg-gray-300 hover:bg-gray-400"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right Image */}
+                <div className="flex items-center justify-center relative flex-1">
+                  <img
+                    src={currentSlideData.image}
+                    alt={currentSlideData.title}
+                    className="w-full h-[400px] object-contain"
+                  />
+                  <div className="absolute top-4 right-4">
+                    <div className="bg-blue-600 text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg">
+                      <span className="font-bold text-lg">
+                        {currentSlideData.price}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Navigation Arrows */}
-              {/* <button
-                onClick={prevSlide}
-                className=" absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-3 shadow-lg transition-all duration-200"
-              >
-                <ChevronLeft className="h-6 w-6 text-gray-700" />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-3 shadow-lg transition-all duration-200"
-              >
-                <ChevronRight className="h-6 w-6 text-gray-700" />
-              </button> */}
             </div>
           </div>
 
