@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import AuthCard from '@/components/auth/AuthCard'
 import { ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react'
 
 function OTPVerificationContent() {
@@ -15,9 +14,18 @@ function OTPVerificationContent() {
     const [resendLoading, setResendLoading] = useState(false)
     const [resendTimer, setResendTimer] = useState(60)
     const [canResend, setCanResend] = useState(false)
+    const [email, setEmail] = useState('user@example.com')
     const inputRefs = useRef([])
     const searchParams = useSearchParams()
-    const email = searchParams.get('email') || 'your email'
+
+    useEffect(() => {
+        if (searchParams) {
+            const emailParam = searchParams.get('email')
+            if (emailParam) {
+                setEmail(emailParam)
+            }
+        }
+    }, [searchParams])
 
     useEffect(() => {
         if (resendTimer > 0) {
@@ -77,7 +85,7 @@ function OTPVerificationContent() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    email: searchParams.get('email'),
+                    email: email,
                     otp: otpCode
                 })
             })
@@ -101,7 +109,7 @@ function OTPVerificationContent() {
             await fetch('/api/auth/resend-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: searchParams.get('email') })
+                body: JSON.stringify({ email: email })
             })
 
             setResendTimer(60)
@@ -115,23 +123,25 @@ function OTPVerificationContent() {
     }
 
     return (
-        <AuthCard
-            title="Verify Your Email"
-            description={`We've sent a 6-digit verification code to ${email}`}
-        >
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {error && (
-                    <Alert variant="destructive">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                )}
+        <div className="min-h-screen flex items-center justify-center bg-white p-4">
+            <div className="w-full max-w-xl border border-gray-300 rounded-lg p-8">
+                {/* Header */}
+                <div className="text-start mb-8">
+                    <h1 className="text-3xl font-normal text-text-primary mb-2">Email verification</h1>
+                    <p className="text-text-secondary">Enter the verification code we send you on:</p>
+                    <p className="text-text-primary font-medium mt-1">{email}</p>
+                </div>
 
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-text-primary">
-                        Enter Verification Code
-                    </label>
-                    <div className="flex justify-center space-x-2">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {error && (
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                    )}
+
+                    {/* OTP Input Fields */}
+                    <div className="flex justify-center space-x-3">
                         {otp.map((digit, index) => (
                             <input
                                 key={index}
@@ -142,70 +152,75 @@ function OTPVerificationContent() {
                                 onChange={(e) => handleInputChange(index, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(index, e)}
                                 onPaste={handlePaste}
-                                className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors"
+                                className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors"
                                 autoComplete="off"
                             />
                         ))}
                     </div>
-                </div>
 
-                <Button
-                    type="submit"
-                    className="w-full bg-gradient-button hover:shadow-glow-orange transition-all duration-300"
-                    disabled={isLoading || otp.join('').length !== 6}
-                >
-                    {isLoading ? 'Verifying...' : 'Verify Code'}
-                </Button>
+                    {/* Timer */}
+                    <div className="text-center">
+                        <div className="flex items-center justify-center space-x-2 text-text-secondary">
+                            <RefreshCw className="h-4 w-4" />
+                            <span className="text-sm">
+                                {canResend ? '00:00' : `${Math.floor(resendTimer / 60).toString().padStart(2, '0')}.${(resendTimer % 60).toString().padStart(2, '0')}`}
+                            </span>
+                        </div>
+                    </div>
 
-                <div className="text-center space-y-2">
-                    <p className="text-sm text-text-secondary">
-                        Didn't receive the code?
-                    </p>
-                    {canResend ? (
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={handleResend}
-                            disabled={resendLoading}
-                            className="text-primary-600 hover:text-primary-700"
-                        >
-                            {resendLoading ? (
-                                <>
-                                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                                    Sending...
-                                </>
-                            ) : (
-                                'Resend Code'
-                            )}
-                        </Button>
-                    ) : (
-                        <p className="text-sm text-text-secondary">
-                            Resend code in {resendTimer}s
-                        </p>
-                    )}
-                </div>
-
-                <div className="text-center">
-                    <Link
-                        href="/auth/signin"
-                        className="inline-flex items-center text-sm text-text-secondary hover:text-text-primary"
+                    {/* Continue Button */}
+                    <Button
+                        type="submit"
+                        disabled={isLoading || otp.join('').length !== 6}
+                        className="w-full h-12 bg-accent-500 hover:bg-accent-600 text-white font-normal text-sm uppercase tracking-wide rounded-md"
                     >
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back to Sign In
-                    </Link>
-                </div>
-            </form>
-        </AuthCard>
+                        {isLoading ? "VERIFYING..." : "CONTINUE"}
+                    </Button>
+
+                    {/* Resend Section */}
+                    <div className="text-center">
+                        <p className="text-sm text-text-secondary">
+                            Didn't receive code?{' '}
+                            {canResend ? (
+                                <button
+                                    type="button"
+                                    onClick={handleResend}
+                                    disabled={resendLoading}
+                                    className="text-accent-500 hover:text-accent-600 font-medium"
+                                >
+                                    {resendLoading ? 'Sending...' : 'Resend'}
+                                </button>
+                            ) : (
+                                <span className="text-text-secondary">Resend</span>
+                            )}
+                        </p>
+                    </div>
+
+                    {/* Back to Sign In */}
+                    <div className="text-center">
+                        <Link
+                            href="/auth/signin"
+                            className="inline-flex items-center text-sm text-primary-500 hover:text-primary-600 font-medium"
+                        >
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back to Sign In
+                        </Link>
+                    </div>
+                </form>
+            </div>
+        </div>
     )
 }
 
 export default function OTPVerificationPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4"></div>
-                    <p className="text-text-secondary">Loading...</p>
+            <div className="min-h-screen flex items-center justify-center bg-white p-4">
+                <div className="w-full max-w-xl border border-gray-300 rounded-lg p-8">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                        <p className="text-text-secondary">Loading...</p>
+                    </div>
                 </div>
             </div>
         }>

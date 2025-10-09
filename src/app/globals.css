@@ -126,6 +126,9 @@
 
 /* Custom utility classes for your brand colors */
 @layer utilities {
+  .bg-black {
+    background-color: #242424;
+  }
   .bg-primary-50 {
     background-color: #f0f4ff;
   }
@@ -147,7 +150,7 @@
   }
 
   .bg-primary-500 {
-    background-color: #1071FF;
+    background-color: #1071ff;
   }
 
   .bg-primary-600 {
@@ -191,7 +194,7 @@
   }
 
   .bg-accent-500 {
-    background-color: #F36E16;
+    background-color: #f36e16;
   }
 
   .bg-accent-600 {
@@ -223,11 +226,11 @@
   }
 
   .text-text-muted {
-    color: #6B7280;
+    color: #6b7280;
   }
 
   .text-text-light {
-    color: #9CA3AF;
+    color: #9ca3af;
   }
 
   .text-primary-50 {
@@ -251,7 +254,7 @@
   }
 
   .text-primary-500 {
-    color: #1071FF;
+    color: #1071ff;
   }
 
   .text-primary-600 {
@@ -275,23 +278,23 @@
   }
 
   .border-primary-500 {
-    border-color: #1071FF;
+    border-color: #1071ff;
   }
 
   .border-accent-500 {
-    border-color: #F36E16;
+    border-color: #f36e16;
   }
 
   .bg-gradient-brand {
-    background: linear-gradient(135deg, #1071FF 0%, #0d5ce6 100%);
+    background: linear-gradient(135deg, #1071ff 0%, #0d5ce6 100%);
   }
 
   .bg-gradient-button {
-    background: linear-gradient(135deg, #F36E16 0%, #e05506 100%);
+    background: linear-gradient(135deg, #f36e16 0%, #e05506 100%);
   }
 
   .bg-gradient-hero {
-    background: linear-gradient(135deg, #1071FF 0%, #F36E16 100%);
+    background: linear-gradient(135deg, #1071ff 0%, #f36e16 100%);
   }
 
   .shadow-glow {
