@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { useSession, signOut } from 'next-auth/react'
-import { Button } from '@/components/ui/button'
+import { useState } from "react";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +11,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import SvgIcon, {
   SearchIcon,
   UserIcon,
@@ -29,48 +29,48 @@ import SvgIcon, {
   TelegramIcon,
   ChevronDownIcon,
   PinterestIcon,
-  LogoIcon
-} from '@/components/icons/SvgIcon'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+  LogoIcon,
+} from "@/components/icons/SvgIcon";
 import {
-  Settings,
-  LogOut,
-  Store,
-  Package,
-  BarChart3
-} from 'lucide-react'
-import { USER_ROLES } from '@/constants/roles'
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Settings, LogOut, Store, Package, BarChart3 } from "lucide-react";
+import { USER_ROLES } from "@/constants/roles";
 
 export default function Navbar() {
-  const { data: session, status } = useSession()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [selectedCurrency, setSelectedCurrency] = useState('USD')
+  const { data: session, status } = useSession();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
 
   const getRoleColor = (role) => {
     switch (role) {
       case USER_ROLES.ADMIN:
-        return 'bg-red-100 text-red-800'
+        return "bg-red-100 text-red-800";
       case USER_ROLES.WHOLESALER:
-        return 'bg-blue-100 text-blue-800'
+        return "bg-blue-100 text-blue-800";
       case USER_ROLES.RESELLER:
-        return 'bg-green-100 text-green-800'
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800'
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   const getDashboardLink = (role) => {
     switch (role) {
       case USER_ROLES.ADMIN:
-        return '/admin'
+        return "/admin";
       case USER_ROLES.WHOLESALER:
-        return '/wholesaler'
+        return "/wholesaler";
       case USER_ROLES.RESELLER:
-        return '/reseller'
+        return "/reseller";
       default:
-        return '/profile'
+        return "/profile";
     }
-  }
+  };
 
   return (
     <nav className="bg-primary-500 shadow-lg">
@@ -103,16 +103,16 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center space-x-4">
-
-
               {/* Currency Selector */}
               <div className="flex items-center space-x-2">
-
-                <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                <Select
+                  value={selectedCurrency}
+                  onValueChange={setSelectedCurrency}
+                >
                   <SelectTrigger className="w-20 h-6 text-xs  border-0 shadow-none ">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent >
+                  <SelectContent>
                     <SelectItem value="USD">USD </SelectItem>
                     <SelectItem value="BDT">BDT </SelectItem>
                     <SelectItem value="EUR">EUR </SelectItem>
@@ -122,8 +122,6 @@ export default function Navbar() {
                   </SelectContent>
                 </Select>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -134,8 +132,8 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center" >
+            <Link href="#" className="flex items-center space-x-2">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
                 <LogoIcon className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-bold text-white">Wobuy</span>
@@ -150,7 +148,7 @@ export default function Navbar() {
                 placeholder="Search for anything..."
                 className="w-full h-12 pl-4 pr-12 bg-white rounded-lg border-0 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-accent-500 focus:outline-none"
               />
-              <button className="absolute right-2 top-2 h-8 w-8  rounded-md flex items-center justify-center transition-colors" >
+              <button className="absolute right-2 top-2 h-8 w-8  rounded-md flex items-center justify-center transition-colors">
                 <SearchIcon className="w-4 h-4 text-black" />
               </button>
             </div>
@@ -161,7 +159,10 @@ export default function Navbar() {
             {/* Wishlist */}
             <Link href="/wishlist" className="relative">
               <HeartIcon className="w-6 h-6 text-white hover:text-orange-300 transition-colors" />
-              <span className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" style={{ backgroundColor: '#F36E16' }}>
+              <span
+                className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                style={{ backgroundColor: "#F36E16" }}
+              >
                 3
               </span>
             </Link>
@@ -169,13 +170,16 @@ export default function Navbar() {
             {/* Shopping Cart */}
             <Link href="/cart" className="relative">
               <CartIcon className="w-6 h-6 text-white hover:text-orange-300 transition-colors" />
-              <span className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" style={{ backgroundColor: '#F36E16' }}>
+              <span
+                className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                style={{ backgroundColor: "#F36E16" }}
+              >
                 5
               </span>
             </Link>
 
             {/* Authentication */}
-            {status === 'loading' ? (
+            {status === "loading" ? (
               <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
             ) : session ? (
               <div className="flex items-center space-x-4">
@@ -187,9 +191,15 @@ export default function Navbar() {
                 {/* User Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full"
+                    >
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={session.user.image} alt={session.user.name} />
+                        <AvatarImage
+                          src={session.user.image}
+                          alt={session.user.name}
+                        />
                         <AvatarFallback>
                           {session.user.name?.charAt(0).toUpperCase()}
                         </AvatarFallback>
@@ -262,7 +272,9 @@ export default function Navbar() {
             ) : (
               <div className="flex items-center space-x-4">
                 <Link href="/auth/signin">
-                  <Button variant="ghost" className="text-white font-normal">Sign In</Button>
+                  <Button variant="ghost" className="text-white font-normal">
+                    Sign In
+                  </Button>
                 </Link>
                 {/* <Link href="/auth/signup">
                   <Button>Sign Up</Button>
@@ -279,7 +291,11 @@ export default function Navbar() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-white hover:bg-white/10"
             >
-              {isMobileMenuOpen ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
+              {isMobileMenuOpen ? (
+                <CloseIcon className="h-6 w-6" />
+              ) : (
+                <MenuIcon className="h-6 w-6" />
+              )}
             </Button>
           </div>
         </div>
@@ -314,7 +330,10 @@ export default function Navbar() {
                 <div className="pt-4 pb-3 border-t border-gray-200">
                   <div className="flex items-center px-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={session.user.image} alt={session.user.name} />
+                      <AvatarImage
+                        src={session.user.image}
+                        alt={session.user.name}
+                      />
                       <AvatarFallback>
                         {session.user.name?.charAt(0).toUpperCase()}
                       </AvatarFallback>
@@ -327,7 +346,9 @@ export default function Navbar() {
                         {session.user.email}
                       </div>
                     </div>
-                    <Badge className={`ml-auto ${getRoleColor(session.user.role)}`}>
+                    <Badge
+                      className={`ml-auto ${getRoleColor(session.user.role)}`}
+                    >
                       {session.user.role}
                     </Badge>
                   </div>
@@ -355,8 +376,8 @@ export default function Navbar() {
                     </Link>
                     <Button
                       onClick={() => {
-                        signOut()
-                        setIsMobileMenuOpen(false)
+                        signOut();
+                        setIsMobileMenuOpen(false);
                       }}
                       variant="ghost"
                       className="w-full justify-start text-red-600 hover:text-red-600"
@@ -388,5 +409,5 @@ export default function Navbar() {
         )}
       </div>
     </nav>
-  )
+  );
 }
