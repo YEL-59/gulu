@@ -183,3 +183,4 @@ export default function ProductCard({ product, viewMode = "grid" }) {
     </Link>
   );
 }
+
