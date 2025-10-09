@@ -125,7 +125,7 @@ export default function HeroSection() {
                     </h1>
 
                     {/* Description */}
-                    <div className="space-y-1 ">
+                    <div className="space-y-1 h-[140px]">
                       {currentSlideData.description.map((line, index) => (
                         <p key={index} className="text-gray-700 text-lg">
                           {line}
