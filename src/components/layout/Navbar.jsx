@@ -38,13 +38,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Settings, LogOut, Store, Package, BarChart3 } from "lucide-react";
+import {
+  Settings,
+  LogOut,
+  Store,
+  Package,
+  BarChart3,
+  User,
+  ShoppingCart,
+  HeartPlusIcon,
+} from "lucide-react";
 import { USER_ROLES } from "@/constants/roles";
+import { optional } from "zod";
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  // Session (for real auth) and local override to force avatar/sign-in UI
+  const { data: session, status } = useSession();
+  // null = follow session, true = always show avatar, false = always show Sign In
+  const [authViewOverride, setAuthViewOverride] = useState(true);
 
   const getRoleColor = (role) => {
     switch (role) {
@@ -157,7 +170,7 @@ export default function Navbar() {
           {/* Right Side Icons */}
           <div className="hidden md:flex items-center space-x-6">
             {/* Wishlist */}
-            <Link href="/wishlist" className="relative">
+            <Link href="/store/wishlist" className="relative">
               <HeartIcon className="w-6 h-6 text-white hover:text-orange-300 transition-colors" />
               <span
                 className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
@@ -168,7 +181,7 @@ export default function Navbar() {
             </Link>
 
             {/* Shopping Cart */}
-            <Link href="/cart" className="relative">
+            <Link href="/store/cart" className="relative">
               <CartIcon className="w-6 h-6 text-white hover:text-orange-300 transition-colors" />
               <span
                 className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
@@ -179,16 +192,67 @@ export default function Navbar() {
             </Link>
 
             {/* Authentication */}
-            {status === "loading" ? (
+            {authViewOverride === true ? (
+              // Forced avatar view (no session required)
+              <div className="flex items-center space-x-4">
+                <Badge className={getRoleColor(USER_ROLES.RESELLER)}>
+                  Mock
+                </Badge>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="relative h-8 w-8 rounded-full"
+                    >
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src="" alt="User" />
+                        <AvatarFallback>U</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">User</p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          user@example.com
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile">
+                        <User className="mr-2 h-4 w-4" />
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="store/wishlist">
+                        <HeartPlusIcon className="mr-2 h-4 w-4" />
+                        <p className="text-sm font-medium leading-none">
+                          Wishlist
+                        </p>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            ) : authViewOverride === false ? (
+              // Forced Sign In view
+              <div className="flex items-center space-x-4">
+                <Link href="/auth/signin">
+                  <Button variant="ghost" className="text-white font-normal">
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            ) : status === "loading" ? (
               <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
             ) : session ? (
               <div className="flex items-center space-x-4">
-                {/* Role Badge */}
                 <Badge className={getRoleColor(session.user.role)}>
                   {session.user.role}
                 </Badge>
-
-                {/* User Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -276,9 +340,6 @@ export default function Navbar() {
                     Sign In
                   </Button>
                 </Link>
-                {/* <Link href="/auth/signup">
-                  <Button>Sign Up</Button>
-                </Link> */}
               </div>
             )}
           </div>

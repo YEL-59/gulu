@@ -17,6 +17,7 @@ import { useParams } from "next/navigation";
 import productsData from "@/lib/data/products.json";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import ProductListingsSection from "@/components/store/sections/ProductListingsSection";
 
 export default function ProductPage() {
   const params = useParams();
@@ -482,6 +483,10 @@ export default function ProductPage() {
               </p>
             </TabsContent>
           </Tabs>
+        </div>
+
+        <div>
+          <ProductListingsSection />
         </div>
       </div>
     </div>
