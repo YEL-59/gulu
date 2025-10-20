@@ -7,55 +7,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/context/store";
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([
-    // Sample items to visualize the layout (replace with real cart state)
-    {
-      id: 1,
-      name: "4K UHD LED Smart TV with Chromecast Built-in",
-      price: 70,
-      quantity: 1,
-      image: "/images/products/dji-mavic-3-pro.jpg",
-    },
-    {
-      id: 2,
-      name: "4K UHD LED Smart TV with Chromecast Built-in",
-      price: 70,
-      quantity: 1,
-      image: "/images/products/dji-mavic-3-pro.jpg",
-    },
-    {
-      id: 3,
-      name: "Wired Over-Ear Gaming Headphones with USB",
-      price: 250,
-      quantity: 3,
-      image: "/images/products/dji-mavic-3-pro.jpg",
-    },
-  ]);
+  const { items: cartItems, updateQuantity, removeItem, subtotal } = useCart();
   const [coupon, setCoupon] = useState("");
   const router = useRouter();
 
-  const subtotal = useMemo(
-    () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [cartItems]
-  );
   const shipping = useMemo(() => (subtotal > 100 ? 0 : 10), [subtotal]);
   const discount = useMemo(() => (coupon.toLowerCase() === "save24" ? subtotal * 0.24 : 0), [coupon, subtotal]);
   const tax = useMemo(() => Math.round(subtotal * 0.12 * 100) / 100, [subtotal]);
   const total = useMemo(() => Math.max(subtotal + shipping + tax - discount, 0), [subtotal, shipping, tax, discount]);
 
-  const updateQuantity = (id, delta) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(item.quantity + delta, 1) } : item
-      )
-    );
-  };
-
-  const removeItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
 
   const handleProceedToCheckout = () => {
     try {
@@ -113,7 +76,7 @@ export default function CartPage() {
                       <div className="flex items-center rounded border">
                         <button
                           className="px-2 py-1 text-gray-700 hover:bg-gray-50"
-                          onClick={() => updateQuantity(item.id, -1)}
+                          onClick={() => updateQuantity(item.id, -1, { mode: 'delta' })}
                           aria-label="Decrease quantity"
                         >
                           -
@@ -122,13 +85,13 @@ export default function CartPage() {
                           type="number"
                           value={item.quantity}
                           onChange={(e) =>
-                            updateQuantity(item.id, Number(e.target.value) - item.quantity)
+                            updateQuantity(item.id, Number(e.target.value), { mode: 'set' })
                           }
                           className="w-12 border-0 text-center"
                         />
                         <button
                           className="px-2 py-1 text-gray-700 hover:bg-gray-50"
-                          onClick={() => updateQuantity(item.id, 1)}
+                          onClick={() => updateQuantity(item.id, 1, { mode: 'delta' })}
                           aria-label="Increase quantity"
                         >
                           +
