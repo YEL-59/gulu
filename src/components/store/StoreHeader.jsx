@@ -86,10 +86,10 @@ export default function StoreHeader() {
               </MenubarMenu>
             </Menubar>
 
-            {/* Customer Support */}
+            {/* Customer Support  store/customer-support*/}
             <div className="flex items-center space-x-2 text-gray-700">
               <Link
-                href="/store/customer-support"
+                href="/"
                 className="text-sm text-gray-700 flex justify-center items-center gap-2 underline hover:text-blue-600"
               >
                 <Headphones className="h-4 w-4" />
@@ -98,16 +98,16 @@ export default function StoreHeader() {
             </div>
           </div>
 
-          {/* Become Wholesaler/Reseller Links */}
+          {/* Become Wholesaler/Reseller Links  wholesaler  reseller*/}
           <div className="flex items-center space-x-4">
             <Link
-              href="/wholesaler"
+              href="/"
               className="text-sm text-gray-700 underline hover:text-blue-600"
             >
               Become a Wholesaler
             </Link>
             <Link
-              href="/reseller"
+              href="/"
               className="text-sm text-gray-700 underline hover:text-blue-600"
             >
               Become a Reseller
