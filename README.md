@@ -9,7 +9,7 @@
 
 <div align="center">
   <h3>🌟 The Ultimate B2B Dropshipping Platform 🌟</h3>
-  <p><strong>Connect wholesalers, resellers, and customers in one powerful marketplace</strong></p>
+  <p><strong>Connect wholesalers, resellers, and customers in one powerful marketplace</strong></p>.
 </div>
 
 ---
