@@ -47,6 +47,10 @@ import {
   User,
   ShoppingCart,
   HeartPlusIcon,
+  ClipboardCheckIcon,
+  MapPin,
+  KeyRound,
+  LifeBuoy,
 } from "lucide-react";
 import { USER_ROLES } from "@/constants/roles";
 import { optional } from "zod";
@@ -221,16 +225,50 @@ export default function Navbar() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/profile">
+                      <Link href="/store/account/profile">
                         <User className="mr-2 h-4 w-4" />
-                        Profile
+                        <p className="text-sm font-medium leading-none hover:text-black">
+                          Profile
+                        </p>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="store/wishlist">
+                      <Link href="/store/account/address">
+                        <MapPin className="mr-2 h-4 w-4" />
+                        <p className="text-sm font-medium leading-none hover:text-black">
+                          Address
+                        </p>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/account/change-password">
+                        <KeyRound className="mr-2 h-4 w-4" />
+                        <p className="text-sm font-medium leading-none hover:text-black">
+                          Change Password
+                        </p>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/customer-support">
+                        <LifeBuoy className="mr-2 h-4 w-4" />
+                        <p className="text-sm font-medium leading-none hover:text-black">
+                          Support
+                        </p>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/wishlist">
                         <HeartPlusIcon className="mr-2 h-4 w-4" />
-                        <p className="text-sm font-medium leading-none">
+                        <p className="text-sm font-medium leading-none hover:text-black">
                           Wishlist
+                        </p>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/my-order">
+                        <ClipboardCheckIcon className="mr-2 h-4 w-4" />
+                        <p className="text-sm font-medium leading-none hover:text-black">
+                          My order
                         </p>
                       </Link>
                     </DropdownMenuItem>
@@ -289,9 +327,27 @@ export default function Navbar() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/profile">
+                      <Link href="/store/account/profile">
                         <User className="mr-2 h-4 w-4" />
                         Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/account/address">
+                        <MapPin className="mr-2 h-4 w-4" />
+                        Address
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/account/change-password">
+                        <KeyRound className="mr-2 h-4 w-4" />
+                        Change Password
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/customer-support">
+                        <LifeBuoy className="mr-2 h-4 w-4" />
+                        Support
                       </Link>
                     </DropdownMenuItem>
                     {session.user.role === USER_ROLES.RESELLER && (
@@ -422,11 +478,32 @@ export default function Navbar() {
                       Dashboard
                     </Link>
                     <Link
-                      href="/profile"
+                      href="/store/account/profile"
                       className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       Profile
+                    </Link>
+                    <Link
+                      href="/store/account/address"
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Address
+                    </Link>
+                    <Link
+                      href="/store/account/change-password"
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Change Password
+                    </Link>
+                    <Link
+                      href="/store/customer-support"
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Support
                     </Link>
                     <Link
                       href="/orders"

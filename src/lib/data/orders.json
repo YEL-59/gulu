@@ -1,0 +1,110 @@
+[
+  {
+    "id": "335465466454526",
+    "orderDate": "Oct 16, 2025",
+    "estimatedDelivery": "Oct 26, 2025",
+    "status": "confirmed",
+    "items": [
+      {
+        "name": "4K UHD LED Smart TV with Chromecast Built-in",
+        "image": "/images/products/dji-mavic-3-pro.jpg",
+        "price": 90,
+        "quantity": 1
+      }
+    ],
+    "activity": [
+      { "type": "delivered", "text": "Your order has been delivered. Thank you for shopping at Cicon!", "date": "23 Jan, 2025", "time": "7:32 PM" },
+      { "type": "pickup", "text": "Our delivery man (John Wick) has picked-up your order for delivery.", "date": "23 Jan, 2025", "time": "2:00 PM" },
+      { "type": "hub", "text": "Your order has reached at last mile hub.", "date": "22 Jan, 2025", "time": "8:00 AM" },
+      { "type": "way", "text": "Your order on the way to (last mile) hub.", "date": "21 Jan, 2025", "time": "6:35 AM" },
+      { "type": "verified", "text": "Your order is successfully verified.", "date": "20 Jan, 2025", "time": "7:32 PM" },
+      { "type": "confirmed", "text": "Your order has been confirmed.", "date": "19 Jan, 2025", "time": "6:21 PM" }
+    ],
+    "timeline": [
+      { "label": "Order Confirmed", "date": "Wed, 11th Jan", "completed": true },
+      { "label": "Shipped", "date": "Wed, 11th Jan", "completed": true },
+      { "label": "Out For Delivery", "date": "Wed, 11th Jan", "completed": true },
+      { "label": "Delivered", "date": "Expected by, Mon 15th", "completed": false }
+    ]
+  },
+  {
+    "id": "335465466454527",
+    "orderDate": "Oct 12, 2025",
+    "estimatedDelivery": "Oct 22, 2025",
+    "status": "shipped",
+    "items": [
+      { "name": "4K UHD LED Smart TV with Chromecast Built-in", "image": "/images/products/dji-mavic-3-pro.jpg", "price": 70, "quantity": 1 }
+    ],
+    "activity": [],
+    "timeline": [
+      { "label": "Order Confirmed", "date": "Tue, 12th Jan", "completed": true },
+      { "label": "Shipped", "date": "Wed, 13th Jan", "completed": true },
+      { "label": "Out For Delivery", "date": "Fri, 15th Jan", "completed": false },
+      { "label": "Delivered", "date": "Expected by, Mon 19th", "completed": false }
+    ]
+  },
+  {
+    "id": "335465466454528",
+    "orderDate": "Oct 10, 2025",
+    "estimatedDelivery": "Oct 20, 2025",
+    "status": "pending",
+    "items": [
+      { "name": "4K UHD LED Smart TV with Chromecast Built-in", "image": "/images/products/dji-mavic-3-pro.jpg", "price": 80, "quantity": 1 }
+    ],
+    "activity": [],
+    "timeline": [
+      { "label": "Order Confirmed", "date": "Sat, 10th Jan", "completed": true },
+      { "label": "Shipped", "date": "-", "completed": false },
+      { "label": "Out For Delivery", "date": "-", "completed": false },
+      { "label": "Delivered", "date": "-", "completed": false }
+    ]
+  },
+  {
+    "id": "335465466454529",
+    "orderDate": "Oct 8, 2025",
+    "estimatedDelivery": "Oct 18, 2025",
+    "status": "completed",
+    "items": [
+      { "name": "4K UHD LED Smart TV with Chromecast Built-in", "image": "/images/products/dji-mavic-3-pro.jpg", "price": 90, "quantity": 1 }
+    ],
+    "activity": [],
+    "timeline": [
+      { "label": "Order Confirmed", "date": "Wed, 8th Jan", "completed": true },
+      { "label": "Shipped", "date": "Thu, 9th Jan", "completed": true },
+      { "label": "Out For Delivery", "date": "Fri, 10th Jan", "completed": true },
+      { "label": "Delivered", "date": "Sat, 11th Jan", "completed": true }
+    ]
+  },
+  {
+    "id": "335465466454530",
+    "orderDate": "Oct 6, 2025",
+    "estimatedDelivery": "Oct 16, 2025",
+    "status": "cancelled",
+    "items": [
+      { "name": "4K UHD LED Smart TV with Chromecast Built-in", "image": "/images/products/dji-mavic-3-pro.jpg", "price": 70, "quantity": 1 }
+    ],
+    "activity": [],
+    "timeline": [
+      { "label": "Order Confirmed", "date": "Mon, 6th Jan", "completed": true },
+      { "label": "Shipped", "date": "-", "completed": false },
+      { "label": "Out For Delivery", "date": "-", "completed": false },
+      { "label": "Delivered", "date": "-", "completed": false }
+    ]
+  },
+  {
+    "id": "335465466454531",
+    "orderDate": "Oct 4, 2025",
+    "estimatedDelivery": "Oct 14, 2025",
+    "status": "completed",
+    "items": [
+      { "name": "4K UHD LED Smart TV with Chromecast Built-in", "image": "/images/products/dji-mavic-3-pro.jpg", "price": 90, "quantity": 1 }
+    ],
+    "activity": [],
+    "timeline": [
+      { "label": "Order Confirmed", "date": "Sat, 4th Jan", "completed": true },
+      { "label": "Shipped", "date": "Sun, 5th Jan", "completed": true },
+      { "label": "Out For Delivery", "date": "Mon, 6th Jan", "completed": true },
+      { "label": "Delivered", "date": "Tue, 7th Jan", "completed": true }
+    ]
+  }
+]
