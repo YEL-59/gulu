@@ -4,22 +4,39 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart, ShoppingCart, Eye, Star } from "lucide-react";
+import { useCart, useWishlist } from "@/context/store";
 
 export default function ProductCard({ product, viewMode = "grid" }) {
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { addItem: addCartItem } = useCart();
+  const {
+    addItem: addWishlistItem,
+    removeItem: removeWishlistItem,
+    isWishlisted,
+  } = useWishlist();
 
   const toggleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
+    if (isWishlisted(product.id)) {
+      removeWishlistItem(product.id);
+    } else {
+      addWishlistItem(product);
+    }
   };
 
   const addToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Handle add to cart logic
-    console.log("Added to cart:", product);
+    addCartItem(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+      },
+      1
+    );
   };
 
   if (viewMode === "list") {
@@ -59,15 +76,20 @@ export default function ProductCard({ product, viewMode = "grid" }) {
               )}
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" onClick={toggleWishlist}>
+          <div className="flex items-center space-x-2 cursor:pointer">
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor:pointer"
+              onClick={toggleWishlist}
+            >
               <Heart
                 className={`h-4 w-4 ${
-                  isWishlisted ? "text-red-500 fill-current" : ""
+                  isWishlisted(product.id) ? "text-red-500 fill-current" : ""
                 }`}
               />
             </Button>
-            <Button size="sm" onClick={addToCart}>
+            <Button size="sm" className="cursor:pointer" onClick={addToCart}>
               <ShoppingCart className="h-4 w-4 mr-2" />
               Add to Cart
             </Button>
@@ -108,26 +130,33 @@ export default function ProductCard({ product, viewMode = "grid" }) {
           {/* Wishlist Button */}
           <button
             onClick={toggleWishlist}
-            className="absolute top-2 right-2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all duration-200"
+            className="absolute top-2 cursor-pointer right-2 z-20 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all duration-200"
           >
             <Heart
               className={`h-4 w-4 ${
-                isWishlisted ? "text-red-500 fill-current" : "text-gray-600"
+                isWishlisted(product.id)
+                  ? "text-red-500 fill-current"
+                  : "text-gray-600"
               }`}
             />
           </button>
 
           {/* Hover Actions */}
           <div
-            className={`absolute inset-0 bg-black/50 flex items-center justify-center space-x-2 transition-opacity duration-300 ${
+            className={`absolute inset-0 z-10 bg-black/50 flex items-center cursor-pointer justify-center space-x-2 transition-opacity duration-300 ${
               isHovered ? "opacity-100" : "opacity-0"
             }`}
           >
-            <Button size="sm" variant="secondary" onClick={addToCart}>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="cursor-pointer"
+              onClick={addToCart}
+            >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Add to Cart</span>
+              <span className="hidden sm:inline ">Add to Cart</span>
             </Button>
-            <Button size="sm" variant="secondary">
+            <Button size="sm" variant="secondary" className="cursor-pointer">
               <Eye className="h-4 w-4" />
             </Button>
           </div>
@@ -183,5 +212,3 @@ export default function ProductCard({ product, viewMode = "grid" }) {
     </Link>
   );
 }
-
-
