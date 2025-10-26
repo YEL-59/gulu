@@ -12,6 +12,8 @@ import StoreFilters from "@/components/store/StoreFilters";
 import StoreFeatures from "@/components/reseller/StoreFeatures";
 import StoreFaq from "@/components/reseller/StoreFaq";
 import Storereview from "@/components/reseller/Storereview";
+import { Button } from "@/components/ui/button";
+import ChatPanel from "@/components/store/ChatPanel";
 
 export default function ResellerStorePage() {
   const params = useParams();
@@ -34,6 +36,8 @@ export default function ResellerStorePage() {
   const [visibleProducts, setVisibleProducts] = useState([]);
   useEffect(() => { setVisibleProducts(sellerProducts); }, [sellerProducts]);
 
+  const [chatOpen, setChatOpen] = useState(false);
+
   if (!seller) {
     return (
       <div className="container mx-auto px-4 py-12">
@@ -45,13 +49,21 @@ export default function ResellerStorePage() {
     );
   }
 
+  const basePath = `/reseller/${seller.slug}`;
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto px-4 py-8">
         {/* Modular sections */}
         <StoreHero seller={seller} />
-        <StoreNavbar />
+        <StoreNavbar basePath={basePath} />
         <section id="products">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold">Products</h2>
+            <Button className="bg-[#F36E16] hover:bg-[#e06212]" onClick={() => setChatOpen(true)}>
+              CHAT NOW
+            </Button>
+          </div>
           <StoreFilters allProducts={sellerProducts} onChange={setVisibleProducts} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {visibleProducts.map((product) => (
@@ -78,6 +90,8 @@ export default function ResellerStorePage() {
         <div className="mt-8">
           <Storereview />
         </div>
+
+        <ChatPanel open={chatOpen} onOpenChange={setChatOpen} seller={seller} />
       </div>
     </div>
   );
