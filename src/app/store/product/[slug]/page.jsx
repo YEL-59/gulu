@@ -20,6 +20,7 @@ import Breadcrumb from "@/components/common/Breadcrumb";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductListingsSection from "@/components/store/sections/ProductListingsSection";
 import Link from "next/link";
+import ChatPanel from "@/components/store/ChatPanel";
 
 export default function ProductPage() {
   const params = useParams();
@@ -27,6 +28,7 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState(0);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const product = useMemo(() => {
     const idOrSlug = params?.slug?.toString() || "";
@@ -113,6 +115,12 @@ export default function ProductPage() {
     }
     return unique;
   }, [product, defaultWh]);
+
+  const primarySeller = useMemo(() => {
+    if (sellerEntry) return sellerEntry;
+    if (availableSellers.length) return availableSellers[0];
+    return defaultWh;
+  }, [sellerEntry, availableSellers, defaultWh]);
   const addToCart = () => {
     console.log("Added to cart:", {
       product,
@@ -369,6 +377,7 @@ export default function ProductPage() {
                 <Button
                   variant="outline"
                   className="border-blue-600 text-blue-600 hover:text-orange-500 hover:bg-blue-50 h-11 px-8 rounded font-medium"
+                  onClick={() => setChatOpen(true)}
                 >
                   CHAT NOW
                 </Button>
@@ -548,8 +557,10 @@ export default function ProductPage() {
         <div>
           <ProductListingsSection />
         </div>
-      </div>
+      {/* Chat Panel */}
+      <ChatPanel open={chatOpen} onOpenChange={setChatOpen} seller={primarySeller} product={product} />
     </div>
+  </div>
   );
 }
 

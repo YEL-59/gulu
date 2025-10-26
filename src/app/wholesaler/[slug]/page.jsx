@@ -12,6 +12,8 @@ import StoreFilters from "@/components/store/StoreFilters";
 import StoreFeatures from "@/components/wholesaler/StoreFeatures";
 import StoreFaq from "@/components/wholesaler/StoreFaq";
 import Storereview from "@/components/wholesaler/Storereview";
+import { Button } from "@/components/ui/button";
+import ChatPanel from "@/components/store/ChatPanel";
 
 export default function WholesalerStorePage() {
   const params = useParams();
@@ -47,6 +49,8 @@ export default function WholesalerStorePage() {
     setVisibleProducts(sellerProducts);
   }, [sellerProducts]);
 
+  const [chatOpen, setChatOpen] = useState(false);
+
   if (!seller) {
     return (
       <div className="container mx-auto px-4 py-12">
@@ -69,6 +73,11 @@ export default function WholesalerStorePage() {
         <section className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Store</h1>
           <p className="text-gray-700">Browse catalog from {seller.name}.</p>
+          <div className="mt-4">
+            <Button className="bg-[#F36E16] hover:bg-[#e06212]" onClick={() => setChatOpen(true)}>
+              CHAT NOW
+            </Button>
+          </div>
         </section>
 
         <section className="mb-8">
@@ -91,6 +100,8 @@ export default function WholesalerStorePage() {
         <div className="mt-8">
           <Storereview />
         </div>
+
+        <ChatPanel open={chatOpen} onOpenChange={setChatOpen} seller={seller} />
       </div>
     </div>
   );

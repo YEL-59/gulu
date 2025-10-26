@@ -7,6 +7,8 @@ import productsData from "@/lib/data/products.json";
 import ProductCard from "@/components/store/ProductCard";
 import StoreNavbar from "@/components/wholesaler/StoreNavbar";
 import StoreFilters from "@/components/store/StoreFilters";
+import { Button } from "@/components/ui/button";
+import ChatPanel from "@/components/store/ChatPanel";
 
 export default function WholesalerProductsPage() {
   const params = useParams();
@@ -39,6 +41,8 @@ export default function WholesalerProductsPage() {
   const [visibleProducts, setVisibleProducts] = useState([]);
   useEffect(() => { setVisibleProducts(sellerProducts); }, [sellerProducts]);
 
+  const [chatOpen, setChatOpen] = useState(false);
+
   if (!seller) {
     return (
       <div className="container mx-auto px-4 py-12">
@@ -59,6 +63,11 @@ export default function WholesalerProductsPage() {
         <section className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Products</h1>
           <p className="text-gray-700">Browse catalog from {seller.name}.</p>
+          <div className="mt-4">
+            <Button className="bg-[#F36E16] hover:bg-[#e06212]" onClick={() => setChatOpen(true)}>
+              CHAT NOW
+            </Button>
+          </div>
         </section>
         <StoreFilters allProducts={sellerProducts} onChange={setVisibleProducts} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -71,6 +80,8 @@ export default function WholesalerProductsPage() {
             </div>
           )}
         </div>
+
+        <ChatPanel open={chatOpen} onOpenChange={setChatOpen} seller={seller} />
       </div>
     </div>
   );
