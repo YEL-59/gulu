@@ -1,7 +1,5 @@
 import { Inter, Poppins } from "next/font/google";
 
-import { Providers } from "@/app/providers";
-
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
   subsets: ["latin"],
@@ -18,17 +16,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${poppins.className} antialiased`}
-        suppressHydrationWarning={true}
-      >
-        <Providers>
-          <div className="min-h-screen flex flex-col">
-            <main className="flex-1">{children}</main>
-          </div>
-        </Providers>
-      </body>
-    </html>
+    <div className={`${poppins.className} antialiased`}>
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-1">{children}</main>
+      </div>
+    </div>
   );
 }

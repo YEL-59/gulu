@@ -15,9 +15,11 @@ import {
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import productsData from "@/lib/data/products.json";
+import sellers from "@/lib/data/sellers.json";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductListingsSection from "@/components/store/sections/ProductListingsSection";
+import Link from "next/link";
 
 export default function ProductPage() {
   const params = useParams();
@@ -63,6 +65,22 @@ export default function ProductPage() {
     };
   }, [params]);
 
+  // Compute seller route based on sellerId or brand -> sellers.json entry
+  const sellerEntry = useMemo(() => {
+    if (!product) return null;
+    // Prefer sellerId mapping
+    if (product.sellerId) {
+      const byId = sellers.find((s) => s.id === product.sellerId);
+      if (byId) return byId;
+    }
+    // Fallback to brand-name mapping
+    const brand = (product.brand || "").toLowerCase();
+    return sellers.find((s) => s.name.toLowerCase() === brand) || null;
+  }, [product]);
+
+  const supplierHref = sellerEntry
+    ? `/${sellerEntry.type}/${sellerEntry.slug}`
+    : `/seller/${slugify(product?.brand || "unknown-seller")}`;
   const addToCart = () => {
     console.log("Added to cart:", {
       product,
@@ -158,11 +176,11 @@ export default function ProductPage() {
             <div className="bg-white rounded-lg p-5">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-full bg-pink-400 flex items-center justify-center text-white font-semibold">
-                  B
+                  {product.brand?.[0] || "B"}
                 </div>
-                <span className="text-sm font-medium text-gray-700">
-                  Shenzhen Feitian Technology Co., Ltd.
-                </span>
+                <Link href={supplierHref} className="text-sm font-medium text-gray-700 hover:text-orange-600">
+                  {product.brand || "Unknown Seller"}
+                </Link>
               </div>
 
               {/* Rating */}
