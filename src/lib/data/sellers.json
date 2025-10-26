@@ -1,0 +1,54 @@
+[
+  {
+    "id": "seller-shenzhen-feitian",
+    "slug": "shenzhen-feitian-technology-co-ltd",
+    "name": "Shenzhen Feitian Technology Co., Ltd.",
+    "type": "wholesaler",
+    "logo": "/public/assets/home/logo1.png",
+    "banner": "/public/assets/home/sellerbg.png",
+    "location": "Shenzhen, China",
+    "rating": 4.6,
+    "followers": 1243,
+    "about": "Leading electronics wholesaler specializing in consumer laptops and accessories.",
+    "tags": ["electronics", "laptops", "accessories"]
+  },
+  {
+    "id": "seller-precision-electronics",
+    "slug": "precision-electronics",
+    "name": "Precision Electronics",
+    "type": "reseller",
+    "logo": "/public/assets/home/logo2.png",
+     "banner": "/public/assets/home/sellerbg.png",
+    "location": "Hong Kong",
+    "rating": 4.4,
+    "followers": 865,
+    "about": "Curated reseller offering quality electronics at competitive prices.",
+    "tags": ["electronics", "audio", "smart devices"]
+  },
+  {
+    "id": "seller-eurotech-wholesale",
+    "slug": "eurotech-wholesale-gmbh",
+    "name": "EuroTech Wholesale GmbH",
+    "type": "wholesaler",
+    "logo": "/assets/home/product1.png",
+     "banner": "/public/assets/home/sellerbg.png",
+    "location": "Berlin, Germany",
+    "rating": 4.5,
+    "followers": 982,
+    "about": "European wholesaler for computing and smart home products.",
+    "tags": ["europe", "computers", "smart-home"]
+  },
+  {
+    "id": "seller-stateside-electronics",
+    "slug": "stateside-electronics",
+    "name": "Stateside Electronics",
+    "type": "reseller",
+    "logo": "/assets/home/product2.png",
+     "banner": "/public/assets/home/sellerbg.png",
+    "location": "San Francisco, USA",
+    "rating": 4.3,
+    "followers": 611,
+    "about": "US-based reseller with curated catalog of audio and accessories.",
+    "tags": ["usa", "audio", "accessories"]
+  }
+]
