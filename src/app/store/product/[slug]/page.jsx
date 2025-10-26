@@ -68,19 +68,51 @@ export default function ProductPage() {
   // Compute seller route based on sellerId or brand -> sellers.json entry
   const sellerEntry = useMemo(() => {
     if (!product) return null;
-    // Prefer sellerId mapping
     if (product.sellerId) {
       const byId = sellers.find((s) => s.id === product.sellerId);
       if (byId) return byId;
     }
-    // Fallback to brand-name mapping
     const brand = (product.brand || "").toLowerCase();
-    return sellers.find((s) => s.name.toLowerCase() === brand) || null;
+    return (
+      sellers.find((s) => s.name.toLowerCase() === brand) ||
+      sellers.find((s) => (s.aliases || []).includes(brand)) ||
+      null
+    );
   }, [product]);
 
+  const defaultWh =
+    sellers.find((s) => s.isDefault && s.type === "wholesaler") || null;
   const supplierHref = sellerEntry
     ? `/${sellerEntry.type}/${sellerEntry.slug}`
-    : `/seller/${slugify(product?.brand || "unknown-seller")}`;
+    : defaultWh
+    ? `/wholesaler/${defaultWh.slug}`
+    : `/wholesaler/${slugify(product?.brand || "unknown-seller")}`;
+
+  const availableSellers = useMemo(() => {
+    if (!product) return [];
+    const brand = (product.brand || "").toLowerCase();
+    const matchesByBrand = sellers.filter(
+      (s) => s.name.toLowerCase() === brand || (s.aliases || []).includes(brand)
+    );
+    const matchesByProducts = productsData
+      .filter((p) => (p.brand || "").toLowerCase() === brand && p.sellerId)
+      .map((p) => sellers.find((s) => s.id === p.sellerId))
+      .filter(Boolean);
+    const merged = [...matchesByBrand, ...matchesByProducts];
+    const unique = [];
+    const seen = new Set();
+    for (const s of merged) {
+      if (!s) continue;
+      if (!seen.has(s.id)) {
+        seen.add(s.id);
+        unique.push(s);
+      }
+    }
+    if (unique.length === 0) {
+      return defaultWh ? [defaultWh] : [];
+    }
+    return unique;
+  }, [product, defaultWh]);
   const addToCart = () => {
     console.log("Added to cart:", {
       product,
@@ -178,7 +210,10 @@ export default function ProductPage() {
                 <div className="w-8 h-8 rounded-full bg-pink-400 flex items-center justify-center text-white font-semibold">
                   {product.brand?.[0] || "B"}
                 </div>
-                <Link href={supplierHref} className="text-sm font-medium text-gray-700 hover:text-orange-600">
+                <Link
+                  href={supplierHref}
+                  className="text-sm font-medium text-gray-700 hover:text-orange-600"
+                >
                   {product.brand || "Unknown Seller"}
                 </Link>
               </div>
@@ -315,19 +350,25 @@ export default function ProductPage() {
               <div className="flex flex-wrap gap-2 mb-4">
                 <Button
                   onClick={addToCart}
-                  className="bg-orange-500 hover:bg-orange-600 text-white h-11 px-8 rounded font-medium"
+                  className="bg-white border border-orange-500   hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium"
                 >
                   ADD TO CART
                 </Button>
                 <Button
+                  onClick={addToCart}
+                  className="bg-white border border-orange-500   hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium"
+                >
+                  ADD TO StORE
+                </Button>
+                <Button
                   variant="outline"
-                  className="border-orange-500 text-orange-500 hover:bg-orange-50 h-11 px-8 rounded font-medium"
+                  className="bg-white border border-orange-500 hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium"
                 >
                   BUY NOW
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-blue-600 text-blue-600 hover:bg-blue-50 h-11 px-8 rounded font-medium"
+                  className="border-blue-600 text-blue-600 hover:text-orange-500 hover:bg-blue-50 h-11 px-8 rounded font-medium"
                 >
                   CHAT NOW
                 </Button>
@@ -361,43 +402,44 @@ export default function ProductPage() {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Delivery & Assurance Cards */}
-            <div className="grid grid-cols-1 gap-4">
-              <div className="bg-white rounded-lg p-4 flex items-start gap-3">
-                <Truck className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">
-                    Free Delivery
-                  </h4>
-                  <p className="text-sm text-gray-600">Enjoy free delivery</p>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg p-4 flex items-start gap-3">
-                <RotateCcw className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">
-                    Return Delivery
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    Free 30 Days Delivery Returns.{" "}
-                    <span className="text-blue-600 underline cursor-pointer">
-                      Details
-                    </span>
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">
-                  100% Guarantee Safe Checkout
-                </h4>
-                <div className="flex gap-2">
-                  {[...Array(8)].map((_, i) => (
-                    <div key={i} className="w-10 h-7 bg-gray-200 rounded"></div>
+              {/* Available Sellers */}
+              <div className="mt-6 bg-white border border-gray-200 rounded-lg p-5">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                  Available sellers
+                </h3>
+                <div className="space-y-3">
+                  {availableSellers.map((s) => (
+                    <div
+                      key={s.id}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold">
+                          {(s.name || s.slug || "S")[0]}
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {s.name}
+                          </div>
+                          <div className="text-xs text-gray-600 capitalize">
+                            {s.type}
+                          </div>
+                        </div>
+                      </div>
+                      <Link
+                        href={`/${s.type}/${s.slug}`}
+                        className="text-sm text-blue-600 underline"
+                      >
+                        View store
+                      </Link>
+                    </div>
                   ))}
+                  {availableSellers.length === 0 && (
+                    <div className="text-sm text-gray-600">
+                      No sellers found.
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

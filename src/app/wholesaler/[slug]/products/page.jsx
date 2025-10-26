@@ -13,17 +13,27 @@ export default function WholesalerProductsPage() {
   const sellerSlug = params?.slug?.toString() || "";
 
   const seller = useMemo(() => {
-    const s = sellers.find((x) => x.slug === sellerSlug);
-    return s && s.type === "wholesaler" ? s : null;
+    const s = sellers.find((x) => x.slug === sellerSlug && x.type === "wholesaler");
+    if (s) return s;
+    const def = sellers.find((x) => x.isDefault && x.type === "wholesaler");
+    return def || null;
   }, [sellerSlug]);
 
   const sellerProducts = useMemo(() => {
     if (!seller) return [];
     const byId = productsData.filter((p) => p.sellerId && p.sellerId === seller.id);
     if (byId.length) return byId;
-    return productsData.filter(
-      (p) => (p.brand || "").toLowerCase() === seller.name.toLowerCase()
-    );
+
+    const sellerName = (seller.name || "").toLowerCase();
+    const aliases = Array.isArray(seller.aliases) ? seller.aliases.map((a) => (a || "").toLowerCase()) : [];
+
+    const byBrandOrAlias = productsData.filter((p) => {
+      const brand = (p.brand || "").toLowerCase();
+      return brand === sellerName || aliases.includes(brand);
+    });
+    if (byBrandOrAlias.length) return byBrandOrAlias;
+
+    return productsData.slice(0, 24);
   }, [seller]);
 
   const [visibleProducts, setVisibleProducts] = useState([]);
@@ -34,6 +44,7 @@ export default function WholesalerProductsPage() {
       <div className="container mx-auto px-4 py-12">
         <div className="bg-white border rounded-lg p-8 text-center">
           <h1 className="text-2xl font-semibold mb-3">Wholesaler not found</h1>
+          <p className="text-gray-600">No default wholesaler configured.</p>
         </div>
       </div>
     );

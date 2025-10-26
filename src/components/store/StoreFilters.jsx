@@ -28,8 +28,10 @@ export default function StoreFilters({ allProducts = [], onChange }) {
       const inPrice = (Number(p.price) || 0) <= (Number(price) || 0);
       return inCat && inPrice;
     });
-    onChange?.(filtered);
-  }, [category, price, allProducts, onChange]);
+    if (typeof onChange === "function") {
+      onChange(filtered);
+    }
+  }, [category, price, allProducts]);
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">

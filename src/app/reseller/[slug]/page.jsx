@@ -45,12 +45,14 @@ export default function ResellerStorePage() {
     );
   }
 
+  const basePath = `/reseller/${seller.slug}`;
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto px-4 py-8">
         {/* Modular sections */}
         <StoreHero seller={seller} />
-        <StoreNavbar />
+        <StoreNavbar basePath={basePath} />
         <section id="products">
           <StoreFilters allProducts={sellerProducts} onChange={setVisibleProducts} />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
