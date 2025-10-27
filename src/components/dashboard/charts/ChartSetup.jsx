@@ -4,6 +4,7 @@ import {
   Chart as ChartJS,
   LineElement,
   PointElement,
+  BarElement,
   LinearScale,
   CategoryScale,
   Tooltip,
@@ -11,16 +12,23 @@ import {
   Filler,
   ArcElement,
 } from "chart.js";
+import { GeoFeature, ChoroplethController, ProjectionScale, ColorScale } from "chartjs-chart-geo";
 
 ChartJS.register(
   LineElement,
   PointElement,
+  BarElement,
   LinearScale,
   CategoryScale,
   Tooltip,
   Legend,
   Filler,
-  ArcElement
+  ArcElement,
+  // Geo charts
+  GeoFeature,
+  ChoroplethController,
+  ProjectionScale,
+  ColorScale
 );
 
 ChartJS.defaults.responsive = true;

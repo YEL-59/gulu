@@ -10,6 +10,7 @@ import {
   LineChart,
   LayoutDashboard,
 } from "lucide-react";
+import SidebarNavItem from './SidebarNavItem'
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/wholesaler/dashboard" },
@@ -47,17 +48,9 @@ export default function DashboardSidebar({ base = "wholesaler" }) {
       <nav className="px-2 space-y-1">
         {items.map(({ label, icon: Icon, href }) => {
           const active = pathname === href || pathname?.startsWith(href + "/");
+          const variant = label === 'Analytics' ? 'analytics' : 'default'
           return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm ${
-                active ? "bg-blue-50 text-primary-600" : "hover:bg-muted"
-              }`}
-            >
-              <Icon className="h-4 w-4" />
-              <span>{label}</span>
-            </Link>
+            <SidebarNavItem key={href} href={href} label={label} icon={Icon} active={active} variant={variant} />
           );
         })}
       </nav>
