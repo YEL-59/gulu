@@ -1,10 +1,7 @@
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import { Providers } from "./providers";
-import StoreHeader from "@/components/store/StoreHeader";
-import HeaderWrapper from "@/components/layout/HeaderWrapper";
+import AppChrome from "@/components/layout/AppChrome";
 
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -28,14 +25,7 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning={true}
       >
         <Providers>
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <HeaderWrapper>
-              <StoreHeader />
-            </HeaderWrapper>
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <AppChrome>{children}</AppChrome>
         </Providers>
       </body>
     </html>

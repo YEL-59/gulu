@@ -364,9 +364,9 @@ export default function ProductPage() {
                 </Button>
                 <Button
                   onClick={addToCart}
-                  className="bg-white border border-orange-500   hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium"
+                  className="bg-white  border border-orange-500   hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium"
                 >
-                  ADD TO StORE
+                  ADD TO STORE
                 </Button>
                 <Button
                   variant="outline"
@@ -557,10 +557,15 @@ export default function ProductPage() {
         <div>
           <ProductListingsSection />
         </div>
-      {/* Chat Panel */}
-      <ChatPanel open={chatOpen} onOpenChange={setChatOpen} seller={primarySeller} product={product} />
+        {/* Chat Panel */}
+        <ChatPanel
+          open={chatOpen}
+          onOpenChange={setChatOpen}
+          seller={primarySeller}
+          product={product}
+        />
+      </div>
     </div>
-  </div>
   );
 }
 
