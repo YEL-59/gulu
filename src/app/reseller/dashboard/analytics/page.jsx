@@ -1,11 +1,7 @@
 "use client";
-import DashboardShell from '@/components/dashboard/DashboardShell'
-import AnalyticsDashboard from '@/components/dashboard/analytics/AnalyticsDashboard'
+// Wrapped by dashboard/layout.jsx
+import AnalyticsDashboard from "@/components/reseller/dashboard/analytics/AnalyticsDashboard";
 
 export default function ResellerAnalyticsPage() {
-  return (
-    <DashboardShell base="reseller">
-      <AnalyticsDashboard />
-    </DashboardShell>
-  )
+  return <AnalyticsDashboard />;
 }

@@ -12,13 +12,15 @@ export default function NewArrivalsSection() {
           <h2 className="text-2xl font-bold text-gray-900">New Arrival</h2>
         </div>
 
-        {/* Grid Layout - Exactly matching the image */}
-        <div className="grid grid-cols-2 gap-6 h-[600px]">
+        {/* Grid Layout - responsive for mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 md:h-[600px]">
           {/* Left Side - Electronics (Large) */}
           <div className="relative bg-black rounded-lg overflow-hidden">
-            <div className="absolute inset-0 p-8 flex flex-col justify-between">
+            <div className="md:absolute md:inset-0 p-6 md:p-8 flex flex-col justify-between">
               <div className="text-white z-10">
-                <h3 className="text-3xl font-bold mb-4">Electronics</h3>
+                <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                  Electronics
+                </h3>
                 <p className="text-gray-300 mb-6 max-w-xs">
                   Black and White version of the PS5 coming out on sale.
                 </p>
@@ -32,7 +34,7 @@ export default function NewArrivalsSection() {
               </div>
 
               {/* PS5 Image positioned at bottom right */}
-              <div className="absolute bottom-0 right-0 w-2/3 h-2/3">
+              <div className="relative md:absolute md:bottom-0 md:right-0 md:w-2/3 md:h-2/3 w-full h-40 sm:h-52 mt-4 md:mt-0">
                 <Image
                   src="/assets/home/product8.png"
                   alt="PlayStation 5"
@@ -44,11 +46,13 @@ export default function NewArrivalsSection() {
           </div>
 
           {/* Right Side - 3 sections */}
-          <div className="grid grid-rows-2 gap-6">
+          <div className="grid md:grid-rows-2 gap-4 md:gap-6">
             {/* Top Right - Fashion Collections */}
-            <div className="relative bg-black rounded-lg overflow-hidden p-6 flex justify-between">
+            <div className="relative bg-black rounded-lg overflow-hidden p-4 md:p-6 flex flex-col md:flex-row items-center md:items-end justify-between">
               <div className="text-white flex flex-col justify-end">
-                <h3 className="text-2xl font-bold mb-2">Fashion Collections</h3>
+                <h3 className="text-xl md:text-2xl font-bold mb-2">
+                  Fashion Collections
+                </h3>
                 <p className="text-gray-300 mb-4 text-sm">
                   Featured Fashion collections that give you another vibe
                 </p>
@@ -60,23 +64,25 @@ export default function NewArrivalsSection() {
                 </Button>
               </div>
 
-              <div className="flex items-end justify-end">
+              <div className="flex items-end justify-end mt-4 md:mt-0">
                 <Image
                   src="/assets/home/girl.png"
                   alt="Fashion Model"
-                  width={200}
-                  height={250}
+                  width={160}
+                  height={200}
                   className="object-contain"
                 />
               </div>
             </div>
 
             {/* Bottom Right - Two smaller sections */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {/* Furniture */}
-              <div className="relative bg-black rounded-lg overflow-hidden p-4 flex justify-between">
+              <div className="relative bg-black rounded-lg overflow-hidden p-4 flex flex-col md:flex-row items-center md:items-end justify-between">
                 <div className="text-white flex flex-col justify-end">
-                  <h3 className="text-lg font-bold mb-1">Furniture</h3>
+                  <h3 className="text-base md:text-lg font-bold mb-1">
+                    Furniture
+                  </h3>
                   <p className="text-gray-300 mb-3 text-xs">
                     Amazing furniture for home
                   </p>
@@ -88,21 +94,23 @@ export default function NewArrivalsSection() {
                   </Button>
                 </div>
 
-                <div className="flex items-end justify-end">
+                <div className="flex items-end justify-end mt-3 md:mt-0">
                   <Image
                     src="/assets/home/product9.png"
                     alt="Chair"
-                    width={80}
-                    height={100}
+                    width={100}
+                    height={120}
                     className="object-contain"
                   />
                 </div>
               </div>
 
               {/* Beauty */}
-              <div className="relative bg-black rounded-lg overflow-hidden p-4 flex justify-between">
+              <div className="relative bg-black rounded-lg overflow-hidden p-4 flex flex-col md:flex-row items-center md:items-end justify-between">
                 <div className="text-white flex flex-col justify-end">
-                  <h3 className="text-lg font-bold mb-1">Beauty</h3>
+                  <h3 className="text-base md:text-lg font-bold mb-1">
+                    Beauty
+                  </h3>
                   <p className="text-gray-300 mb-3 text-xs">
                     Amazing cosmetics for makeup
                   </p>
@@ -114,12 +122,12 @@ export default function NewArrivalsSection() {
                   </Button>
                 </div>
 
-                <div className="flex items-end justify-end">
+                <div className="flex items-end justify-end mt-3 md:mt-0">
                   <Image
                     src="/assets/home/product10.png"
                     alt="Beauty Products"
-                    width={80}
-                    height={100}
+                    width={100}
+                    height={120}
                     className="object-contain"
                   />
                 </div>

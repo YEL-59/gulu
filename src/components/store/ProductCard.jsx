@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart, ShoppingCart, Eye, Star } from "lucide-react";
@@ -8,6 +8,8 @@ import { useCart, useWishlist } from "@/context/store";
 
 export default function ProductCard({ product, viewMode = "grid" }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const { addItem: addCartItem } = useCart();
   const {
     addItem: addWishlistItem,
@@ -85,7 +87,9 @@ export default function ProductCard({ product, viewMode = "grid" }) {
             >
               <Heart
                 className={`h-4 w-4 ${
-                  isWishlisted(product.id) ? "text-red-500 fill-current" : ""
+                  mounted && isWishlisted(product.id)
+                    ? "text-red-500 fill-current"
+                    : "text-gray-600"
                 }`}
               />
             </Button>
@@ -134,7 +138,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
           >
             <Heart
               className={`h-4 w-4 ${
-                isWishlisted(product.id)
+                mounted && isWishlisted(product.id)
                   ? "text-red-500 fill-current"
                   : "text-gray-600"
               }`}
