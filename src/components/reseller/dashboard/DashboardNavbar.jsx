@@ -1,32 +1,38 @@
 "use client";
 
-import { Search, Bell, UserCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Search, User, LogOut, ShoppingBag } from "lucide-react";
 
-export default function DashboardNavbar({ period = "October" }) {
+export default function DashboardNavbar() {
   return (
-    <header className="h-16 border-b bg-primary-600 text-white flex items-center">
-      <div className="container mx-auto px-4 flex items-center justify-between w-full">
-        <div className="flex items-center gap-3">
-          <div className="hidden md:flex relative w-80">
-            <input
-              type="text"
-              placeholder="Search for anything..."
-              className="w-full h-10 pl-10 pr-3 bg-white text-black rounded-md border-0 focus:ring-2 focus:ring-accent-500"
-            />
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+    <header className="sticky top-0 z-50 h-16 border-b bg-white flex items-center shadow-sm">
+      <div className="w-full px-6 flex items-center justify-between">
+        {/* Left: Wobuy branding with user info */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+              <ShoppingBag className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-xl font-bold">Wobuy</span>
+          </div>
+          <div className="hidden lg:flex flex-col ml-6">
+            <span className="text-xs text-gray-500">Welcome back!</span>
+            <span className="text-sm font-semibold">Adam Smith</span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <Badge variant="secondary" className="bg-white text-black">
-            {period}
-          </Badge>
-          <Button size="sm" className="bg-[#F36E16] hover:bg-[#e06212]">
-            Export
-          </Button>
-          <Bell className="w-5 h-5" />
-          <UserCircle className="w-6 h-6" />
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-6">
+          <Search className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
+
+          <div className="hidden md:flex items-center gap-2">
+            <User className="w-5 h-5 text-gray-600" />
+            <span className="text-sm font-medium">Adam Smith</span>
+          </div>
+
+          <button className="flex items-center gap-2 text-sm font-medium text-gray-800 hover:text-gray-600 transition-colors">
+            <LogOut className="w-5 h-5" />
+            <span className="hidden md:inline">Logout</span>
+          </button>
         </div>
       </div>
     </header>
