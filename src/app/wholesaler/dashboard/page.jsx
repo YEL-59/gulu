@@ -11,13 +11,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ordersData from "@/lib/data/orders.json";
-import DashboardShell from "@/components/dashboard/DashboardShell";
-import StatGrid from "@/components/dashboard/StatGrid";
-import SalesLineChart from "@/components/dashboard/charts/SalesLineChart";
-import RevenueAreaChart from "@/components/dashboard/charts/RevenueAreaChart";
-import CustomersDonut from "@/components/dashboard/charts/CustomersDonut";
-import OrdersTable from "@/components/dashboard/OrdersTable";
-import MonthDropdown from "@/components/dashboard/MonthDropdown";
+import DashboardShell from "@/components/wholesaler/dashboard/DashboardShell";
+import StatGrid from "@/components/wholesaler/dashboard/StatGrid";
+import SalesLineChart from "@/components/wholesaler/dashboard/charts/SalesLineChart";
+import RevenueAreaChart from "@/components/wholesaler/dashboard/charts/RevenueAreaChart";
+import CustomersDonut from "@/components/wholesaler/dashboard/charts/CustomersDonut";
+import OrdersTable from "@/components/wholesaler/dashboard/OrdersTable";
+import MonthDropdown from "@/components/wholesaler/dashboard/MonthDropdown";
 
 export default function WholesalerDashboardPage() {
   const [selectedMonth, setSelectedMonth] = useState("October");

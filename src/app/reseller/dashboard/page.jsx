@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import DashboardShell from "@/components/dashboard/DashboardShell";
-import StatGrid from "@/components/dashboard/StatGrid";
-import SalesLineChart from "@/components/dashboard/charts/SalesLineChart";
-import RevenueAreaChart from "@/components/dashboard/charts/RevenueAreaChart";
-import CustomersDonut from "@/components/dashboard/charts/CustomersDonut";
-import OrdersTable from "@/components/dashboard/OrdersTable";
-import MonthDropdown from "@/components/dashboard/MonthDropdown";
+import DashboardShell from "@/components/reseller/dashboard/DashboardShell";
+import StatGrid from "@/components/reseller/dashboard/StatGrid";
+import SalesLineChart from "@/components/reseller/dashboard/charts/SalesLineChart";
+import RevenueAreaChart from "@/components/reseller/dashboard/charts/RevenueAreaChart";
+import CustomersDonut from "@/components/reseller/dashboard/charts/CustomersDonut";
+import OrdersTable from "@/components/reseller/dashboard/OrdersTable";
+import MonthDropdown from "@/components/reseller/dashboard/MonthDropdown";
 import { Card } from "@/components/ui/card";
 
 export default function ResellerDashboard() {

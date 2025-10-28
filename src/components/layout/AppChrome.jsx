@@ -10,7 +10,15 @@ export default function AppChrome({ children }) {
   const pathname = usePathname();
   const isDashboard =
     pathname?.startsWith("/wholesaler/dashboard") ||
-    pathname?.startsWith("/reseller/dashboard");
+    pathname?.startsWith("/reseller/dashboard") ||
+    // Treat role-specific store pages as part of the dashboard chrome
+    pathname?.startsWith("/reseller/store") ||
+    pathname?.startsWith("/wholesaler/store") ||
+    // Customers / Transactions should also use dashboard chrome
+    pathname?.startsWith("/reseller/customers") ||
+    pathname?.startsWith("/reseller/transactions") ||
+    pathname?.startsWith("/wholesaler/customers") ||
+    pathname?.startsWith("/wholesaler/transactions");
 
   return (
     <div className="min-h-screen flex flex-col">

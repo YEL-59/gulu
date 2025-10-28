@@ -1,6 +1,6 @@
 "use client";
-import DashboardShell from '@/components/dashboard/DashboardShell'
-import AnalyticsDashboard from '@/components/dashboard/analytics/AnalyticsDashboard'
+import DashboardShell from '@/components/wholesaler/dashboard/DashboardShell'
+import AnalyticsDashboard from '@/components/wholesaler/dashboard/analytics/AnalyticsDashboard'
 
 export default function WholesalerAnalyticsPage() {
   return (

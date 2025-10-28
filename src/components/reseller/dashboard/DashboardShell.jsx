@@ -3,7 +3,7 @@
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
 
-export default function DashboardShell({ children, base = "wholesaler" }) {
+export default function DashboardShell({ children, base }) {
   return (
     <div className="min-h-screen bg-white">
       <DashboardNavbar />
