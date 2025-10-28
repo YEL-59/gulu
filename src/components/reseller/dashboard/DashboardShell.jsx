@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import DashboardNavbar from "./DashboardNavbar";
-import DashboardSidebar from "./DashboardSidebar";
+import dynamic from "next/dynamic";
+const DashboardSidebar = dynamic(() => import("./DashboardSidebar"), {
+  ssr: false,
+});
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
@@ -16,7 +19,12 @@ export default function DashboardShell({ children, base }) {
 
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-20 left-4 z-40">
-        <Button variant="outline" size="sm" onClick={() => setMobileOpen(true)} className="flex items-center gap-2 shadow-lg bg-white">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setMobileOpen(true)}
+          className="flex items-center gap-2 shadow-lg bg-white"
+        >
           <Menu className="size-4" />
           <span className="text-sm">Menu</span>
         </Button>
@@ -32,9 +40,7 @@ export default function DashboardShell({ children, base }) {
         <main className="flex-1 lg:ml-64">
           <div className="h-full overflow-y-auto bg-gray-50">
             <div className="container mx-auto px-4 py-8 lg:px-6 lg:py-8">
-              <div className="pt-12 lg:pt-0">
-                {children}
-              </div>
+              <div className="pt-12 lg:pt-0">{children}</div>
             </div>
           </div>
         </main>

@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useSelectedLayoutSegments } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   Store,
   Users,
@@ -13,26 +14,33 @@ import SidebarNavItem from "./SidebarNavItem";
 function getNavItems() {
   return [
     { label: "Dashboard", icon: LayoutDashboard, href: "/reseller/dashboard" },
-    {
-      label: "Analytics",
-      icon: LineChart,
-      href: "/reseller/analytics",
-    },
-    { label: "Store", icon: Store, href: "/reseller/store" },
-    { label: "Customers", icon: Users, href: "/reseller/customers" },
-    { label: "Transaction", icon: ArrowUpDown, href: "/reseller/transactions" },
+    { label: "Analytics", icon: LineChart, href: "/reseller/dashboard/analytics" },
+    { label: "Store", icon: Store, href: "/reseller/dashboard/store" },
+    { label: "Customers", icon: Users, href: "/reseller/dashboard/customers" },
+    { label: "Transaction", icon: ArrowUpDown, href: "/reseller/dashboard/transactions" },
   ];
 }
 
 export default function DashboardSidebar({ base }) {
-  const pathname = usePathname();
+  const segments = useSelectedLayoutSegments();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const currentTopSegment = segments?.[0] || ""; // under /reseller/dashboard, this is "", "analytics", "store", etc.
   const navItems = getNavItems(base);
 
   return (
     <aside className="w-full h-full bg-white">
       <nav className="px-4 py-6 space-y-1">
         {navItems.map(({ label, icon: Icon, href }) => {
-          const active = pathname === href || pathname?.startsWith(href + "/");
+          // Derive the first segment after /reseller/dashboard
+          let itemTopSegment = "";
+          if (href === "/reseller/dashboard") {
+            itemTopSegment = "";
+          } else if (href.startsWith("/reseller/dashboard/")) {
+            itemTopSegment = href.split("/")[3] || "";
+          }
+          // Avoid hydration mismatches by only computing active after mount
+          const active = mounted && currentTopSegment === itemTopSegment;
           return (
             <SidebarNavItem
               key={href}
