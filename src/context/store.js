@@ -70,8 +70,24 @@ export function StoreProvider({ children }) {
     })
   }
 
-  const cartValue = { items: cart, addItem, updateQuantity, removeItem, clearCart, subtotal }
-  const wishlistValue = { items: wishlist, addItem: addWishlistItem, removeItem: removeWishlistItem, isWishlisted, moveAllToCart }
+  const cartValue = { 
+    items: cart, 
+    addItem, 
+    updateQuantity, 
+    removeItem, 
+    clearCart, 
+    subtotal,
+    itemCount: cart.length,
+    totalQuantity: useMemo(() => cart.reduce((sum, item) => sum + (item.quantity || 1), 0), [cart]),
+  }
+  const wishlistValue = { 
+    items: wishlist, 
+    addItem: addWishlistItem, 
+    removeItem: removeWishlistItem, 
+    isWishlisted, 
+    moveAllToCart,
+    itemCount: wishlist.length,
+  }
 
   return (
     <CartContext.Provider value={cartValue}>

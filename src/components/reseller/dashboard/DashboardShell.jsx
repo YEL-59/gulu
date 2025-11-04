@@ -3,15 +3,25 @@
 import { useState } from "react";
 import DashboardNavbar from "./DashboardNavbar";
 import dynamic from "next/dynamic";
-const DashboardSidebar = dynamic(() => import("./DashboardSidebar"), {
-  ssr: false,
-});
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 
+const ResellerDashboardSidebar = dynamic(() => import("./DashboardSidebar"), {
+  ssr: false,
+});
+
+const WholesalerDashboardSidebar = dynamic(
+  () => import("@/components/wholesaler/dashboard/DashboardSidebar"),
+  {
+    ssr: false,
+    loading: () => <div className="p-4 text-sm text-gray-500">Loading sidebar...</div>,
+  }
+);
+
 export default function DashboardShell({ children, base }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const DashboardSidebar = base === "wholesaler" ? WholesalerDashboardSidebar : ResellerDashboardSidebar;
 
   return (
     <div className="min-h-screen bg-gray-50">

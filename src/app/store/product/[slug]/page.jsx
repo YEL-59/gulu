@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,9 +22,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductListingsSection from "@/components/store/sections/ProductListingsSection";
 import Link from "next/link";
 import ChatPanel from "@/components/store/ChatPanel";
+import { useCart, useWishlist } from "@/context/store";
 
 export default function ProductPage() {
   const params = useParams();
+  const router = useRouter();
+  const { addItem: addCartItem } = useCart();
+  const { addItem: addWishlistItem, isWishlisted, removeItem: removeWishlistItem } = useWishlist();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
@@ -87,8 +92,8 @@ export default function ProductPage() {
   const supplierHref = sellerEntry
     ? `/${sellerEntry.type}/${sellerEntry.slug}`
     : defaultWh
-    ? `/wholesaler/${defaultWh.slug}`
-    : `/wholesaler/${slugify(product?.brand || "unknown-seller")}`;
+      ? `/wholesaler/${defaultWh.slug}`
+      : `/wholesaler/${slugify(product?.brand || "unknown-seller")}`;
 
   const availableSellers = useMemo(() => {
     if (!product) return [];
@@ -121,17 +126,102 @@ export default function ProductPage() {
     if (availableSellers.length) return availableSellers[0];
     return defaultWh;
   }, [sellerEntry, availableSellers, defaultWh]);
-  const addToCart = () => {
-    console.log("Added to cart:", {
-      product,
-      quantity,
-      selectedSize,
-      selectedColor,
-    });
+
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    // Check if product is in stock
+    if (!product.inStock || product.stockCount === 0) {
+      alert('This product is out of stock');
+      return;
+    }
+
+    // Add complete product information to cart
+    addCartItem(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        image: product.image || product.images[0],
+        brand: product.brand,
+        sellerId: product.sellerId,
+        category: product.category,
+        inStock: product.inStock,
+        size: selectedSize || undefined,
+        color: product.colors?.[selectedColor] || undefined,
+      },
+      quantity
+    );
+
+    // Show success message (you can replace with a toast notification)
+    alert(`Added ${quantity} ${product.name} to cart!`);
   };
 
-  const addToWishlist = () => {
-    console.log("Added to wishlist:", product);
+  const handleBuyNow = () => {
+    if (!product) return;
+
+    // Check if product is in stock
+    if (!product.inStock || product.stockCount === 0) {
+      alert('This product is out of stock');
+      return;
+    }
+
+    // Add to cart first
+    addCartItem(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        image: product.image || product.images[0],
+        brand: product.brand,
+        sellerId: product.sellerId,
+        category: product.category,
+        inStock: product.inStock,
+        size: selectedSize || undefined,
+        color: product.colors?.[selectedColor] || undefined,
+      },
+      quantity
+    );
+
+    // Save to checkoutCart and redirect to billing
+    try {
+      const payload = {
+        items: [{
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image || product.images[0],
+          quantity: quantity,
+        }],
+        subtotal: product.price * quantity,
+        shipping: product.price * quantity > 100 ? 0 : 10,
+        discount: 0,
+        tax: Math.round(product.price * quantity * 0.12 * 100) / 100,
+        total: 0,
+        coupon: '',
+      };
+      payload.total = payload.subtotal + payload.shipping + payload.tax - payload.discount;
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('checkoutCart', JSON.stringify(payload));
+      }
+    } catch (e) {
+      console.error('Error saving to checkout:', e);
+    }
+
+    // Redirect to billing address page
+    router.push('/store/billingAddress');
+  };
+
+  const handleAddToWishlist = () => {
+    if (!product) return;
+    if (isWishlisted(product.id)) {
+      removeWishlistItem(product.id);
+    } else {
+      addWishlistItem(product);
+    }
   };
 
   if (!product) {
@@ -181,11 +271,10 @@ export default function ProductPage() {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`w-16 h-16 rounded border-2 overflow-hidden flex-shrink-0 ${
-                      selectedImage === index
-                        ? "border-orange-500"
-                        : "border-gray-200"
-                    }`}
+                    className={`w-16 h-16 rounded border-2 overflow-hidden flex-shrink-0 ${selectedImage === index
+                      ? "border-orange-500"
+                      : "border-gray-200"
+                      }`}
                   >
                     <img
                       src={image}
@@ -232,11 +321,10 @@ export default function ProductPage() {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.floor(product.rating)
-                          ? "text-yellow-400 fill-yellow-400"
-                          : "text-gray-300 fill-gray-300"
-                      }`}
+                      className={`w-4 h-4 ${i < Math.floor(product.rating)
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300 fill-gray-300"
+                        }`}
                     />
                   ))}
                 </div>
@@ -311,11 +399,10 @@ export default function ProductPage() {
                     <button
                       key={idx}
                       onClick={() => setSelectedColor(idx)}
-                      className={`w-8 h-8 rounded-full border-2 ${
-                        selectedColor === idx
-                          ? "border-orange-500 ring-2 ring-orange-200"
-                          : "border-gray-300"
-                      }`}
+                      className={`w-8 h-8 rounded-full border-2 ${selectedColor === idx
+                        ? "border-orange-500 ring-2 ring-orange-200"
+                        : "border-gray-300"
+                        }`}
                       style={{ backgroundColor: color }}
                     />
                   ))}
@@ -357,20 +444,16 @@ export default function ProductPage() {
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-2 mb-4">
                 <Button
-                  onClick={addToCart}
-                  className="bg-white border border-orange-500   hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium"
+                  onClick={handleAddToCart}
+                  disabled={!product.inStock || product.stockCount === 0}
+                  className="bg-white border border-orange-500 hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   ADD TO CART
                 </Button>
                 <Button
-                  onClick={addToCart}
-                  className="bg-white  border border-orange-500   hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium"
-                >
-                  ADD TO STORE
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-white border border-orange-500 hover:bg-orange-500 text-orange-500 hover:text-white h-11 px-8 rounded font-medium"
+                  onClick={handleBuyNow}
+                  disabled={!product.inStock || product.stockCount === 0}
+                  className="bg-orange-500 hover:bg-orange-600 text-white h-11 px-8 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   BUY NOW
                 </Button>
@@ -386,11 +469,16 @@ export default function ProductPage() {
               {/* Wishlist & Share */}
               <div className="flex items-center gap-4 pb-4 border-b border-gray-200">
                 <button
-                  onClick={addToWishlist}
+                  onClick={handleAddToWishlist}
                   className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
                 >
-                  <Heart className="w-5 h-5" />
-                  Add to Wishlist
+                  <Heart
+                    className={`w-5 h-5 ${isWishlisted(product.id)
+                      ? "text-red-500 fill-current"
+                      : "text-gray-600"
+                      }`}
+                  />
+                  {isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                 </button>
               </div>
 

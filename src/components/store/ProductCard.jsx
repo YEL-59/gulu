@@ -30,12 +30,25 @@ export default function ProductCard({ product, viewMode = "grid" }) {
   const addToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Ensure product has stock before adding
+    if (!product.inStock) {
+      alert('This product is out of stock');
+      return;
+    }
+
+    // Add complete product information to cart
     addCartItem(
       {
         id: product.id,
         name: product.name,
         price: product.price,
+        originalPrice: product.originalPrice,
         image: product.image,
+        brand: product.brand,
+        sellerId: product.sellerId,
+        category: product.category,
+        inStock: product.inStock,
       },
       1
     );

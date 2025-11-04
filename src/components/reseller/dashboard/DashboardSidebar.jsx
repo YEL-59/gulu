@@ -8,6 +8,8 @@ import {
   LineChart,
   LayoutDashboard,
   ArrowUpDown,
+  Wallet,
+  ShoppingCart,
 } from "lucide-react";
 import SidebarNavItem from "./SidebarNavItem";
 
@@ -18,6 +20,8 @@ function getNavItems() {
     { label: "Store", icon: Store, href: "/reseller/dashboard/store" },
     { label: "Customers", icon: Users, href: "/reseller/dashboard/customers" },
     { label: "Transaction", icon: ArrowUpDown, href: "/reseller/dashboard/transactions" },
+    { label: "Purchases", icon: ShoppingCart, href: "/reseller/dashboard/purchases" },
+    { label: "Withdrawals", icon: Wallet, href: "/reseller/dashboard/withdrawals" },
   ];
 }
 
@@ -26,7 +30,7 @@ export default function DashboardSidebar({ base }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const currentTopSegment = segments?.[0] || ""; // under /reseller/dashboard, this is "", "analytics", "store", etc.
-  const navItems = getNavItems(base);
+  const navItems = getNavItems();
 
   return (
     <aside className="w-full h-full bg-white">

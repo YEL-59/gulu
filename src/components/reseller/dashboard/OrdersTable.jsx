@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 // Use plain img to avoid Next/Image errors for missing local assets
 import ordersJson from "@/lib/data/orders.json";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,24 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Eye, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import { Eye, Trash2, ChevronUp, ChevronDown, ShoppingCart, ExternalLink } from "lucide-react";
+import resellerPurchasesData from "@/lib/data/resellerPurchases.json";
+
+// Load purchases from localStorage or use default data
+function loadResellerPurchases() {
+  try {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('resellerPurchases');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.length > 0 ? parsed : resellerPurchasesData;
+      }
+    }
+  } catch (e) {
+    console.warn('Error loading purchases:', e);
+  }
+  return resellerPurchasesData;
+}
 
 const customerNames = [
   "Leslie Alexander",
@@ -51,19 +68,71 @@ function asDate(order) {
 }
 
 export default function OrdersTable({ orders = [] }) {
-  const initial = useMemo(() => {
+  const [mounted, setMounted] = useState(false);
+  const [resellerPurchases, setResellerPurchases] = useState(resellerPurchasesData);
+  const prevDataRef = useRef({ orders: null, purchases: null });
+
+  // Load from localStorage after mount to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    setResellerPurchases(loadResellerPurchases());
+    
+    // Update purchases periodically
+    const interval = setInterval(() => {
+      setResellerPurchases(loadResellerPurchases());
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const [rows, setRows] = useState(() => {
+    // Initialize with default data (no localStorage)
     const base = orders && orders.length > 0 ? orders : ordersJson;
     return base.map((o, idx) => ({
       ...o,
       customer: o.customer ?? customerNames[idx % customerNames.length],
       payment: o.payment ?? paymentFromStatus(o.status),
+      hasPendingPurchase: false,
+      pendingPurchase: null,
     }));
-  }, [orders]);
-
-  const [rows, setRows] = useState(initial);
+  });
   const [sortKey, setSortKey] = useState("date");
   const [sortDir, setSortDir] = useState("desc"); // asc | desc
   const [viewing, setViewing] = useState(null);
+
+  // Update rows when resellerPurchases changes (after localStorage loads)
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Check if data actually changed to prevent infinite loops
+    const ordersKey = JSON.stringify(orders);
+    const purchasesKey = JSON.stringify(resellerPurchases);
+    
+    if (
+      prevDataRef.current.orders === ordersKey &&
+      prevDataRef.current.purchases === purchasesKey
+    ) {
+      return; // Data hasn't changed, skip update
+    }
+
+    // Update ref
+    prevDataRef.current.orders = ordersKey;
+    prevDataRef.current.purchases = purchasesKey;
+
+    const base = orders && orders.length > 0 ? orders : ordersJson;
+    const updatedRows = base.map((o, idx) => {
+      const pendingPurchase = resellerPurchases.find(
+        (p) => p.orderId === o.id && p.status === "pending"
+      );
+      return {
+        ...o,
+        customer: o.customer ?? customerNames[idx % customerNames.length],
+        payment: o.payment ?? paymentFromStatus(o.status),
+        hasPendingPurchase: !!pendingPurchase,
+        pendingPurchase: pendingPurchase || null,
+      };
+    });
+    setRows(updatedRows);
+  }, [mounted, resellerPurchases, orders]);
 
   const sorted = useMemo(() => {
     const copy = [...rows];
@@ -240,6 +309,18 @@ export default function OrdersTable({ orders = [] }) {
                 </td>
                 <td className="p-2">
                   <div className="flex items-center gap-3">
+                    {o.hasPendingPurchase && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-orange-600 border-orange-200 hover:bg-orange-50"
+                        onClick={() => window.location.href = "/reseller/dashboard/purchases"}
+                        title="Purchase from wholesaler required"
+                      >
+                        <ShoppingCart className="size-3 mr-1" />
+                        Purchase
+                      </Button>
+                    )}
                     <Button
                       variant="ghost"
                       size="icon"
@@ -283,8 +364,39 @@ export default function OrdersTable({ orders = [] }) {
                 <DialogDescription>
                   {viewing.orderDate} •{" "}
                   <span className="capitalize">{viewing.status}</span>
+                  {viewing.hasPendingPurchase && (
+                    <span className="block mt-2 text-orange-600 font-medium">
+                      ⚠️ Purchase from wholesaler required
+                    </span>
+                  )}
                 </DialogDescription>
               </DialogHeader>
+              {viewing.hasPendingPurchase && viewing.pendingPurchase && (
+                <div className="bg-orange-50 border border-orange-200 rounded-md p-3 mb-3">
+                  <div className="flex items-start gap-2">
+                    <ShoppingCart className="w-4 h-4 text-orange-600 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-orange-900">
+                        Purchase Required
+                      </p>
+                      <p className="text-xs text-orange-700 mt-1">
+                        You need to purchase this product from the wholesaler to fulfill this order.
+                        Cost: ${(viewing.pendingPurchase.wholesalerPrice * viewing.pendingPurchase.quantity).toFixed(2)}
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 text-orange-600 border-orange-300"
+                        onClick={() => {
+                          window.location.href = "/reseller/dashboard/purchases";
+                        }}
+                      >
+                        Purchase Now <ExternalLink className="w-3 h-3 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="space-y-2">
                 {viewing.items?.map((it, idx) => (
                   <div key={idx} className="flex items-center gap-3">

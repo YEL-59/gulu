@@ -1,0 +1,30 @@
+[
+  {
+    "id": "rp-001",
+    "resellerId": "reseller-1",
+    "orderId": "335465466454526",
+    "productId": "p-001",
+    "wholesalerId": "wholesaler-1",
+    "productName": "Wireless Headphones Pro",
+    "quantity": 1,
+    "resellerPrice": 89.99,
+    "wholesalerPrice": 65.00,
+    "status": "pending",
+    "createdAt": "2025-01-15T10:00:00Z",
+    "orderDate": "2025-01-16T08:00:00Z"
+  },
+  {
+    "id": "rp-002",
+    "resellerId": "reseller-1",
+    "orderId": "335465466454528",
+    "productId": "p-002",
+    "wholesalerId": "wholesaler-1",
+    "productName": "Smartwatch Active 2",
+    "quantity": 1,
+    "resellerPrice": 149.00,
+    "wholesalerPrice": 110.00,
+    "status": "pending",
+    "createdAt": "2025-01-10T14:00:00Z",
+    "orderDate": "2025-01-10T15:00:00Z"
+  }
+]
