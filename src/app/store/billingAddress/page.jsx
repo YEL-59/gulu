@@ -80,14 +80,84 @@ export default function BillingAddress() {
     return { subtotal, shipping, discount, tax, total }
   }, [cart])
 
-  const placeOrder = () => {
-    // In a real app, validate and call API here.
+  const placeOrder = async () => {
+    // Validate required fields
+    if (!billing.firstName || !billing.lastName || !billing.email || !billing.address) {
+      alert('Please fill in all required billing fields')
+      return
+    }
+
+    if (cart.items.length === 0) {
+      alert('Your cart is empty')
+      return
+    }
+
     try {
+      // Import order processor
+      const { processOrder } = await import('@/lib/utils/orderProcessor')
+      
+      // Process the order and create purchase records
+      const { order, purchaseRecords } = processOrder(
+        {
+          billing,
+          shipping: shipDifferent ? shippingAddr : billing,
+          paymentMethod,
+          note,
+        },
+        cart.items
+      )
+
+      // Save order and purchase records
+      // In production, this would call an API that saves to database
       if (typeof window !== 'undefined') {
+        // Save order
+        const existingOrders = JSON.parse(localStorage.getItem('userOrders') || '[]')
+        existingOrders.push(order)
+        localStorage.setItem('userOrders', JSON.stringify(existingOrders))
+
+        // Save purchase records for resellers
+        if (purchaseRecords.length > 0) {
+          try {
+            // Load existing purchase records from localStorage
+            // In production, this would be handled by the API/database
+            const existingPurchasesJson = localStorage.getItem('resellerPurchases')
+            const existingPurchases = existingPurchasesJson 
+              ? JSON.parse(existingPurchasesJson)
+              : []
+            
+            const updatedPurchases = [...existingPurchases, ...purchaseRecords]
+            localStorage.setItem('resellerPurchases', JSON.stringify(updatedPurchases))
+            
+            console.log('Created purchase records:', purchaseRecords.length)
+            console.log('Purchase records:', purchaseRecords)
+          } catch (e) {
+            console.warn('Could not save purchase records to localStorage:', e)
+          }
+        }
+
+        // Clear cart
         localStorage.removeItem('checkoutCart')
       }
-    } catch {}
-    router.push('/store/order-success')
+
+      // In production, you would also call the API:
+      // try {
+      //   const response = await fetch('/api/orders', {
+      //     method: 'POST',
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify({ order, purchaseRecords }),
+      //   })
+      //   if (!response.ok) throw new Error('Failed to save order')
+      // } catch (apiError) {
+      //   console.error('API error:', apiError)
+      //   // Still allow order to proceed in demo mode
+      // }
+
+      // Redirect to success page
+      router.push('/store/order-success')
+    } catch (error) {
+      console.error('Error placing order:', error)
+      alert('There was an error placing your order. Please try again.')
+    }
   }
 
   const field = (objSetter) => (e) => objSetter((p) => ({ ...p, [e.target.name]: e.target.value }))
