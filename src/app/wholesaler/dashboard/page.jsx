@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import StatGrid from "@/components/wholesaler/dashboard/StatGrid";
+import ProfitabilityIndicator from "@/components/wholesaler/dashboard/ProfitabilityIndicator";
 import SalesLineChart from "@/components/wholesaler/dashboard/charts/SalesLineChart";
 import RevenueAreaChart from "@/components/wholesaler/dashboard/charts/RevenueAreaChart";
 import CustomersDonut from "@/components/wholesaler/dashboard/charts/CustomersDonut";
@@ -20,6 +21,9 @@ export default function WholesalerDashboard() {
       </div>
       {/* Stats Grid */}
       <StatGrid selectedMonth={selectedMonth} />
+
+      {/* Profitability Indicator */}
+      <ProfitabilityIndicator />
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

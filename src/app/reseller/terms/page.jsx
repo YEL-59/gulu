@@ -13,15 +13,19 @@ export default function ResellerTermsPage() {
   const policies = [
     {
       title: "1. Product Availability",
-      desc: "Resellers are allowed to sell only the products that are listed and available on the platform.",
+      desc: "Resellers can sell only products available on our platform (from approved wholesalers).",
     },
     {
-      title: "2. Order Fulfillment",
-      desc: "All customer orders must be processed and fulfilled exclusively through the platform to ensure quality and tracking.",
+      title: "2. Order Fulfillment Process",
+      desc: "After receiving an order, the reseller must first purchase the product from the wholesaler through the platform. Only after purchasing the product will the reseller be able to withdraw earnings from our platform.",
     },
     {
-      title: "3. Fund Release Policy",
-      desc: "Payment for completed orders will be released only after the order is fulfilled and verified through the platform.",
+      title: "3. Products Already in Stock",
+      desc: "If the reseller already has the product in stock, they may proceed to ship it and withdraw earnings after verification.",
+    },
+    {
+      title: "4. Platform Benefits",
+      desc: "These policies are designed for the benefit and protection of all users, ensuring that resellers do not accept orders and then disappear without fulfillment, wholesalers are paid before supply, and buyers receive their products reliably.",
     },
   ];
 
@@ -33,7 +37,7 @@ export default function ResellerTermsPage() {
         </h1>
         <p className="text-gray-600 text-center mt-2 mb-8">
           Before proceeding with your registration, please review and accept the
-          following conditions to join our platform as a reseller:
+          following key rules and conditions to join our platform as a reseller:
         </p>
 
         <Card className="max-w-3xl mx-auto">

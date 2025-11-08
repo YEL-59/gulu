@@ -1,0 +1,39 @@
+[
+  {
+    "id": "rpl-001",
+    "resellerId": "reseller-1",
+    "resellerName": "Tech Reseller Pro",
+    "productId": "p-001",
+    "productName": "Wireless Headphones",
+    "wholesalerId": "wholesaler-1",
+    "wholesalerProductId": "p-001",
+    "quantity": 30,
+    "addedAt": "2024-01-10T10:00:00Z",
+    "status": "active"
+  },
+  {
+    "id": "rpl-002",
+    "resellerId": "reseller-1",
+    "resellerName": "Tech Reseller Pro",
+    "productId": "p-002",
+    "productName": "Smart Watch",
+    "wholesalerId": "wholesaler-1",
+    "wholesalerProductId": "p-002",
+    "quantity": 15,
+    "addedAt": "2024-01-12T14:30:00Z",
+    "status": "active"
+  },
+  {
+    "id": "rpl-003",
+    "resellerId": "reseller-2",
+    "resellerName": "Electronics Hub",
+    "productId": "p-001",
+    "productName": "Wireless Headphones",
+    "wholesalerId": "wholesaler-1",
+    "wholesalerProductId": "p-001",
+    "quantity": 50,
+    "addedAt": "2024-01-15T09:20:00Z",
+    "status": "active"
+  }
+]
+

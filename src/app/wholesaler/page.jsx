@@ -24,7 +24,7 @@ const ResellerHomePage = () => {
             bulk? Contact us to become a verified wholesaler on our platform.
           </p>
           <div className="mt-6">
-            <Link href="/wholesaler/onboarding">
+            <Link href="/wholesaler/terms">
               <Button className="bg-[#F36E16] hover:bg-[#e06212]">
                 BECOME A WholeSELLER
               </Button>

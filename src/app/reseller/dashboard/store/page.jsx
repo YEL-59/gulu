@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import ProductsTable from "@/components/reseller/dashboard/store/ProductsTable";
 import {
   ProductFormModal,
   ProductViewModal,
   ConfirmDeleteDialog,
 } from "@/components/reseller/dashboard/store/ProductModals";
+import { Button } from "@/components/ui/button";
 
 export default function ResellerStoreTabPage() {
   const [viewing, setViewing] = useState(null);
@@ -23,6 +25,11 @@ export default function ResellerStoreTabPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Products</h1>
+        <Link href="/reseller/dashboard/store/browse">
+          <Button className="bg-[#F36E16] hover:bg-[#e06212]">
+            Browse Wholesaler Products
+          </Button>
+        </Link>
       </div>
 
       <ProductsTable
