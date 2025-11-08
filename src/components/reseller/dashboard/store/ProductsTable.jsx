@@ -21,11 +21,11 @@ export default function ProductsTable({ onView, onEdit, onDelete, onAdd }) {
     const base = productsData
     const rows = q
       ? base.filter(p =>
-          (p.name || "").toLowerCase().includes(q) ||
-          (p.id || "").toLowerCase().includes(q) ||
-          (p.category || "").toLowerCase().includes(q) ||
-          (p.brand || "").toLowerCase().includes(q)
-        )
+        (p.name || "").toLowerCase().includes(q) ||
+        (p.id || "").toLowerCase().includes(q) ||
+        (p.category || "").toLowerCase().includes(q) ||
+        (p.brand || "").toLowerCase().includes(q)
+      )
       : base
     const sorted = [...rows].sort((a, b) => {
       const dir = sortDir === "asc" ? 1 : -1
@@ -88,12 +88,12 @@ export default function ProductsTable({ onView, onEdit, onDelete, onAdd }) {
           </Button>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Button className="bg-[#F36E16] hover:bg-[#e06212]" onClick={() => onAdd?.()}>
             <Plus />
             New Product
           </Button>
-        </div>
+        </div> */}
       </div>
 
       <Table>

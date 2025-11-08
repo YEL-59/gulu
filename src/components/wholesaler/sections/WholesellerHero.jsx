@@ -16,7 +16,7 @@ const WholesellerHero = () => {
             your business through our platform.
           </p>
           <div className="mt-6">
-            <Link href="/wholesaler/onboarding">
+            <Link href="/wholesaler/terms">
               <Button className="bg-[#F36E16] hover:bg-[#e06212]">
                 BECOME A WHOLESALER
               </Button>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import StatGrid from "@/components/reseller/dashboard/StatGrid";
+import ProfitabilityIndicator from "@/components/reseller/dashboard/ProfitabilityIndicator";
 import SalesLineChart from "@/components/reseller/dashboard/charts/SalesLineChart";
 import RevenueAreaChart from "@/components/reseller/dashboard/charts/RevenueAreaChart";
 import CustomersDonut from "@/components/reseller/dashboard/charts/CustomersDonut";
@@ -16,6 +17,9 @@ export default function ResellerDashboard() {
     <div className="space-y-8">
       {/* Stats Grid */}
       <StatGrid selectedMonth={selectedMonth} />
+
+      {/* Profitability Indicator */}
+      <ProfitabilityIndicator />
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

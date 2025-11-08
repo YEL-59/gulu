@@ -16,31 +16,40 @@ import { CheckCircle2, Package, AlertCircle, Eye } from "lucide-react";
 import resellerPurchasesData from "@/lib/data/resellerPurchases.json";
 
 export default function WholesalerOrdersPage() {
-  // Load purchases (orders from resellers) from localStorage
-  const loadOrders = () => {
-    try {
-      if (typeof window !== 'undefined') {
-        const stored = localStorage.getItem('resellerPurchases');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          return parsed.length > 0 ? parsed : resellerPurchasesData;
-        }
-      }
-    } catch (e) {
-      console.warn('Error loading orders:', e);
-    }
-    return resellerPurchasesData;
-  };
-
-  const [orders, setOrders] = useState(loadOrders());
+  // Initialize with default data to avoid hydration mismatch
+  const [orders, setOrders] = useState(resellerPurchasesData);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showViewDialog, setShowViewDialog] = useState(false);
 
-  // Update orders when localStorage changes
+  // Load purchases (orders from resellers) from localStorage on client side only
   useEffect(() => {
-    const handleStorageChange = () => {
-      setOrders(loadOrders());
+    const loadOrders = () => {
+      try {
+        if (typeof window !== 'undefined') {
+          const stored = localStorage.getItem('resellerPurchases');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed.length > 0) {
+              setOrders(parsed);
+              return;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Error loading orders:', e);
+      }
+      // Keep default data if localStorage is empty or error
+      setOrders(resellerPurchasesData);
     };
+
+    // Load on mount
+    loadOrders();
+
+    // Update orders when localStorage changes
+    const handleStorageChange = () => {
+      loadOrders();
+    };
+    
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', handleStorageChange);
       const interval = setInterval(handleStorageChange, 1000);

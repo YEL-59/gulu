@@ -3,6 +3,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { COUNTRIES } from '@/constants/countries'
+import { INDUSTRIES } from '@/constants/industries'
 
 export default function StepBusiness() {
   const { register, control, setValue } = useFormContext()
@@ -46,12 +48,14 @@ export default function StepBusiness() {
             <Label>Industry/Category</Label>
             <Select onValueChange={(val) => setValue('business.industry', val)}>
               <SelectTrigger>
-                <SelectValue placeholder='Select' />
+                <SelectValue placeholder='Select Industry' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='electronics'>Electronics</SelectItem>
-                <SelectItem value='fashion'>Fashion</SelectItem>
-                <SelectItem value='home'>Home & Living</SelectItem>
+                {INDUSTRIES.map((industry) => (
+                  <SelectItem key={industry.value} value={industry.value}>
+                    {industry.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -64,12 +68,14 @@ export default function StepBusiness() {
               <Label>Country</Label>
               <Select onValueChange={(val) => setValue('business.address.country', val)}>
                 <SelectTrigger>
-                  <SelectValue placeholder='Select' />
+                  <SelectValue placeholder='Select Country' />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='us'>USA</SelectItem>
-                  <SelectItem value='ca'>Canada</SelectItem>
-                  <SelectItem value='bd'>Bangladesh</SelectItem>
+                <SelectContent className="max-h-[300px]">
+                  {COUNTRIES.map((country) => (
+                    <SelectItem key={country.value} value={country.value}>
+                      {country.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

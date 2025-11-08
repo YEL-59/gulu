@@ -6,6 +6,7 @@ import PerformanceLine from "./PerformanceLine";
 import UsersVisitsBar from "./UsersVisitsBar";
 import AudienceInsightBar from "./AudienceInsightBar";
 import SalesLocationCard from "./SalesLocationCard";
+import InvoiceUpload from "./InvoiceUpload";
 import {
   Select,
   SelectContent,
@@ -86,6 +87,9 @@ export default function AnalyticsDashboard({ initialRange }) {
         </Card>
         <SalesLocationCard data={data.salesLocation} />
       </div>
+
+      {/* Invoice Upload Section */}
+      <InvoiceUpload />
     </div>
   );
 }
