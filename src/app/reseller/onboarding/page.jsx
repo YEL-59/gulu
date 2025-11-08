@@ -11,6 +11,13 @@ import StepPayment from '@/components/reseller/onboarding/StepPayment'
 import StepStoreSetup from '@/components/reseller/onboarding/StepStoreSetup'
 import SuccessPanel from '@/components/reseller/onboarding/SuccessPanel'
 
+const steps = [
+  { key: 0, label: "Basic info" },
+  { key: 1, label: "Business" },
+  { key: 2, label: "Payment" },
+  { key: 3, label: "Store setup" },
+]
+
 export default function ResellerOnboardingPage() {
   const [current, setCurrent] = useState(0)
   const [submitted, setSubmitted] = useState(false)
@@ -50,35 +57,59 @@ export default function ResellerOnboardingPage() {
   })
 
   return (
-    <div className='bg-white min-h-screen'>
-      <div className='container mx-auto px-4 py-10'>
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50'>
+      <div className='container mx-auto px-4 py-8 md:py-12 max-w-5xl'>
         <StepperHeader current={submitted ? 4 : current} />
 
         <FormProvider {...methods}>
           {!submitted ? (
-            <form onSubmit={onSubmit} className='space-y-6'>
-              {current === 0 && <StepBasicInfo />}
-              {current === 1 && <StepBusiness />}
-              {current === 2 && <StepPayment />}
-              {current === 3 && <StepStoreSetup />}
+            <div className='mt-8'>
+              <form onSubmit={onSubmit} className='space-y-8'>
+                <div className='animate-in fade-in slide-in-from-bottom-4 duration-500'>
+                  {current === 0 && <StepBasicInfo />}
+                  {current === 1 && <StepBusiness />}
+                  {current === 2 && <StepPayment />}
+                  {current === 3 && <StepStoreSetup />}
+                </div>
 
-              <div className='flex justify-between pt-2'>
-                <Button type='button' variant='outline' onClick={back} disabled={current === 0}>
-                  BACK
-                </Button>
-                {current < 3 ? (
-                  <Button type='button' className='bg-[#F36E16] hover:bg-[#e06212]' onClick={next}>
-                    NEXT
+                <div className='flex justify-between items-center pt-6 border-t border-gray-200 bg-white rounded-lg p-6 shadow-sm'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={back}
+                    disabled={current === 0}
+                    className='min-w-[120px]'
+                  >
+                    ← Back
                   </Button>
-                ) : (
-                  <Button type='submit' className='bg-[#F36E16] hover:bg-[#e06212]'>
-                    SUBMIT
-                  </Button>
-                )}
-              </div>
-            </form>
+
+                  <div className='text-sm text-gray-500'>
+                    Step {current + 1} of {steps.length}
+                  </div>
+
+                  {current < 3 ? (
+                    <Button
+                      type='button'
+                      className='bg-[#F36E16] hover:bg-[#e06212] min-w-[120px] shadow-md hover:shadow-lg transition-all'
+                      onClick={next}
+                    >
+                      Next →
+                    </Button>
+                  ) : (
+                    <Button
+                      type='submit'
+                      className='bg-[#F36E16] hover:bg-[#e06212] min-w-[120px] shadow-md hover:shadow-lg transition-all'
+                    >
+                      Submit ✓
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </div>
           ) : (
-            <SuccessPanel onContinue={() => router.push('/store')} />
+            <div className='mt-8'>
+              <SuccessPanel onContinue={() => router.push('/store')} />
+            </div>
           )}
         </FormProvider>
       </div>
