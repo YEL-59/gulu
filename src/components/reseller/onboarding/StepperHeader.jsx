@@ -7,8 +7,15 @@ const steps = [
   { key: 3, label: "Store Setup", icon: Store, description: "Store configuration" },
 ];
 
-export default function StepperHeader({ current, variant = 'reseller' }) {
+export default function StepperHeader({ current, variant = 'reseller', onStepClick }) {
   const badgeText = variant === 'wholesaler' ? 'Wholesaler Application' : 'Reseller Registration';
+  
+  const handleStepClick = (stepIndex) => {
+    if (onStepClick && (stepIndex <= current || stepIndex === 0)) {
+      // Allow clicking on completed steps or the first step
+      onStepClick(stepIndex);
+    }
+  };
   
   return (
     <div className="text-center mb-8">
@@ -26,18 +33,25 @@ export default function StepperHeader({ current, variant = 'reseller' }) {
           const isCompleted = current > idx;
           const isCurrent = current === idx;
           const isPending = current < idx;
+          const isClickable = idx <= current || idx === 0;
 
           return (
             <div key={s.key} className="flex items-center">
-              <div className="flex flex-col items-center">
+              <div 
+                className={`flex flex-col items-center transition-all duration-200 ${
+                  isClickable ? 'cursor-pointer hover:scale-105' : 'cursor-not-allowed opacity-60'
+                }`}
+                onClick={() => handleStepClick(idx)}
+                title={isClickable ? `Go to ${s.label}` : 'Complete previous steps first'}
+              >
                 <div
                   className={`relative h-12 w-12 rounded-full flex items-center justify-center text-white text-sm font-semibold transition-all duration-300 ${
                     isCompleted
-                      ? "bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-200 scale-110"
+                      ? "bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-200 scale-110 hover:scale-125"
                       : isCurrent
                       ? "bg-gradient-to-br from-[#F36E16] to-[#e06212] shadow-lg shadow-orange-200 scale-110 ring-4 ring-orange-100"
                       : "bg-gray-200 text-gray-500"
-                  }`}
+                  } ${isClickable ? 'hover:shadow-xl' : ''}`}
                 >
                   {isCompleted ? (
                     <Check className="h-5 w-5" />

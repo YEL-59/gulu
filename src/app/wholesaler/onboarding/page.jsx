@@ -33,14 +33,37 @@ export default function WholesalerOnboardingPage() {
     },
   })
 
+  const goToStep = async (stepIndex) => {
+    // If going forward, validate current step first
+    if (stepIndex > current) {
+      const valid = await methods.trigger()
+      if (!valid) {
+        // Show error message or toast here if needed
+        return
+      }
+    }
+    setCurrent(stepIndex)
+  }
+
   const next = async () => {
-    // Optionally validate current step fields
+    // Validate current step fields before proceeding
     const valid = await methods.trigger()
-    if (!valid) return
+    if (!valid) {
+      // Scroll to first error if validation fails
+      const firstError = Object.keys(methods.formState.errors)[0]
+      if (firstError) {
+        const element = document.querySelector(`[name="${firstError}"]`)
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return
+    }
     setCurrent((c) => Math.min(c + 1, 3))
   }
 
-  const back = () => setCurrent((c) => Math.max(c - 1, 0))
+  const back = () => {
+    // Allow going back without validation
+    setCurrent((c) => Math.max(c - 1, 0))
+  }
 
   const onSubmit = methods.handleSubmit(async (data) => {
     try {
@@ -57,9 +80,17 @@ export default function WholesalerOnboardingPage() {
   })
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50'>
-      <div className='container mx-auto px-4 py-8 md:py-12 max-w-5xl'>
-        <StepperHeader current={submitted ? 4 : current} variant="wholesaler" />
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50 relative overflow-hidden'>
+      {/* Decorative Background Elements */}
+      <div className='absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-200/20 to-transparent rounded-full blur-3xl'></div>
+      <div className='absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-200/20 to-transparent rounded-full blur-3xl'></div>
+
+      <div className='container mx-auto px-4 py-8 md:py-12 max-w-5xl relative z-10'>
+        <StepperHeader
+          current={submitted ? 4 : current}
+          variant="wholesaler"
+          onStepClick={goToStep}
+        />
 
         <FormProvider {...methods}>
           {!submitted ? (
@@ -72,33 +103,44 @@ export default function WholesalerOnboardingPage() {
                   {current === 3 && <StepStoreSetup />}
                 </div>
 
-                <div className='flex justify-between items-center pt-6 border-t border-gray-200 bg-white rounded-lg p-6 shadow-sm'>
-                  <Button 
-                    type='button' 
-                    variant='outline' 
-                    onClick={back} 
+                <div className='flex justify-between items-center pt-6 border-t-2 border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white rounded-xl p-6 shadow-lg backdrop-blur-sm'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={back}
                     disabled={current === 0}
-                    className='min-w-[120px]'
+                    className='min-w-[120px] h-11 border-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-all'
                   >
                     ← Back
                   </Button>
-                  
-                  <div className='text-sm text-gray-500'>
-                    Step {current + 1} of {steps.length}
+
+                  <div className='flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-orange-50 rounded-full border border-gray-200'>
+                    <span className='text-sm font-semibold text-gray-700'>
+                      Step {current + 1} of {steps.length}
+                    </span>
+                    <div className='flex gap-1'>
+                      {steps.map((_, idx) => (
+                        <div
+                          key={idx}
+                          className={`h-1.5 w-1.5 rounded-full transition-all ${idx <= current ? 'bg-[#F36E16]' : 'bg-gray-300'
+                            }`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  
+
                   {current < 3 ? (
-                    <Button 
-                      type='button' 
-                      className='bg-[#F36E16] hover:bg-[#e06212] min-w-[120px] shadow-md hover:shadow-lg transition-all' 
+                    <Button
+                      type='button'
+                      className='bg-gradient-to-r from-[#F36E16] to-[#e06212] hover:from-[#e06212] hover:to-[#d0560f] min-w-[120px] h-11 shadow-md hover:shadow-xl transition-all font-semibold'
                       onClick={next}
                     >
                       Next →
                     </Button>
                   ) : (
-                    <Button 
-                      type='submit' 
-                      className='bg-[#F36E16] hover:bg-[#e06212] min-w-[120px] shadow-md hover:shadow-lg transition-all'
+                    <Button
+                      type='submit'
+                      className='bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 min-w-[120px] h-11 shadow-md hover:shadow-xl transition-all font-semibold'
                     >
                       Submit ✓
                     </Button>
