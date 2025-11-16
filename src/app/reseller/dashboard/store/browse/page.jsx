@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -216,27 +217,34 @@ export default function BrowseWholesalerProductsPage() {
           {wholesalerProducts.map((product) => {
             const isAdded = addedProductIds.has(product.id);
             return (
-              <Card key={product.id} className="overflow-hidden">
+              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <CardContent className="p-0">
-                  {/* Product Image */}
-                  <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
-                    {product.images ? (
-                      <img
-                        src={product.images}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Package className="h-16 w-16 text-gray-400" />
-                    )}
-                  </div>
+                  {/* Product Image - Clickable to detail page */}
+                  <Link href={`/reseller/dashboard/store/product/${product.id}`}>
+                    <div className="w-full h-48 bg-gray-100 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
+                      {product.image || product.images ? (
+                        <img
+                          src={product.image || product.images}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Package className="h-16 w-16 text-gray-400" />
+                      )}
+                    </div>
+                  </Link>
 
                   {/* Product Info */}
                   <div className="p-4 space-y-3">
                     <div>
-                      <h3 className="font-semibold text-lg line-clamp-2">
-                        {product.name}
-                      </h3>
+                      <Link 
+                        href={`/reseller/dashboard/store/product/${product.id}`}
+                        className="hover:text-[#F36E16] transition-colors"
+                      >
+                        <h3 className="font-semibold text-lg line-clamp-2">
+                          {product.name}
+                        </h3>
+                      </Link>
                       <p className="text-sm text-gray-500 mt-1">
                         {product.brand || "No brand"}
                       </p>
@@ -260,6 +268,7 @@ export default function BrowseWholesalerProductsPage() {
                         <span className="text-2xl font-bold text-[#F36E16]">
                           ${Number(product.price).toFixed(2)}
                         </span>
+                        <p className="text-xs text-gray-500 mt-1">Wholesale price</p>
                         {product.rating && (
                           <div className="text-sm text-gray-600 mt-1">
                             ⭐ {product.rating} ({product.reviewCount || 0} reviews)
@@ -268,27 +277,40 @@ export default function BrowseWholesalerProductsPage() {
                       </div>
                     </div>
 
-                    <Button
-                      className={`w-full ${
-                        isAdded
-                          ? "bg-green-600 hover:bg-green-700"
-                          : "bg-[#F36E16] hover:bg-[#e06212]"
-                      }`}
-                      onClick={() => handleAddToStoreClick(product)}
-                      disabled={isAdded || !product.inStock}
-                    >
-                      {isAdded ? (
-                        <>
-                          <Package className="h-4 w-4 mr-2" />
-                          Added to Store
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add to Store
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Link 
+                        href={`/reseller/dashboard/store/product/${product.id}`}
+                        className="flex-1"
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                        >
+                          View Details
+                        </Button>
+                      </Link>
+                      <Button
+                        className={`flex-1 ${
+                          isAdded
+                            ? "bg-green-600 hover:bg-green-700"
+                            : "bg-[#F36E16] hover:bg-[#e06212]"
+                        }`}
+                        onClick={() => handleAddToStoreClick(product)}
+                        disabled={isAdded || !product.inStock}
+                      >
+                        {isAdded ? (
+                          <>
+                            <Package className="h-4 w-4 mr-2" />
+                            Added
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Quick Add
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

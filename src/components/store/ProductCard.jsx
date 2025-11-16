@@ -20,10 +20,21 @@ export default function ProductCard({ product, viewMode = "grid" }) {
   const toggleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isWishlisted(product.id)) {
-      removeWishlistItem(product.id);
-    } else {
-      addWishlistItem(product);
+    
+    if (!product || !product.id) {
+      console.error('Cannot toggle wishlist: Invalid product');
+      return;
+    }
+
+    try {
+      if (isWishlisted(product.id)) {
+        removeWishlistItem(product.id);
+      } else {
+        addWishlistItem(product);
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist:', error);
+      alert('Failed to update wishlist. Please try again.');
     }
   };
 
@@ -31,27 +42,45 @@ export default function ProductCard({ product, viewMode = "grid" }) {
     e.preventDefault();
     e.stopPropagation();
     
+    if (!product || !product.id) {
+      console.error('Cannot add to cart: Invalid product');
+      return;
+    }
+    
     // Ensure product has stock before adding
     if (!product.inStock) {
       alert('This product is out of stock');
       return;
     }
 
-    // Add complete product information to cart
-    addCartItem(
-      {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        originalPrice: product.originalPrice,
-        image: product.image,
-        brand: product.brand,
-        sellerId: product.sellerId,
-        category: product.category,
-        inStock: product.inStock,
-      },
-      1
-    );
+    try {
+      // Validate product price
+      const productPrice = Number(product.price);
+      if (isNaN(productPrice) || productPrice < 0) {
+        console.error('Invalid product price');
+        alert('Product price is invalid. Please contact support.');
+        return;
+      }
+
+      // Add complete product information to cart
+      addCartItem(
+        {
+          id: product.id,
+          name: product.name || 'Unknown Product',
+          price: productPrice,
+          originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+          image: product.image || '/placeholder-image.png',
+          brand: product.brand,
+          sellerId: product.sellerId,
+          category: product.category,
+          inStock: product.inStock,
+        },
+        1
+      );
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add item to cart. Please try again.');
+    }
   };
 
   if (viewMode === "list") {
@@ -59,19 +88,22 @@ export default function ProductCard({ product, viewMode = "grid" }) {
       <Link href={`/store/product/${product.id}`}>
         <div className="flex items-center space-x-4 p-4 border rounded-lg hover:shadow-md transition-shadow">
           <img
-            src={product.image}
-            alt={product.name}
+            src={product.image || '/placeholder-image.png'}
+            alt={product.name || 'Product'}
             className="w-24 h-24 object-cover rounded"
+            onError={(e) => {
+              e.target.src = '/placeholder-image.png';
+            }}
           />
           <div className="flex-1">
-            <h3 className="font-semibold mb-1">{product.name}</h3>
+            <h3 className="font-semibold mb-1">{product.name || 'Unknown Product'}</h3>
             <div className="flex items-center mb-2">
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
                     className={`h-4 w-4 ${
-                      i < Math.floor(product.rating)
+                      i < Math.floor(product.rating || 0)
                         ? "text-yellow-400 fill-current"
                         : "text-gray-300"
                     }`}
@@ -79,14 +111,14 @@ export default function ProductCard({ product, viewMode = "grid" }) {
                 ))}
               </div>
               <span className="text-sm text-gray-600 ml-2">
-                ({product.reviewCount})
+                ({product.reviewCount || 0})
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-lg font-bold">${product.price}</span>
+              <span className="text-lg font-bold">${(Number(product.price) || 0).toFixed(2)}</span>
               {product.originalPrice && (
                 <span className="text-gray-500 line-through">
-                  ${product.originalPrice}
+                  ${(Number(product.originalPrice) || 0).toFixed(2)}
                 </span>
               )}
             </div>
@@ -98,13 +130,13 @@ export default function ProductCard({ product, viewMode = "grid" }) {
               className="cursor:pointer"
               onClick={toggleWishlist}
             >
-              <Heart
-                className={`h-4 w-4 ${
-                  mounted && isWishlisted(product.id)
-                    ? "text-red-500 fill-current"
-                    : "text-gray-600"
-                }`}
-              />
+            <Heart
+              className={`h-4 w-4 ${
+                mounted && product && product.id && isWishlisted(product.id)
+                  ? "text-red-500 fill-current"
+                  : "text-gray-600"
+              }`}
+            />
             </Button>
             <Button size="sm" className="cursor:pointer" onClick={addToCart}>
               <ShoppingCart className="h-4 w-4 mr-2" />
@@ -126,9 +158,12 @@ export default function ProductCard({ product, viewMode = "grid" }) {
         {/* Product Image */}
         <div className="relative w-full h-[250px] flex items-center justify-center bg-[#F5F5F5]">
           <img
-            src={product.image}
-            alt={product.name}
+            src={product.image || '/placeholder-image.png'}
+            alt={product.name || 'Product'}
             className="max-h-[180px] object-contain group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              e.target.src = '/placeholder-image.png';
+            }}
           />
 
           {/* Badge */}
@@ -151,7 +186,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
           >
             <Heart
               className={`h-4 w-4 ${
-                mounted && isWishlisted(product.id)
+                mounted && product && product.id && isWishlisted(product.id)
                   ? "text-red-500 fill-current"
                   : "text-gray-600"
               }`}
@@ -191,7 +226,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
         {/* Product Info */}
         <div className="p-4">
           <h3 className="font-semibold mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-            {product.name}
+            {product.name || 'Unknown Product'}
           </h3>
 
           {/* Rating */}
@@ -201,7 +236,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
                 <Star
                   key={i}
                   className={`h-4 w-4 ${
-                    i < Math.floor(product.rating)
+                    i < Math.floor(product.rating || 0)
                       ? "text-yellow-400 fill-current"
                       : "text-gray-300"
                   }`}
@@ -209,18 +244,18 @@ export default function ProductCard({ product, viewMode = "grid" }) {
               ))}
             </div>
             <span className="text-sm text-gray-600 ml-2">
-              ({product.reviewCount})
+              ({product.reviewCount || 0})
             </span>
           </div>
 
           {/* Price */}
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold text-gray-900">
-              ${product.price}
+              ${(Number(product.price) || 0).toFixed(2)}
             </span>
             {product.originalPrice && (
               <span className="text-sm text-gray-500 line-through">
-                ${product.originalPrice}
+                ${(Number(product.originalPrice) || 0).toFixed(2)}
               </span>
             )}
           </div>
