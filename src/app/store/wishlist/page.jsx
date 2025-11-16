@@ -1,31 +1,87 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Heart, ShoppingCart, Trash2 } from 'lucide-react'
 import ProductCard from '@/components/store/ProductCard'
 import { useCart, useWishlist } from '@/context/store'
 
 export default function WishlistPage() {
-  const { items: wishlistItems, removeItem: removeFromWishlist, moveAllToCart } = useWishlist()
+  const { items: wishlistItems = [], removeItem: removeFromWishlist, moveAllToCart } = useWishlist()
   const { addItem: addToCart } = useCart()
+  const [mounted, setMounted] = useState(false)
+
+  // Fix hydration mismatch: only render wishlist items after client-side hydration
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Ensure wishlistItems is always an array
+  // During SSR, always use empty array to match server render
+  const safeWishlistItems = mounted && Array.isArray(wishlistItems) 
+    ? wishlistItems.filter(item => item && item.id) 
+    : [];
+  const hasInStockItems = safeWishlistItems.some(item => item && item.inStock !== false);
+
+  const handleMoveAllToCart = () => {
+    try {
+      moveAllToCart();
+    } catch (error) {
+      console.error('Error moving items to cart:', error);
+      alert('Failed to move items to cart. Please try again.');
+    }
+  };
+
+  const handleRemoveFromWishlist = (productId) => {
+    if (!productId) {
+      console.error('Cannot remove: Invalid product ID');
+      return;
+    }
+    
+    try {
+      removeFromWishlist(productId);
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      alert('Failed to remove item from wishlist. Please try again.');
+    }
+  };
+
+  const handleAddToCart = (product) => {
+    if (!product || !product.id) {
+      console.error('Cannot add to cart: Invalid product');
+      return;
+    }
+
+    if (!product.inStock) {
+      alert('This product is out of stock');
+      return;
+    }
+
+    try {
+      addToCart(product, 1);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add item to cart. Please try again.');
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold mb-2">My Wishlist</h1>
-          <p className="text-gray-600">{wishlistItems.length} items in your wishlist</p>
+          <p className="text-gray-600">{safeWishlistItems.length} {safeWishlistItems.length === 1 ? 'item' : 'items'} in your wishlist</p>
         </div>
 
-        {wishlistItems.some(item => item.inStock) && (
-          <Button onClick={moveAllToCart} className="flex items-center">
+        {hasInStockItems && (
+          <Button onClick={handleMoveAllToCart} className="flex items-center">
             <ShoppingCart className="h-4 w-4 mr-2" />
             Move All to Cart
           </Button>
         )}
       </div>
 
-      {wishlistItems.length === 0 ? (
+      {safeWishlistItems.length === 0 ? (
         <div className="text-center py-12">
           <Heart className="h-16 w-16 text-gray-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Your wishlist is empty</h2>
@@ -34,51 +90,57 @@ export default function WishlistPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {wishlistItems.map(product => (
-            <div key={product.id} className="relative group">
-              <ProductCard product={product} />
+          {safeWishlistItems.map(product => {
+            if (!product || !product.id) return null;
+            
+            const isInStock = product.inStock !== false;
+            
+            return (
+              <div key={product.id} className="relative group">
+                <ProductCard product={product} />
 
-              {/* Wishlist Actions */}
-              <div className="absolute top-2 right-2 flex flex-col space-y-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="bg-white/80 hover:bg-white"
-                  onClick={() => removeFromWishlist(product.id)}
-                >
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                </Button>
-              </div>
-
-              {/* Add to Cart Button */}
-              {product.inStock && (
-                <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* Wishlist Actions */}
+                <div className="absolute top-2 right-2 flex flex-col space-y-2 z-10">
                   <Button
-                    className="w-full"
                     size="sm"
-                    onClick={() => addToCart(product, 1)}
+                    variant="ghost"
+                    className="bg-white/80 hover:bg-white"
+                    onClick={() => handleRemoveFromWishlist(product.id)}
                   >
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Add to Cart
+                    <Trash2 className="h-4 w-4 text-red-500" />
                   </Button>
                 </div>
-              )}
 
-              {/* Out of Stock Overlay */}
-              {!product.inStock && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
-                  <span className="bg-white px-3 py-1 rounded text-sm font-medium">
-                    Out of Stock
-                  </span>
-                </div>
-              )}
-            </div>
-          ))}
+                {/* Add to Cart Button */}
+                {isInStock && (
+                  <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <Button
+                      className="w-full"
+                      size="sm"
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Add to Cart
+                    </Button>
+                  </div>
+                )}
+
+                {/* Out of Stock Overlay */}
+                {!isInStock && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg z-10">
+                    <span className="bg-white px-3 py-1 rounded text-sm font-medium">
+                      Out of Stock
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 
       {/* Recently Viewed */}
-      {wishlistItems.length > 0 && (
+      {safeWishlistItems.length > 0 && (
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6">You might also like</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

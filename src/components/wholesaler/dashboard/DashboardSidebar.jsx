@@ -10,6 +10,7 @@ import {
   Package,
   ShoppingBag,
   Eye,
+  Truck,
 } from "lucide-react";
 import SidebarNavItem from "./SidebarNavItem";
 
@@ -18,6 +19,7 @@ function getNavItems() {
     { label: "Dashboard", icon: LayoutDashboard, href: "/wholesaler/dashboard" },
     { label: "Analytics", icon: LineChart, href: "/wholesaler/dashboard/analytics" },
     { label: "Store", icon: Store, href: "/wholesaler/dashboard/store" },
+    { label: "Dropshipping", icon: Truck, href: "/wholesaler/dashboard/dropshipping" },
     { label: "Product Tracking", icon: Eye, href: "/wholesaler/dashboard/product-tracking" },
     { label: "Reseller Orders", icon: ShoppingBag, href: "/wholesaler/dashboard/orders" },
     { label: "Resellers", icon: Users, href: "/wholesaler/dashboard/resellers" },
