@@ -3,7 +3,7 @@
 import { useState } from "react";
 import DashboardNavbar from "./DashboardNavbar";
 import WholesalerDashboardSidebar from "./DashboardSidebar";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 
@@ -46,6 +46,9 @@ export default function WholesalerDashboardShell({ children }) {
       {/* Mobile sidebar sheet */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" className="p-0 w-64">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Navigation Menu</SheetTitle>
+          </SheetHeader>
           <WholesalerDashboardSidebar />
         </SheetContent>
       </Sheet>

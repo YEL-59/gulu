@@ -69,7 +69,7 @@ export default function AudienceInsightBar({ labels, men, women, other }) {
   };
 
   return (
-    <div className="h-64">
+    <div className="h-56 sm:h-64 md:h-72">
       <Bar data={data} options={options} />
     </div>
   );

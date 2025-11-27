@@ -57,32 +57,32 @@ export default function SalesLocationCard({ data }) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Sales Location</CardTitle>
+      <CardHeader className="pb-3 sm:pb-6">
+        <CardTitle className="text-base sm:text-lg">Sales Location</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="rounded-md bg-sky-50 p-4">
-          <div className="text-sm text-sky-700">
+      <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6">
+        <div className="rounded-md bg-sky-50 p-3 sm:p-4">
+          <div className="text-xs sm:text-sm text-sky-700">
             {data?.highlight?.country} • {data?.highlight?.percent}%
           </div>
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-muted-foreground mt-1">
             Top performing region this period.
           </div>
         </div>
 
         {/* World map choropleth */}
-        <div className="h-72">
+        <div className="h-56 sm:h-64 md:h-72">
           <Chart type="choropleth" data={geoData} options={geoOptions} />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 sm:space-y-3">
           {items.map((c) => (
             <div key={c.name}>
-              <div className="flex justify-between text-sm">
-                <span>{c.name}</span>
-                <span className="text-muted-foreground">{c.value}%</span>
+              <div className="flex justify-between text-xs sm:text-sm gap-2">
+                <span className="truncate">{c.name}</span>
+                <span className="text-muted-foreground flex-shrink-0">{c.value}%</span>
               </div>
-              <div className="h-2 bg-muted rounded-md overflow-hidden">
+              <div className="h-1.5 sm:h-2 bg-muted rounded-md overflow-hidden mt-1">
                 <div
                   className="h-full bg-sky-500"
                   style={{ width: `${(c.value / max) * 100}%` }}

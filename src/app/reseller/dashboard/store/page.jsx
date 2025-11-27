@@ -22,11 +22,11 @@ export default function ResellerStoreTabPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Products</h1>
-        <Link href="/reseller/dashboard/store/browse">
-          <Button className="bg-[#F36E16] hover:bg-[#e06212]">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <h1 className="text-xl sm:text-2xl font-semibold">Products</h1>
+        <Link href="/reseller/dashboard/store/browse" className="w-full sm:w-auto">
+          <Button className="bg-[#F36E16] hover:bg-[#e06212] w-full sm:w-auto text-sm sm:text-base">
             Browse Wholesaler Products
           </Button>
         </Link>

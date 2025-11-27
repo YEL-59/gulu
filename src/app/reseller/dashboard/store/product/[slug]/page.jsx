@@ -61,7 +61,7 @@ export default function ResellerProductDetailPage() {
   // Load product
   const product = useMemo(() => {
     if (!mounted) return null;
-    
+
     const idOrSlug = params?.slug?.toString() || "";
     const found =
       productsData.find((p) => p.id === idOrSlug) ||
@@ -136,7 +136,7 @@ export default function ResellerProductDetailPage() {
   // Handle quantity change with validation
   const handleQuantityChange = (value) => {
     const numValue = parseInt(value) || 0;
-    
+
     if (value === "") {
       setQuantity("");
       setQuantityError("");
@@ -280,16 +280,16 @@ export default function ResellerProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12">
         <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-8 text-center">
-            <AlertCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-semibold mb-3 text-red-900">Product not found</h1>
-            <p className="text-red-700 mb-6">
+          <CardContent className="p-6 sm:p-8 text-center">
+            <AlertCircle className="h-12 w-12 sm:h-16 sm:w-16 text-red-400 mx-auto mb-3 sm:mb-4" />
+            <h1 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-red-900">Product not found</h1>
+            <p className="text-sm sm:text-base text-red-700 mb-4 sm:mb-6">
               We couldn't find the product you're looking for. It may have been removed or the link is incorrect.
             </p>
-            <Button onClick={() => router.push("/reseller/dashboard/store/browse")}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
+            <Button onClick={() => router.push("/reseller/dashboard/store/browse")} className="text-xs sm:text-sm">
+              <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
               Back to Browse
             </Button>
           </CardContent>
@@ -300,32 +300,32 @@ export default function ResellerProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Breadcrumb */}
-        <div className="mb-6">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+        <div className="mb-4 sm:mb-6">
+          <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 overflow-x-auto scrollbar-hide">
             <Link
               href="/reseller/dashboard"
-              className="hover:text-[#F36E16] transition-colors"
+              className="hover:text-[#F36E16] transition-colors whitespace-nowrap"
             >
               Dashboard
             </Link>
             <span>/</span>
             <Link
               href="/reseller/dashboard/store"
-              className="hover:text-[#F36E16] transition-colors"
+              className="hover:text-[#F36E16] transition-colors whitespace-nowrap"
             >
               Store
             </Link>
             <span>/</span>
             <Link
               href="/reseller/dashboard/store/browse"
-              className="hover:text-[#F36E16] transition-colors"
+              className="hover:text-[#F36E16] transition-colors whitespace-nowrap"
             >
               Browse
             </Link>
             <span>/</span>
-            <span className="text-gray-900 font-medium">{product.name}</span>
+            <span className="text-gray-900 font-medium truncate max-w-[150px] sm:max-w-none">{product.name}</span>
           </div>
         </div>
 
@@ -333,29 +333,29 @@ export default function ResellerProductDetailPage() {
         <Button
           variant="outline"
           onClick={() => router.back()}
-          className="mb-6"
+          className="mb-4 sm:mb-6 text-xs sm:text-sm"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
           Back
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Left Column - Product Images */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <Card className="overflow-hidden shadow-lg">
               <CardContent className="p-0">
-                <div className="relative bg-gradient-to-br from-gray-50 to-white flex items-center justify-center h-[550px] w-full group">
+                <div className="relative bg-gradient-to-br from-gray-50 to-white flex items-center justify-center h-[300px] sm:h-[400px] md:h-[500px] lg:h-[550px] w-full group">
                   <img
                     src={product.images[selectedImage] || product.image}
                     alt={product.name}
-                    className="w-full h-full object-contain p-8 transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-contain p-4 sm:p-6 md:p-8 transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
                       e.target.src = '/placeholder-image.png';
                     }}
                   />
                   {!product.inStock && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                      <Badge className="bg-red-600 text-white text-lg px-6 py-2">
+                      <Badge className="bg-red-600 text-white text-sm sm:text-lg px-4 sm:px-6 py-1.5 sm:py-2">
                         Out of Stock
                       </Badge>
                     </div>
@@ -367,23 +367,22 @@ export default function ResellerProductDetailPage() {
             {/* Thumbnail Navigation */}
             <div className="flex items-center gap-2">
               <button
-                className="w-12 h-12 flex items-center justify-center rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50 hover:border-[#F36E16] disabled:opacity-50 transition-all"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50 hover:border-[#F36E16] disabled:opacity-50 transition-all flex-shrink-0"
                 onClick={() => setSelectedImage(Math.max(0, selectedImage - 1))}
                 disabled={selectedImage === 0}
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
-              <div className="flex gap-2 overflow-hidden flex-1">
+              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide flex-1">
                 {product.images.slice(0, 4).map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`w-24 h-24 rounded-lg border-2 overflow-hidden flex-shrink-0 transition-all ${
-                      selectedImage === index
+                    className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-lg border-2 overflow-hidden flex-shrink-0 transition-all ${selectedImage === index
                         ? "border-[#F36E16] ring-2 ring-orange-200 shadow-md"
                         : "border-gray-200 hover:border-gray-300"
-                    }`}
+                      }`}
                   >
                     <img
                       src={image || product.image}
@@ -398,7 +397,7 @@ export default function ResellerProductDetailPage() {
               </div>
 
               <button
-                className="w-12 h-12 flex items-center justify-center rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50 hover:border-[#F36E16] disabled:opacity-50 transition-all"
+                className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-lg border-2 border-gray-300 bg-white hover:bg-gray-50 hover:border-[#F36E16] disabled:opacity-50 transition-all flex-shrink-0"
                 onClick={() =>
                   setSelectedImage(
                     Math.min(product.images.length - 1, selectedImage + 1)
@@ -406,41 +405,41 @@ export default function ResellerProductDetailPage() {
                 }
                 disabled={selectedImage === product.images.length - 1}
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           </div>
 
           {/* Right Column - Product Details */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Product Header */}
-            <div className="bg-white rounded-lg p-6 shadow-md">
+            <div className="bg-white rounded-lg p-4 sm:p-6 shadow-md">
               <div className="flex items-center gap-2 mb-3 flex-wrap">
-                <Badge variant="outline" className="text-sm">{product.category}</Badge>
+                <Badge variant="outline" className="text-xs sm:text-sm">{product.category}</Badge>
                 {product.inStock ? (
-                  <Badge className="bg-green-100 text-green-800 border-green-300">
+                  <Badge className="bg-green-100 text-green-800 border-green-300 text-xs sm:text-sm">
                     <CheckCircle2 className="h-3 w-3 mr-1" />
                     In Stock
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-red-600 border-red-300">
+                  <Badge variant="outline" className="text-red-600 border-red-300 text-xs sm:text-sm">
                     <AlertCircle className="h-3 w-3 mr-1" />
                     Out of Stock
                   </Badge>
                 )}
                 {product.rating && (
-                  <Badge variant="outline" className="text-yellow-600">
+                  <Badge variant="outline" className="text-yellow-600 text-xs sm:text-sm">
                     <Star className="h-3 w-3 mr-1 fill-yellow-400" />
                     {product.rating} ({product.reviewCount || 0})
                   </Badge>
                 )}
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-3 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 leading-tight">
                 {product.name}
               </h1>
-              <div className="space-y-1 text-gray-600">
+              <div className="space-y-1 text-xs sm:text-sm text-gray-600">
                 <p className="flex items-center gap-2">
-                  <span className="font-medium">SKU:</span> {product.id}
+                  <span className="font-medium">SKU:</span> <span className="break-all">{product.id}</span>
                 </p>
                 {product.brand && (
                   <p className="flex items-center gap-2">
@@ -452,17 +451,17 @@ export default function ResellerProductDetailPage() {
 
             {/* Wholesale Pricing Tiers - Now Clickable! */}
             <Card className="shadow-lg border-2 border-orange-100">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <DollarSign className="h-6 w-6 text-[#F36E16]" />
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-2 mb-4 sm:mb-6">
+                  <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg flex-shrink-0">
+                    <DollarSign className="h-5 w-5 sm:h-6 sm:w-6 text-[#F36E16]" />
                   </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Wholesale Pricing Tiers</h2>
-                    <p className="text-sm text-gray-600">Click a tier to select quantity range</p>
+                  <div className="min-w-0">
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">Wholesale Pricing Tiers</h2>
+                    <p className="text-xs sm:text-sm text-gray-600">Click a tier to select quantity range</p>
                   </div>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {product.tierPrices.map((tier, idx) => {
                     const isActive =
                       currentTier?.minQty === tier.minQty &&
@@ -471,16 +470,15 @@ export default function ResellerProductDetailPage() {
                       <button
                         key={idx}
                         onClick={() => handleTierSelect(tier)}
-                        className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
-                          isActive
-                            ? "border-[#F36E16] bg-gradient-to-r from-orange-50 to-orange-100 shadow-md scale-[1.02]"
+                        className={`w-full p-3 sm:p-4 rounded-xl border-2 transition-all text-left ${isActive
+                            ? "border-[#F36E16] bg-gradient-to-r from-orange-50 to-orange-100 shadow-md sm:scale-[1.02]"
                             : "border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50 hover:shadow-sm"
-                        }`}
+                          }`}
                       >
-                        <div className="flex justify-between items-center">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-semibold text-gray-900 text-lg">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-1">
+                              <span className="font-semibold text-gray-900 text-sm sm:text-base md:text-lg">
                                 {tier.label}
                               </span>
                               {tier.discount > 0 && (
@@ -501,8 +499,8 @@ export default function ResellerProductDetailPage() {
                               </p>
                             )}
                           </div>
-                          <div className="text-right ml-4">
-                            <div className="text-3xl font-bold text-[#F36E16]">
+                          <div className="text-left sm:text-right sm:ml-4 flex-shrink-0">
+                            <div className="text-2xl sm:text-3xl font-bold text-[#F36E16]">
                               ${tier.price.toFixed(2)}
                             </div>
                             <div className="text-xs text-gray-500">per unit</div>
@@ -517,20 +515,20 @@ export default function ResellerProductDetailPage() {
 
             {/* Quantity Input Section */}
             <Card className="shadow-md">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Package className="h-5 w-5 text-[#F36E16]" />
-                  <h2 className="text-xl font-semibold">Order Quantity</h2>
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <Package className="h-4 w-4 sm:h-5 sm:w-5 text-[#F36E16] flex-shrink-0" />
+                  <h2 className="text-lg sm:text-xl font-semibold">Order Quantity</h2>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-xs sm:text-sm font-medium text-gray-700 mb-2 block">
                       Quantity
                     </label>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleQuantityChange(Math.max(product.moq, (Number(quantity) || product.moq) - 1))}
-                        className="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-gray-300 hover:border-[#F36E16] hover:bg-orange-50 transition-all"
+                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg border-2 border-gray-300 hover:border-[#F36E16] hover:bg-orange-50 transition-all text-sm sm:text-base"
                         disabled={!product.inStock}
                       >
                         -
@@ -545,40 +543,40 @@ export default function ResellerProductDetailPage() {
                           const val = parseInt(e.target.value) || product.moq;
                           handleQuantityChange(Math.max(product.moq, val));
                         }}
-                        className="flex-1 text-center text-lg font-semibold"
+                        className="flex-1 text-center text-base sm:text-lg font-semibold"
                         disabled={!product.inStock}
                       />
                       <button
                         onClick={() => handleQuantityChange(Math.min(product.stockCount, (Number(quantity) || product.moq) + 1))}
-                        className="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-gray-300 hover:border-[#F36E16] hover:bg-orange-50 transition-all"
+                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg border-2 border-gray-300 hover:border-[#F36E16] hover:bg-orange-50 transition-all text-sm sm:text-base"
                         disabled={!product.inStock || (Number(quantity) || 0) >= product.stockCount}
                       >
                         +
                       </button>
                     </div>
                     {quantityError && (
-                      <p className="text-sm text-red-600 mt-2 flex items-center gap-1">
-                        <AlertCircle className="h-4 w-4" />
+                      <p className="text-xs sm:text-sm text-red-600 mt-2 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                         {quantityError}
                       </p>
                     )}
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-600">
+                    <div className="flex items-center gap-2 sm:gap-4 mt-2 text-xs text-gray-600 flex-wrap">
                       <span>MOQ: {product.moq} units</span>
-                      <span>•</span>
+                      <span className="hidden sm:inline">•</span>
                       <span>Available: {product.stockCount} units</span>
                     </div>
                   </div>
 
                   {currentTier && (
-                    <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
-                      <div className="flex justify-between items-center">
+                    <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-3 sm:p-4 border border-orange-200">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                         <div>
-                          <span className="text-gray-600 text-sm">Total Cost:</span>
+                          <span className="text-gray-600 text-xs sm:text-sm">Total Cost:</span>
                           <p className="text-xs text-gray-500 mt-1">
                             {quantity} units × ${currentTier.price.toFixed(2)}
                           </p>
                         </div>
-                        <span className="text-3xl font-bold text-[#F36E16]">
+                        <span className="text-2xl sm:text-3xl font-bold text-[#F36E16]">
                           ${((currentTier.price * (Number(quantity) || product.moq))).toFixed(2)}
                         </span>
                       </div>
@@ -590,19 +588,19 @@ export default function ResellerProductDetailPage() {
 
             {/* Profit Calculator */}
             <Card className="shadow-md bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Calculator className="h-5 w-5 text-blue-600" />
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                    <Calculator className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                   </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Profit Calculator</h2>
+                  <div className="min-w-0">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Profit Calculator</h2>
                     <p className="text-xs text-gray-600">Calculate your profit margin</p>
                   </div>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    <label className="text-xs sm:text-sm font-medium text-gray-700 mb-2 block">
                       Your Retail Price (per unit)
                     </label>
                     <Input
@@ -610,7 +608,7 @@ export default function ResellerProductDetailPage() {
                       placeholder="Enter your selling price"
                       value={retailPrice}
                       onChange={(e) => setRetailPrice(e.target.value)}
-                      className="w-full text-lg"
+                      className="w-full text-sm sm:text-base md:text-lg"
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       What price will you sell this to your customers?
@@ -618,40 +616,40 @@ export default function ResellerProductDetailPage() {
                   </div>
 
                   {profitCalculation ? (
-                    <div className="bg-white rounded-lg p-5 space-y-3 border-2 border-green-200 shadow-sm">
-                      <div className="flex justify-between items-center pb-2 border-b">
-                        <span className="text-gray-600">Wholesale Cost:</span>
-                        <span className="font-semibold">
+                    <div className="bg-white rounded-lg p-4 sm:p-5 space-y-3 border-2 border-green-200 shadow-sm">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 pb-2 border-b">
+                        <span className="text-xs sm:text-sm text-gray-600">Wholesale Cost:</span>
+                        <span className="font-semibold text-xs sm:text-sm">
                           ${profitCalculation.wholesaleCost.toFixed(2)} × {profitCalculation.quantity} = $
                           {profitCalculation.totalCost.toFixed(2)}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center pb-2 border-b">
-                        <span className="text-gray-600">Your Revenue:</span>
-                        <span className="font-semibold">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 pb-2 border-b">
+                        <span className="text-xs sm:text-sm text-gray-600">Your Revenue:</span>
+                        <span className="font-semibold text-xs sm:text-sm">
                           ${profitCalculation.retail.toFixed(2)} × {profitCalculation.quantity} = $
                           {profitCalculation.totalRevenue.toFixed(2)}
                         </span>
                       </div>
                       <div className="pt-2">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="font-bold text-gray-900 text-lg">Your Profit:</span>
-                          <span className="text-3xl font-bold text-green-600">
+                          <span className="font-bold text-gray-900 text-base sm:text-lg">Your Profit:</span>
+                          <span className="text-2xl sm:text-3xl font-bold text-green-600">
                             ${profitCalculation.profit.toFixed(2)}
                           </span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">Profit Margin:</span>
-                          <span className="text-xl font-bold text-green-600">
+                          <span className="text-xs sm:text-sm text-gray-600">Profit Margin:</span>
+                          <span className="text-lg sm:text-xl font-bold text-green-600">
                             {profitCalculation.margin}%
                           </span>
                         </div>
                       </div>
                     </div>
                   ) : retailPrice && Number(retailPrice) <= (currentTier?.price || 0) ? (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <p className="text-sm text-red-600 flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4" />
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4">
+                      <p className="text-xs sm:text-sm text-red-600 flex items-center gap-2">
+                        <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                         Retail price must be higher than wholesale cost (${currentTier?.price.toFixed(2)})
                       </p>
                     </div>
@@ -661,29 +659,29 @@ export default function ResellerProductDetailPage() {
             </Card>
 
             {/* Quick Info Cards */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <Card className="shadow-md">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-100 rounded-lg">
-                      <Package className="h-5 w-5 text-green-600" />
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-green-100 rounded-lg flex-shrink-0">
+                      <Package className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs text-gray-600">Available Stock</p>
-                      <p className="text-lg font-bold text-gray-900">{product.stockCount} units</p>
+                      <p className="text-base sm:text-lg font-bold text-gray-900">{product.stockCount} units</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
               <Card className="shadow-md">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Clock className="h-5 w-5 text-blue-600" />
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs text-gray-600">Lead Time</p>
-                      <p className="text-lg font-bold text-gray-900">{product.leadTime}</p>
+                      <p className="text-base sm:text-lg font-bold text-gray-900 break-words">{product.leadTime}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -692,38 +690,39 @@ export default function ResellerProductDetailPage() {
 
             {/* Add to Store Section */}
             <Card className="shadow-lg border-2 border-[#F36E16]">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <Store className="h-5 w-5 text-[#F36E16]" />
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-orange-100 rounded-lg flex-shrink-0">
+                    <Store className="h-4 w-4 sm:h-5 sm:w-5 text-[#F36E16]" />
                   </div>
-                  <h2 className="text-xl font-semibold">Add to Store</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold">Add to Store</h2>
                 </div>
-                
+
                 {isInStore ? (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                    <CheckCircle2 className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                    <p className="font-semibold text-green-900">Already in Your Store</p>
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 sm:p-4 text-center">
+                    <CheckCircle2 className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 mx-auto mb-2" />
+                    <p className="font-semibold text-sm sm:text-base text-green-900">Already in Your Store</p>
                     <Link href="/reseller/dashboard/store">
-                      <Button variant="outline" className="mt-3">
+                      <Button variant="outline" className="mt-3 text-xs sm:text-sm">
                         View in Store
                       </Button>
                     </Link>
                   </div>
                 ) : (
                   <Button
-                    className="w-full bg-[#F36E16] hover:bg-[#e06212] h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+                    className="w-full bg-[#F36E16] hover:bg-[#e06212] h-12 sm:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
                     onClick={handleAddToStore}
                     disabled={!product.inStock || quantityError || (Number(quantity) || 0) < product.moq || (Number(quantity) || 0) > product.stockCount}
                   >
-                    <Store className="h-5 w-5 mr-2" />
-                    Add {quantity || product.moq} Units to Store
+                    <Store className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                    <span className="hidden sm:inline">Add {quantity || product.moq} Units to Store</span>
+                    <span className="sm:hidden">Add to Store</span>
                   </Button>
                 )}
 
                 {!product.inStock && (
-                  <p className="text-sm text-red-600 mt-3 text-center flex items-center justify-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-red-600 mt-3 text-center flex items-center justify-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                     This product is currently out of stock
                   </p>
                 )}
@@ -733,86 +732,86 @@ export default function ResellerProductDetailPage() {
         </div>
 
         {/* Product Details Tabs */}
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <Card className="shadow-lg">
             <CardContent className="p-0">
               <Tabs defaultValue="specifications" className="w-full">
-                <TabsList className="w-full justify-start border-b bg-gray-50 rounded-none p-0">
+                <TabsList className="w-full justify-start border-b bg-gray-50 rounded-none p-0 overflow-x-auto scrollbar-hide">
                   <TabsTrigger
                     value="specifications"
-                    className="px-6 py-4 border-b-2 border-transparent data-[state=active]:border-[#F36E16] data-[state=active]:text-[#F36E16] rounded-none font-medium"
+                    className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-b-2 border-transparent data-[state=active]:border-[#F36E16] data-[state=active]:text-[#F36E16] rounded-none font-medium text-xs sm:text-sm whitespace-nowrap"
                   >
                     Specifications
                   </TabsTrigger>
                   <TabsTrigger
                     value="shipping"
-                    className="px-6 py-4 border-b-2 border-transparent data-[state=active]:border-[#F36E16] data-[state=active]:text-[#F36E16] rounded-none font-medium"
+                    className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-b-2 border-transparent data-[state=active]:border-[#F36E16] data-[state=active]:text-[#F36E16] rounded-none font-medium text-xs sm:text-sm whitespace-nowrap"
                   >
                     Shipping & Returns
                   </TabsTrigger>
                   <TabsTrigger
                     value="wholesaler"
-                    className="px-6 py-4 border-b-2 border-transparent data-[state=active]:border-[#F36E16] data-[state=active]:text-[#F36E16] rounded-none font-medium"
+                    className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-b-2 border-transparent data-[state=active]:border-[#F36E16] data-[state=active]:text-[#F36E16] rounded-none font-medium text-xs sm:text-sm whitespace-nowrap"
                   >
                     Wholesaler Info
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="specifications" className="p-8">
-                  <div className="space-y-6">
+                <TabsContent value="specifications" className="p-4 sm:p-6 md:p-8">
+                  <div className="space-y-4 sm:space-y-6">
                     <div>
-                      <h3 className="font-bold text-xl text-gray-900 mb-3">Product Description</h3>
-                      <p className="text-gray-700 leading-relaxed">{product.description}</p>
+                      <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-2 sm:mb-3">Product Description</h3>
+                      <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{product.description}</p>
                     </div>
                     <div>
-                      <h3 className="font-bold text-xl text-gray-900 mb-3">Key Features</h3>
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-2 sm:mb-3">Key Features</h3>
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         {product.features.map((feature, i) => (
-                          <li key={i} className="flex items-start gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700">{feature}</span>
+                          <li key={i} className="flex items-start gap-2 sm:gap-3">
+                            <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-xs sm:text-sm md:text-base text-gray-700">{feature}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="font-bold text-xl text-gray-900 mb-4">Product Details</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+                      <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-3 sm:mb-4">Product Details</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                         <div>
-                          <span className="text-gray-600 text-sm">Category:</span>
-                          <p className="font-medium text-gray-900">{product.category}</p>
+                          <span className="text-gray-600 text-xs sm:text-sm">Category:</span>
+                          <p className="font-medium text-sm sm:text-base text-gray-900">{product.category}</p>
                         </div>
                         <div>
-                          <span className="text-gray-600 text-sm">Brand:</span>
-                          <p className="font-medium text-gray-900">{product.brand || "N/A"}</p>
+                          <span className="text-gray-600 text-xs sm:text-sm">Brand:</span>
+                          <p className="font-medium text-sm sm:text-base text-gray-900">{product.brand || "N/A"}</p>
                         </div>
                         <div>
-                          <span className="text-gray-600 text-sm">SKU:</span>
-                          <p className="font-medium text-gray-900">{product.id}</p>
+                          <span className="text-gray-600 text-xs sm:text-sm">SKU:</span>
+                          <p className="font-medium text-sm sm:text-base text-gray-900 break-all">{product.id}</p>
                         </div>
                         <div>
-                          <span className="text-gray-600 text-sm">Warranty:</span>
-                          <p className="font-medium text-gray-900">{product.warranty}</p>
+                          <span className="text-gray-600 text-xs sm:text-sm">Warranty:</span>
+                          <p className="font-medium text-sm sm:text-base text-gray-900">{product.warranty}</p>
                         </div>
                         <div>
-                          <span className="text-gray-600 text-sm">Return Policy:</span>
-                          <p className="font-medium text-gray-900">{product.returnPolicy}</p>
+                          <span className="text-gray-600 text-xs sm:text-sm">Return Policy:</span>
+                          <p className="font-medium text-sm sm:text-base text-gray-900">{product.returnPolicy}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </TabsContent>
 
-                <TabsContent value="shipping" className="p-8">
-                  <div className="space-y-6">
-                    <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 bg-blue-100 rounded-lg">
-                          <Truck className="h-6 w-6 text-blue-600" />
+                <TabsContent value="shipping" className="p-4 sm:p-6 md:p-8">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-blue-50 rounded-lg p-4 sm:p-6 border border-blue-200">
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0">
+                          <Truck className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                         </div>
-                        <div>
-                          <h3 className="font-bold text-xl text-gray-900 mb-2">Shipping Information</h3>
-                          <div className="space-y-2 text-gray-700">
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-2">Shipping Information</h3>
+                          <div className="space-y-2 text-xs sm:text-sm md:text-base text-gray-700">
                             <p><span className="font-semibold">Lead Time:</span> {product.leadTime}</p>
                             <p><span className="font-semibold">Processing:</span> Orders are typically processed within 1-2 business days</p>
                             <p><span className="font-semibold">Tracking:</span> You will receive tracking information once your order ships</p>
@@ -820,45 +819,45 @@ export default function ResellerProductDetailPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 bg-green-100 rounded-lg">
-                          <Shield className="h-6 w-6 text-green-600" />
+                    <div className="bg-green-50 rounded-lg p-4 sm:p-6 border border-green-200">
+                      <div className="flex items-start gap-3 sm:gap-4">
+                        <div className="p-2 sm:p-3 bg-green-100 rounded-lg flex-shrink-0">
+                          <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
                         </div>
-                        <div>
-                          <h3 className="font-bold text-xl text-gray-900 mb-2">Return Policy</h3>
-                          <p className="text-gray-700">{product.returnPolicy}. Unopened items in original packaging can be returned within the specified period.</p>
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-2">Return Policy</h3>
+                          <p className="text-xs sm:text-sm md:text-base text-gray-700">{product.returnPolicy}. Unopened items in original packaging can be returned within the specified period.</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </TabsContent>
 
-                <TabsContent value="wholesaler" className="p-8">
+                <TabsContent value="wholesaler" className="p-4 sm:p-6 md:p-8">
                   {wholesaler ? (
-                    <div className="space-y-6">
-                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
-                        <div className="flex items-start gap-4">
-                          <div className="p-3 bg-purple-100 rounded-lg">
-                            <Users className="h-6 w-6 text-purple-600" />
+                    <div className="space-y-4 sm:space-y-6">
+                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 sm:p-6 border border-purple-200">
+                        <div className="flex items-start gap-3 sm:gap-4">
+                          <div className="p-2 sm:p-3 bg-purple-100 rounded-lg flex-shrink-0">
+                            <Users className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
                           </div>
-                          <div className="flex-1">
-                            <h3 className="font-bold text-xl text-gray-900 mb-3">Wholesaler Details</h3>
-                            <div className="space-y-3">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-3">Wholesaler Details</h3>
+                            <div className="space-y-2 sm:space-y-3">
                               <div>
-                                <span className="text-gray-600 text-sm">Name:</span>
-                                <p className="font-semibold text-gray-900 text-lg">{wholesaler.name}</p>
+                                <span className="text-gray-600 text-xs sm:text-sm">Name:</span>
+                                <p className="font-semibold text-sm sm:text-base md:text-lg text-gray-900 break-words">{wholesaler.name}</p>
                               </div>
                               <div>
-                                <span className="text-gray-600 text-sm">Type:</span>
-                                <p className="font-medium text-gray-900 capitalize">{wholesaler.type}</p>
+                                <span className="text-gray-600 text-xs sm:text-sm">Type:</span>
+                                <p className="font-medium text-sm sm:text-base text-gray-900 capitalize">{wholesaler.type}</p>
                               </div>
                               <Link
                                 href={`/wholesaler/${wholesaler.slug}`}
-                                className="inline-block mt-4"
+                                className="inline-block mt-3 sm:mt-4"
                               >
-                                <Button className="bg-purple-600 hover:bg-purple-700">
-                                  <Users className="h-4 w-4 mr-2" />
+                                <Button className="bg-purple-600 hover:bg-purple-700 text-xs sm:text-sm w-full sm:w-auto">
+                                  <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                                   View Wholesaler Profile
                                 </Button>
                               </Link>
@@ -868,9 +867,9 @@ export default function ResellerProductDetailPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-center py-8">
-                      <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">Wholesaler information not available.</p>
+                    <div className="text-center py-6 sm:py-8">
+                      <AlertCircle className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                      <p className="text-sm sm:text-base text-gray-600">Wholesaler information not available.</p>
                     </div>
                   )}
                 </TabsContent>

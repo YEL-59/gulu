@@ -76,7 +76,7 @@ export default function OrdersTable({ orders = [] }) {
   useEffect(() => {
     setMounted(true);
     setResellerPurchases(loadResellerPurchases());
-    
+
     // Update purchases periodically
     const interval = setInterval(() => {
       setResellerPurchases(loadResellerPurchases());
@@ -106,7 +106,7 @@ export default function OrdersTable({ orders = [] }) {
     // Check if data actually changed to prevent infinite loops
     const ordersKey = JSON.stringify(orders);
     const purchasesKey = JSON.stringify(resellerPurchases);
-    
+
     if (
       prevDataRef.current.orders === ordersKey &&
       prevDataRef.current.purchases === purchasesKey
@@ -188,195 +188,336 @@ export default function OrdersTable({ orders = [] }) {
     );
 
   return (
-    <div className="relative w-full overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead className="border-b bg-muted/30">
-          <tr>
-            <th className="h-10 px-2 text-left w-10"></th>
-            <th
-              className="h-10 px-2 text-left cursor-pointer"
-              onClick={() => toggleSort("order")}
-            >
-              Order <SortIcon active={sortKey === "order"} />
-            </th>
-            <th
-              className="h-10 px-2 text-left cursor-pointer"
-              onClick={() => toggleSort("customer")}
-            >
-              Customer <SortIcon active={sortKey === "customer"} />
-            </th>
-            <th
-              className="h-10 px-2 text-left cursor-pointer"
-              onClick={() => toggleSort("price")}
-            >
-              Price <SortIcon active={sortKey === "price"} />
-            </th>
-            <th
-              className="h-10 px-2 text-left cursor-pointer"
-              onClick={() => toggleSort("date")}
-            >
-              Date <SortIcon active={sortKey === "date"} />
-            </th>
-            <th
-              className="h-10 px-2 text-left cursor-pointer"
-              onClick={() => toggleSort("payment")}
-            >
-              Payment <SortIcon active={sortKey === "payment"} />
-            </th>
-            <th
-              className="h-10 px-2 text-left cursor-pointer"
-              onClick={() => toggleSort("status")}
-            >
-              Status <SortIcon active={sortKey === "status"} />
-            </th>
-            <th className="h-10 px-2 text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sorted.map((o) => {
+    <div className="relative w-full">
+      {/* Mobile Card View - Show on small screens */}
+      <div className="block md:hidden space-y-3">
+        {sorted.length === 0 ? (
+          <div className="p-6 text-center text-gray-600 text-sm">
+            No orders found.
+          </div>
+        ) : (
+          sorted.map((o) => {
             const item = o.items?.[0];
             const total = priceOf(o);
             return (
-              <tr key={o.id} className="border-b hover:bg-muted/50">
-                <td className="p-2 align-middle">
-                  <input
-                    type="checkbox"
-                    className="size-4"
-                    aria-label={`Select order ${o.id}`}
-                  />
-                </td>
-                <td className="p-2">
-                  <div className="flex items-center gap-2">
-                    {item?.image ? (
-                      <img
-                        src={item.image}
-                        alt={item?.name ?? "Product"}
-                        width={28}
-                        height={28}
-                        className="rounded"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.currentTarget.src = "/assets/home/girl.png";
-                        }}
-                      />
-                    ) : (
-                      <div className="size-7 rounded bg-muted" />
-                    )}
-                    <div>
-                      <div className="font-medium leading-tight">
-                        <span className="text-xs text-muted-foreground">#</span>
-                        {o.id}
-                      </div>
-                      <div className="text-muted-foreground text-xs truncate max-w-[220px]">
-                        {item?.name ?? "Product"}
-                      </div>
+              <div
+                key={o.id}
+                className="border rounded-lg p-3 bg-white hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  {item?.image ? (
+                    <img
+                      src={item.image}
+                      alt={item?.name ?? "Product"}
+                      width={48}
+                      height={48}
+                      className="rounded flex-shrink-0"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.src = "/assets/home/girl.png";
+                      }}
+                    />
+                  ) : (
+                    <div className="size-12 rounded bg-muted flex-shrink-0" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm mb-1">
+                      <span className="text-xs text-muted-foreground">#</span>
+                      {o.id}
+                    </div>
+                    <div className="text-muted-foreground text-xs mb-2 line-clamp-2">
+                      {item?.name ?? "Product"}
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-sm">${total.toFixed(2)}</span>
+                      {o.payment === "Paid" && (
+                        <Badge
+                          className="bg-emerald-100 text-emerald-700 text-xs"
+                          variant="secondary"
+                        >
+                          Paid
+                        </Badge>
+                      )}
+                      {o.payment === "Pending" && (
+                        <Badge
+                          className="bg-orange-100 text-orange-700 text-xs"
+                          variant="secondary"
+                        >
+                          Pending
+                        </Badge>
+                      )}
+                      {o.payment === "Refunded" && (
+                        <Badge
+                          className="bg-rose-100 text-rose-700 text-xs"
+                          variant="secondary"
+                        >
+                          Refunded
+                        </Badge>
+                      )}
                     </div>
                   </div>
-                </td>
-                <td className="p-2">{o.customer}</td>
-                <td className="p-2">${total.toFixed(2)}</td>
-                <td className="p-2">{o.orderDate}</td>
-                <td className="p-2">
-                  {o.payment === "Paid" && (
-                    <Badge
-                      className="bg-emerald-100 text-emerald-700"
-                      variant="secondary"
-                    >
-                      Paid
-                    </Badge>
-                  )}
-                  {o.payment === "Pending" && (
-                    <Badge
-                      className="bg-orange-100 text-orange-700"
-                      variant="secondary"
-                    >
-                      Pending
-                    </Badge>
-                  )}
-                  {o.payment === "Refunded" && (
-                    <Badge
-                      className="bg-rose-100 text-rose-700"
-                      variant="secondary"
-                    >
-                      Refunded
-                    </Badge>
-                  )}
-                </td>
-                <td className="p-2">
-                  <Badge variant="outline" className="text-xs capitalize">
-                    {o.status}
-                  </Badge>
-                </td>
-                <td className="p-2">
-                  <div className="flex items-center gap-3">
-                    {o.hasPendingPurchase && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-orange-600 border-orange-200 hover:bg-orange-50"
-                        onClick={() => window.location.href = "/reseller/dashboard/purchases"}
-                        title="Purchase from wholesaler required"
-                      >
-                        <ShoppingCart className="size-3 mr-1" />
-                        Purchase
-                      </Button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label="View"
-                      onClick={() => setViewing(o)}
-                    >
-                      <Eye className="size-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label="Delete"
-                      onClick={() => removeOrder(o.id)}
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
+                </div>
+
+                <div className="space-y-2 pt-2 border-t">
+                  <div className="flex items-center justify-between text-xs text-gray-600">
+                    <span>Customer:</span>
+                    <span className="font-medium text-gray-900">{o.customer}</span>
                   </div>
+                  <div className="flex items-center justify-between text-xs text-gray-600">
+                    <span>Date:</span>
+                    <span className="font-medium text-gray-900">{o.orderDate}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-600">
+                    <span>Status:</span>
+                    <Badge variant="outline" className="text-xs capitalize">
+                      {o.status}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 mt-3 pt-3 border-t">
+                  {o.hasPendingPurchase && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-orange-600 border-orange-200 hover:bg-orange-50 text-xs flex-1"
+                      onClick={() => window.location.href = "/reseller/dashboard/purchases"}
+                    >
+                      <ShoppingCart className="size-3 mr-1" />
+                      Purchase
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 flex-1"
+                    onClick={() => setViewing(o)}
+                  >
+                    <Eye className="size-4 mr-1" />
+                    View
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    aria-label="Delete"
+                    onClick={() => removeOrder(o.id)}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop Table View - Show on medium screens and up */}
+      <div className="hidden md:block relative w-full overflow-x-auto scrollbar-hide">
+        <table className="w-full text-xs sm:text-sm min-w-[800px]">
+          <thead className="border-b bg-muted/30">
+            <tr>
+              <th className="h-10 px-2 text-left w-10"></th>
+              <th
+                className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => toggleSort("order")}
+              >
+                <span className="flex items-center gap-1">
+                  Order <SortIcon active={sortKey === "order"} />
+                </span>
+              </th>
+              <th
+                className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => toggleSort("customer")}
+              >
+                <span className="flex items-center gap-1">
+                  Customer <SortIcon active={sortKey === "customer"} />
+                </span>
+              </th>
+              <th
+                className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => toggleSort("price")}
+              >
+                <span className="flex items-center gap-1">
+                  Price <SortIcon active={sortKey === "price"} />
+                </span>
+              </th>
+              <th
+                className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors hidden lg:table-cell"
+                onClick={() => toggleSort("date")}
+              >
+                <span className="flex items-center gap-1">
+                  Date <SortIcon active={sortKey === "date"} />
+                </span>
+              </th>
+              <th
+                className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => toggleSort("payment")}
+              >
+                <span className="flex items-center gap-1">
+                  Payment <SortIcon active={sortKey === "payment"} />
+                </span>
+              </th>
+              <th
+                className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors"
+                onClick={() => toggleSort("status")}
+              >
+                <span className="flex items-center gap-1">
+                  Status <SortIcon active={sortKey === "status"} />
+                </span>
+              </th>
+              <th className="h-10 px-2 sm:px-3 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((o) => {
+              const item = o.items?.[0];
+              const total = priceOf(o);
+              return (
+                <tr key={o.id} className="border-b hover:bg-muted/50">
+                  <td className="p-2 align-middle">
+                    <input
+                      type="checkbox"
+                      className="size-4"
+                      aria-label={`Select order ${o.id}`}
+                    />
+                  </td>
+                  <td className="p-2">
+                    <div className="flex items-center gap-2">
+                      {item?.image ? (
+                        <img
+                          src={item.image}
+                          alt={item?.name ?? "Product"}
+                          width={28}
+                          height={28}
+                          className="rounded flex-shrink-0"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = "/assets/home/girl.png";
+                          }}
+                        />
+                      ) : (
+                        <div className="size-7 rounded bg-muted flex-shrink-0" />
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium leading-tight">
+                          <span className="text-xs text-muted-foreground">#</span>
+                          {o.id}
+                        </div>
+                        <div className="text-muted-foreground text-xs truncate">
+                          {item?.name ?? "Product"}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-2">{o.customer}</td>
+                  <td className="p-2 font-medium">${total.toFixed(2)}</td>
+                  <td className="p-2 hidden lg:table-cell text-xs">{o.orderDate}</td>
+                  <td className="p-2">
+                    {o.payment === "Paid" && (
+                      <Badge
+                        className="bg-emerald-100 text-emerald-700 text-xs"
+                        variant="secondary"
+                      >
+                        Paid
+                      </Badge>
+                    )}
+                    {o.payment === "Pending" && (
+                      <Badge
+                        className="bg-orange-100 text-orange-700 text-xs"
+                        variant="secondary"
+                      >
+                        Pending
+                      </Badge>
+                    )}
+                    {o.payment === "Refunded" && (
+                      <Badge
+                        className="bg-rose-100 text-rose-700 text-xs"
+                        variant="secondary"
+                      >
+                        Refunded
+                      </Badge>
+                    )}
+                  </td>
+                  <td className="p-2">
+                    <Badge variant="outline" className="text-xs capitalize">
+                      {o.status}
+                    </Badge>
+                  </td>
+                  <td className="p-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      {o.hasPendingPurchase && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-orange-600 border-orange-200 hover:bg-orange-50 text-xs px-2 py-1 h-auto"
+                          onClick={() => window.location.href = "/reseller/dashboard/purchases"}
+                          title="Purchase from wholesaler required"
+                        >
+                          <ShoppingCart className="size-3 sm:mr-1" />
+                          <span className="hidden sm:inline">Purchase</span>
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        aria-label="View"
+                        onClick={() => setViewing(o)}
+                      >
+                        <Eye className="size-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        aria-label="Delete"
+                        onClick={() => removeOrder(o.id)}
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {sorted.length === 0 && (
+              <tr>
+                <td className="p-3 text-center text-gray-600" colSpan={8}>
+                  No orders found.
                 </td>
               </tr>
-            );
-          })}
-          {sorted.length === 0 && (
-            <tr>
-              <td className="p-3 text-center text-gray-600" colSpan={8}>
-                No orders.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       <Dialog
         open={!!viewing}
         onOpenChange={(open) => !open && setViewing(null)}
       >
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           {viewing && (
-            <div className="space-y-3">
+            <div className="space-y-3 sm:space-y-4">
               <DialogHeader>
-                <DialogTitle>Order #{viewing.id}</DialogTitle>
-                <DialogDescription>
-                  {viewing.orderDate} •{" "}
+                <DialogTitle className="text-lg sm:text-xl">Order #{viewing.id}</DialogTitle>
+                <DialogDescription className="text-xs sm:text-sm">
+                  <span>{viewing.orderDate}</span>
+                  <span className="hidden sm:inline"> • </span>
                   <span className="capitalize">{viewing.status}</span>
-                  {viewing.hasPendingPurchase && (
-                    <span className="block mt-2 text-orange-600 font-medium">
-                      ⚠️ Purchase from wholesaler required
-                    </span>
-                  )}
                 </DialogDescription>
+                {viewing.hasPendingPurchase && (
+                  <p className="mt-2 text-orange-600 font-medium text-sm">
+                    ⚠️ Purchase from wholesaler required
+                  </p>
+                )}
               </DialogHeader>
               {viewing.hasPendingPurchase && viewing.pendingPurchase && (
-                <div className="bg-orange-50 border border-orange-200 rounded-md p-3 mb-3">
-                  <div className="flex items-start gap-2">
-                    <ShoppingCart className="w-4 h-4 text-orange-600 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-orange-900">
+                <div className="bg-orange-50 border border-orange-200 rounded-md p-3 sm:p-4">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-orange-900">
                         Purchase Required
                       </p>
                       <p className="text-xs text-orange-700 mt-1">
@@ -386,7 +527,7 @@ export default function OrdersTable({ orders = [] }) {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="mt-2 text-orange-600 border-orange-300"
+                        className="mt-2 sm:mt-3 text-orange-600 border-orange-300 text-xs sm:text-sm w-full sm:w-auto"
                         onClick={() => {
                           window.location.href = "/reseller/dashboard/purchases";
                         }}
@@ -397,27 +538,28 @@ export default function OrdersTable({ orders = [] }) {
                   </div>
                 </div>
               )}
-              <div className="space-y-2">
+              <div className="space-y-2 sm:space-y-3">
+                <h4 className="text-sm sm:text-base font-semibold text-gray-900">Order Items</h4>
                 {viewing.items?.map((it, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
+                  <div key={idx} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg">
                     {it.image ? (
                       <img
                         src={it.image}
                         alt={it.name}
-                        width={44}
-                        height={44}
-                        className="rounded"
+                        width={40}
+                        height={40}
+                        className="rounded flex-shrink-0 sm:w-11 sm:h-11"
                         loading="lazy"
                         onError={(e) => {
                           e.currentTarget.src = "/assets/home/girl.png";
                         }}
                       />
                     ) : (
-                      <div className="size-11 rounded bg-muted" />
+                      <div className="size-10 sm:size-11 rounded bg-muted flex-shrink-0" />
                     )}
-                    <div className="flex-1">
-                      <div className="font-medium">{it.name}</div>
-                      <div className="text-muted-foreground text-sm">
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-xs sm:text-sm truncate">{it.name}</div>
+                      <div className="text-muted-foreground text-xs sm:text-sm mt-0.5">
                         ${Number(it.price).toFixed(2)} × {it.quantity} = $
                         {(Number(it.price) * Number(it.quantity)).toFixed(2)}
                       </div>

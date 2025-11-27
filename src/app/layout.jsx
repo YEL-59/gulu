@@ -2,6 +2,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import AppChrome from "@/components/layout/AppChrome";
+import GlobalLoading from "@/components/common/GlobalLoading";
 
 const inter = Inter({ subsets: ["latin"] });
 const poppins = Poppins({
@@ -26,6 +27,7 @@ export default function RootLayout({ children }) {
       >
         <Providers>
           <AppChrome>{children}</AppChrome>
+          <GlobalLoading />
         </Providers>
       </body>
     </html>

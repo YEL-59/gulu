@@ -52,14 +52,14 @@ const StatGrid = ({ selectedMonth = "October" }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
       {stats.map((stat, index) => (
-        <Card key={index} className="p-6">
+        <Card key={index} className="p-4 sm:p-5 md:p-6">
           <div className="flex items-center justify-between">
-            <div className="text-2xl">{stat.icon}</div>
+            <div className="text-xl sm:text-2xl">{stat.icon}</div>
             <Badge
               variant={stat.trend === "up" ? "default" : "destructive"}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 text-xs"
             >
               {stat.trend === "up" ? (
                 <TrendingUp className="w-3 h-3" />
@@ -70,9 +70,9 @@ const StatGrid = ({ selectedMonth = "October" }) => {
             </Badge>
           </div>
 
-          <div className="mt-4">
-            <h3 className="text-sm font-medium text-gray-600">{stat.title}</h3>
-            <p className="text-2xl font-bold text-gray-900 mt-1">
+          <div className="mt-3 sm:mt-4">
+            <h3 className="text-xs sm:text-sm font-medium text-gray-600">{stat.title}</h3>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 break-words">
               {stat.value}
             </p>
             <p className="text-xs text-gray-500 mt-1">{stat.period}</p>

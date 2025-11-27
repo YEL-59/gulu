@@ -77,11 +77,11 @@ export default function PerformanceLine() {
   };
 
   return (
-    <div className="relative h-64">
+    <div className="relative h-56 sm:h-64 md:h-72">
       {/* Top bar: title with info and dropdown to match design */}
-      <div className="absolute -top-9 right-0 flex items-center gap-2">
+      <div className="absolute -top-8 sm:-top-9 right-0 flex items-center gap-2">
         <Select value={metric} onValueChange={setMetric}>
-          <SelectTrigger className="h-8 w-40 bg-white shadow-sm">
+          <SelectTrigger className="h-7 sm:h-8 w-32 sm:w-40 bg-white shadow-sm text-xs sm:text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

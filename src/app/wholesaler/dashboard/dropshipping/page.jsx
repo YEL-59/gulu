@@ -4,13 +4,15 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Package, Search, Plus, TrendingUp } from "lucide-react";
+import { Package, Search, Plus, TrendingUp, Link2, Globe } from "lucide-react";
 import DropshippingBrowse from "@/components/wholesaler/dashboard/dropshipping/DropshippingBrowse";
 import DropshippedProductsTable from "@/components/wholesaler/dashboard/dropshipping/DropshippedProductsTable";
 import DropshippingOrdersTable from "@/components/wholesaler/dashboard/dropshipping/DropshippingOrdersTable";
+import PlatformConnections from "@/components/wholesaler/dashboard/dropshipping/PlatformConnections";
+import ProductImporter from "@/components/wholesaler/dashboard/dropshipping/ProductImporter";
 
 export default function DropshippingPage() {
-  const [activeTab, setActiveTab] = useState("browse");
+  const [activeTab, setActiveTab] = useState("platforms");
 
   return (
     <div className="space-y-6">
@@ -19,7 +21,7 @@ export default function DropshippingPage() {
         <div>
           <h1 className="text-2xl font-semibold mb-2">Dropshipping</h1>
           <p className="text-sm text-gray-600">
-            Add products from suppliers without holding inventory
+            Import products from external platforms (Daraz, AliBaba, AliExpress, etc.) and sell without inventory
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -81,10 +83,18 @@ export default function DropshippingPage() {
       {/* Main Content Tabs */}
       <Card className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsList className="grid w-full max-w-2xl grid-cols-5">
+            <TabsTrigger value="platforms">
+              <Globe className="h-4 w-4 mr-2" />
+              Platforms
+            </TabsTrigger>
+            <TabsTrigger value="import">
+              <Link2 className="h-4 w-4 mr-2" />
+              Import Products
+            </TabsTrigger>
             <TabsTrigger value="browse">
               <Search className="h-4 w-4 mr-2" />
-              Browse Suppliers
+              Browse
             </TabsTrigger>
             <TabsTrigger value="products">
               <Package className="h-4 w-4 mr-2" />
@@ -95,6 +105,14 @@ export default function DropshippingPage() {
               Orders
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="platforms" className="mt-6">
+            <PlatformConnections />
+          </TabsContent>
+
+          <TabsContent value="import" className="mt-6">
+            <ProductImporter />
+          </TabsContent>
 
           <TabsContent value="browse" className="mt-6">
             <DropshippingBrowse />
