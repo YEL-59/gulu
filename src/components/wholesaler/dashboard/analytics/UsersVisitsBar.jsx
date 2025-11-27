@@ -44,7 +44,7 @@ export default function UsersVisitsBar() {
   const PeriodButton = ({ value }) => (
     <button
       onClick={() => setPeriod(value)}
-      className={`text-xs px-2 py-0.5 rounded-sm ${
+      className={`text-xs px-1.5 sm:px-2 py-0.5 rounded-sm ${
         period === value ? "text-blue-600 font-semibold" : "text-gray-400"
       }`}
     >
@@ -55,9 +55,9 @@ export default function UsersVisitsBar() {
   return (
     <div>
       {/* Header to match design: title, change, and period toggles */}
-      <div className="mb-2 flex items-center justify-between">
+      <div className="mb-2 sm:mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
-          <div className="text-sm font-medium">Users Visits</div>
+          <div className="text-xs sm:text-sm font-medium">Users Visits</div>
           <div className="text-xs text-emerald-600">
             +{change}% from last period
           </div>
@@ -70,7 +70,7 @@ export default function UsersVisitsBar() {
         </div>
       </div>
 
-      <div className="h-64">
+      <div className="h-56 sm:h-64 md:h-72">
         <Bar data={data} options={options} />
       </div>
     </div>

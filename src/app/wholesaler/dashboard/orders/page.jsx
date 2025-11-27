@@ -49,7 +49,7 @@ export default function WholesalerOrdersPage() {
     const handleStorageChange = () => {
       loadOrders();
     };
-    
+
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', handleStorageChange);
       const interval = setInterval(handleStorageChange, 1000);
@@ -88,57 +88,57 @@ export default function WholesalerOrdersPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5 md:space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Reseller Orders</h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <h1 className="text-xl sm:text-2xl font-semibold">Reseller Orders</h1>
+          <p className="text-xs sm:text-sm text-gray-600 mt-1">
             View and manage orders from resellers purchasing your products
           </p>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-6 bg-blue-50 border-blue-200">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <Card className="p-4 sm:p-5 md:p-6 bg-blue-50 border-blue-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Pending Orders</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600">Pending Orders</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 break-words">
                 {pendingOrders.length}
               </p>
-              <p className="text-lg font-semibold text-blue-600 mt-1">
+              <p className="text-base sm:text-lg font-semibold text-blue-600 mt-1 break-words">
                 ${totalPendingRevenue.toFixed(2)}
               </p>
             </div>
-            <Package className="w-8 h-8 text-blue-600" />
+            <Package className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-blue-600 flex-shrink-0 ml-2" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-green-50 border-green-200">
+        <Card className="p-4 sm:p-5 md:p-6 bg-green-50 border-green-200">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Completed Orders</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600">Completed Orders</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 break-words">
                 {completedOrders.length}
               </p>
-              <p className="text-lg font-semibold text-green-600 mt-1">
+              <p className="text-base sm:text-lg font-semibold text-green-600 mt-1 break-words">
                 ${totalCompletedRevenue.toFixed(2)}
               </p>
             </div>
-            <CheckCircle2 className="w-8 h-8 text-green-600" />
+            <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-green-600 flex-shrink-0 ml-2" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-gray-50 border-gray-200">
+        <Card className="p-4 sm:p-5 md:p-6 bg-gray-50 border-gray-200 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm text-gray-600">Total Revenue</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 break-words">
                 ${(totalPendingRevenue + totalCompletedRevenue).toFixed(2)}
               </p>
             </div>
-            <Package className="w-8 h-8 text-gray-600" />
+            <Package className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-gray-600 flex-shrink-0 ml-2" />
           </div>
         </Card>
       </div>
@@ -146,23 +146,23 @@ export default function WholesalerOrdersPage() {
       {/* Pending Orders */}
       {pendingOrders.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Pending Orders</h2>
-          <div className="space-y-3">
+          <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Pending Orders</h2>
+          <div className="space-y-3 sm:space-y-4">
             {pendingOrders.map((order) => (
-              <Card key={order.id} className="p-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-lg">{order.productName}</h3>
-                      <Badge variant="outline" className="text-xs">
+              <Card key={order.id} className="p-4 sm:p-5">
+                <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between gap-3 sm:gap-4">
+                  <div className="flex-1 w-full min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <h3 className="font-semibold text-base sm:text-lg break-words">{order.productName}</h3>
+                      <Badge variant="outline" className="text-xs whitespace-nowrap">
                         Order #{order.orderId}
                       </Badge>
-                      <Badge variant="destructive" className="text-xs">
+                      <Badge variant="destructive" className="text-xs whitespace-nowrap">
                         Pending Payment
                       </Badge>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 mb-3">
                       <div>
                         <span className="font-medium">Reseller:</span>{" "}
                         <span className="text-gray-900">Reseller #{order.resellerId}</span>
@@ -186,9 +186,9 @@ export default function WholesalerOrdersPage() {
                       Order created: {new Date(order.createdAt).toLocaleDateString()}
                     </div>
 
-                    <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                    <div className="mt-3 p-2 sm:p-3 bg-yellow-50 border border-yellow-200 rounded-md">
                       <div className="flex items-start gap-2">
-                        <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5" />
+                        <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
                         <p className="text-xs text-yellow-800">
                           Waiting for reseller to complete purchase. This order will be fulfilled once payment is confirmed.
                         </p>
@@ -199,9 +199,9 @@ export default function WholesalerOrdersPage() {
                   <Button
                     variant="outline"
                     onClick={() => handleViewOrder(order)}
-                    className="whitespace-nowrap"
+                    className="whitespace-nowrap w-full sm:w-auto text-xs sm:text-sm"
                   >
-                    <Eye className="w-4 h-4 mr-2" />
+                    <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     View Details
                   </Button>
                 </div>
@@ -214,24 +214,24 @@ export default function WholesalerOrdersPage() {
       {/* Completed Orders */}
       {completedOrders.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold mb-4">Completed Orders</h2>
-          <div className="space-y-3">
+          <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Completed Orders</h2>
+          <div className="space-y-3 sm:space-y-4">
             {completedOrders.map((order) => (
-              <Card key={order.id} className="p-5 bg-green-50 border-green-200">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-lg">{order.productName}</h3>
-                      <Badge variant="outline" className="text-xs">
+              <Card key={order.id} className="p-4 sm:p-5 bg-green-50 border-green-200">
+                <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between gap-3 sm:gap-4">
+                  <div className="flex-1 w-full min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <h3 className="font-semibold text-base sm:text-lg break-words">{order.productName}</h3>
+                      <Badge variant="outline" className="text-xs whitespace-nowrap">
                         Order #{order.orderId}
                       </Badge>
-                      <Badge variant="default" className="bg-green-600 text-xs">
+                      <Badge variant="default" className="bg-green-600 text-xs whitespace-nowrap">
                         <CheckCircle2 className="w-3 h-3 mr-1" />
                         Paid & Completed
                       </Badge>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600">
                       <div>
                         <span className="font-medium">Reseller:</span>{" "}
                         <span className="text-gray-900">Reseller #{order.resellerId}</span>
@@ -260,9 +260,9 @@ export default function WholesalerOrdersPage() {
                   <Button
                     variant="outline"
                     onClick={() => handleViewOrder(order)}
-                    className="whitespace-nowrap"
+                    className="whitespace-nowrap w-full sm:w-auto text-xs sm:text-sm"
                   >
-                    <Eye className="w-4 h-4 mr-2" />
+                    <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     View Details
                   </Button>
                 </div>
@@ -273,12 +273,12 @@ export default function WholesalerOrdersPage() {
       )}
 
       {pendingOrders.length === 0 && completedOrders.length === 0 && (
-        <Card className="p-12 text-center">
-          <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <Card className="p-8 sm:p-10 md:p-12 text-center">
+          <Package className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
             No Orders Yet
           </h3>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             When resellers purchase your products, orders will appear here.
           </p>
         </Card>
@@ -286,7 +286,7 @@ export default function WholesalerOrdersPage() {
 
       {/* View Order Dialog */}
       <Dialog open={showViewDialog} onOpenChange={setShowViewDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Order Details</DialogTitle>
             <DialogDescription>

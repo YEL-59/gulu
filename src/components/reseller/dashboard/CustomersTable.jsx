@@ -197,7 +197,7 @@ export default function CustomersTable({ orders = [] }) {
     const url = `${typeof window !== "undefined" ? window.location.origin : ""}/reseller/customers?customer=${encodeURIComponent(c.name)}`;
     try {
       await navigator.clipboard.writeText(url);
-    } catch (_) {}
+    } catch (_) { }
   };
 
   const confirmDelete = (c) => {
@@ -229,137 +229,249 @@ export default function CustomersTable({ orders = [] }) {
   };
 
   return (
-    <div className="relative w-full overflow-x-auto">
-      <div className="flex items-center justify-between mb-3">
+    <div className="relative w-full">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-3 sm:mb-4">
         <Input
           placeholder="Search for id, name product"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-[320px]"
+          className="w-full sm:w-[280px] md:w-[320px] text-sm"
         />
         <div className="flex gap-2">
-          <Button variant="outline" className="border-[#F36E16] text-[#F36E16]">Filter</Button>
-          <Button className="bg-[#F36E16] hover:bg-[#e06212]">Export</Button>
+          <Button variant="outline" className="border-[#F36E16] text-[#F36E16] text-xs sm:text-sm px-3 sm:px-4">Filter</Button>
+          <Button className="bg-[#F36E16] hover:bg-[#e06212] text-xs sm:text-sm px-3 sm:px-4">Export</Button>
         </div>
       </div>
-      <table className="w-full text-sm">
-        <thead className="border-b bg-muted/30">
-          <tr>
-            <th className="h-10 px-2 text-left w-10"></th>
-            <th className="h-10 px-2 text-left cursor-pointer" onClick={() => toggleSort("name")}>
-              Customer <SortIcon active={sortKey === "name"} />
-            </th>
-            <th className="h-10 px-2 text-left">Content</th>
-            <th className="h-10 px-2 text-left cursor-pointer" onClick={() => toggleSort("totalSpent")}>
-              Purchases <SortIcon active={sortKey === "totalSpent"} />
-            </th>
-            <th className="h-10 px-2 text-left cursor-pointer" onClick={() => toggleSort("orderCount")}>
-              Order Qty <SortIcon active={sortKey === "orderCount"} />
-            </th>
-            <th className="h-10 px-2 text-left">Address</th>
-            <th className="h-10 px-2 text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredRows.map((c) => (
-            <tr key={c.name} className="border-b hover:bg-muted/50">
-              <td className="p-2 align-middle">
-                <input type="checkbox" className="size-4" aria-label={`Select ${c.name}`} />
-              </td>
-              <td className="p-2">
-                <div className="flex items-center gap-3">
-                  <div className="size-7 rounded bg-muted" />
-                  <div>
-                    <a href="#" className="text-primary font-medium hover:underline">{c.lastOrderId ? `ID ${c.lastOrderId}` : "—"}</a>
-                    <div className="text-sm text-muted-foreground">{c.name}</div>
+
+      {/* Mobile Card View */}
+      <div className="block md:hidden space-y-3">
+        {filteredRows.length === 0 ? (
+          <div className="p-6 text-center text-gray-600 text-sm">
+            No customers found.
+          </div>
+        ) : (
+          filteredRows.map((c) => (
+            <div
+              key={c.name}
+              className="border rounded-lg p-3 sm:p-4 bg-white hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-start gap-3 mb-3">
+                <div className="size-10 sm:size-12 rounded bg-muted flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm sm:text-base text-gray-900 mb-1">
+                    {c.name}
+                  </div>
+                  <div className="text-xs text-gray-500 mb-2">
+                    {c.lastOrderId ? `ID ${c.lastOrderId}` : "—"}
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600 mb-1">
+                    {c.contact?.email || "—"}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {c.contact?.phone || "—"}
                   </div>
                 </div>
-              </td>
-              <td className="p-2">
-                <div className="leading-tight">
-                  <div className="text-foreground/90 text-sm">{c.contact?.email || "—"}</div>
-                  <div className="text-muted-foreground text-xs">{c.contact?.phone || "—"}</div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3 pt-3 border-t">
+                <div>
+                  <span className="text-gray-500">Purchases:</span>{" "}
+                  <span className="font-medium text-gray-900">{formatCurrency(c.totalSpent)}</span>
                 </div>
-              </td>
-              <td className="p-2 font-medium">{formatCurrency(c.totalSpent)}</td>
-              <td className="p-2">{c.orderCount} {c.orderCount === 1 ? "order" : "orders"}</td>
-              <td className="p-2">
-                <div className="text-sm text-foreground/90">{c.address}</div>
-              </td>
-              <td className="p-2">
-                <div className="flex items-center gap-1">
-                  <Button size="icon" variant="ghost" aria-label="View" onClick={() => openView(c)}><Eye className="size-4" /></Button>
-                  <Button size="icon" variant="ghost" aria-label="Link" onClick={() => copyLink(c)}><LinkIcon className="size-4" /></Button>
-                  <Button size="icon" variant="ghost" aria-label="Edit" onClick={() => openEdit(c)}><Pencil className="size-4" /></Button>
-                  <Button size="icon" variant="ghost" aria-label="Delete" onClick={() => confirmDelete(c)}><Trash2 className="size-4" /></Button>
-                  <Button size="icon" variant="ghost" aria-label="Print" onClick={printRow}><Printer className="size-4" /></Button>
-                  <Button size="icon" variant="ghost" aria-label="Export" onClick={() => exportCsv(c)}><Download className="size-4" /></Button>
+                <div>
+                  <span className="text-gray-500">Orders:</span>{" "}
+                  <span className="font-medium text-gray-900">{c.orderCount} {c.orderCount === 1 ? "order" : "orders"}</span>
                 </div>
-              </td>
+                <div className="col-span-2">
+                  <span className="text-gray-500">Address:</span>{" "}
+                  <span className="font-medium text-gray-900 text-xs">{c.address}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 sm:gap-2 pt-3 border-t flex-wrap">
+                <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" aria-label="View" onClick={() => openView(c)}>
+                  <Eye className="size-3 sm:size-4" />
+                </Button>
+                <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" aria-label="Link" onClick={() => copyLink(c)}>
+                  <LinkIcon className="size-3 sm:size-4" />
+                </Button>
+                <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" aria-label="Edit" onClick={() => openEdit(c)}>
+                  <Pencil className="size-3 sm:size-4" />
+                </Button>
+                <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" aria-label="Delete" onClick={() => confirmDelete(c)}>
+                  <Trash2 className="size-3 sm:size-4" />
+                </Button>
+                <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" aria-label="Print" onClick={printRow}>
+                  <Printer className="size-3 sm:size-4" />
+                </Button>
+                <Button size="sm" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 p-0" aria-label="Export" onClick={() => exportCsv(c)}>
+                  <Download className="size-3 sm:size-4" />
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden md:block relative w-full overflow-x-auto scrollbar-hide">
+        <table className="w-full text-xs sm:text-sm min-w-[800px]">
+          <thead className="border-b bg-muted/30">
+            <tr>
+              <th className="h-10 px-2 text-left w-10"></th>
+              <th className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => toggleSort("name")}>
+                <span className="flex items-center gap-1">
+                  Customer <SortIcon active={sortKey === "name"} />
+                </span>
+              </th>
+              <th className="h-10 px-2 sm:px-3 text-left">Contact</th>
+              <th className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => toggleSort("totalSpent")}>
+                <span className="flex items-center gap-1">
+                  Purchases <SortIcon active={sortKey === "totalSpent"} />
+                </span>
+              </th>
+              <th className="h-10 px-2 sm:px-3 text-left cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => toggleSort("orderCount")}>
+                <span className="flex items-center gap-1">
+                  Order Qty <SortIcon active={sortKey === "orderCount"} />
+                </span>
+              </th>
+              <th className="h-10 px-2 sm:px-3 text-left hidden lg:table-cell">Address</th>
+              <th className="h-10 px-2 sm:px-3 text-left">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredRows.map((c) => (
+              <tr key={c.name} className="border-b hover:bg-muted/50">
+                <td className="p-2 align-middle">
+                  <input type="checkbox" className="size-4" aria-label={`Select ${c.name}`} />
+                </td>
+                <td className="p-2">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="size-7 rounded bg-muted flex-shrink-0" />
+                    <div className="min-w-0">
+                      <a href="#" className="text-primary font-medium hover:underline text-xs sm:text-sm">{c.lastOrderId ? `ID ${c.lastOrderId}` : "—"}</a>
+                      <div className="text-xs sm:text-sm text-muted-foreground truncate">{c.name}</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-2">
+                  <div className="leading-tight">
+                    <div className="text-foreground/90 text-xs sm:text-sm truncate">{c.contact?.email || "—"}</div>
+                    <div className="text-muted-foreground text-xs">{c.contact?.phone || "—"}</div>
+                  </div>
+                </td>
+                <td className="p-2 font-medium text-xs sm:text-sm">{formatCurrency(c.totalSpent)}</td>
+                <td className="p-2 text-xs sm:text-sm">{c.orderCount} {c.orderCount === 1 ? "order" : "orders"}</td>
+                <td className="p-2 hidden lg:table-cell">
+                  <div className="text-xs sm:text-sm text-foreground/90 max-w-xs truncate">{c.address}</div>
+                </td>
+                <td className="p-2">
+                  <div className="flex items-center gap-1">
+                    <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" aria-label="View" onClick={() => openView(c)}>
+                      <Eye className="size-3 sm:size-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" aria-label="Link" onClick={() => copyLink(c)}>
+                      <LinkIcon className="size-3 sm:size-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" aria-label="Edit" onClick={() => openEdit(c)}>
+                      <Pencil className="size-3 sm:size-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8" aria-label="Delete" onClick={() => confirmDelete(c)}>
+                      <Trash2 className="size-3 sm:size-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 hidden lg:inline-flex" aria-label="Print" onClick={printRow}>
+                      <Printer className="size-3 sm:size-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 sm:h-8 sm:w-8 hidden lg:inline-flex" aria-label="Export" onClick={() => exportCsv(c)}>
+                      <Download className="size-3 sm:size-4" />
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {filteredRows.length === 0 && (
+              <tr>
+                <td colSpan={7} className="p-6 text-center text-gray-600 text-sm">
+                  No customers found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
       {/* View Modal */}
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
-        <DialogContent className="sm:max-w-xl">
+        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           {selected && (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <DialogHeader>
-                <DialogTitle>{selected.name}</DialogTitle>
-                <DialogDescription>Customer details and recent orders</DialogDescription>
+                <DialogTitle className="text-lg sm:text-xl break-words">{selected.name}</DialogTitle>
+                <DialogDescription className="text-xs sm:text-sm">Customer details and recent orders</DialogDescription>
               </DialogHeader>
-              <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
                 <div>
-                  <div className="text-muted-foreground">Customer ID</div>
+                  <div className="text-muted-foreground mb-1">Customer ID</div>
                   <div className="font-medium">{selected.lastOrderId ? `ID ${selected.lastOrderId}` : "—"}</div>
                 </div>
                 <div>
-                  <div className="text-muted-foreground">Last Order</div>
+                  <div className="text-muted-foreground mb-1">Last Order</div>
                   <div className="font-medium">{selected.lastOrderDate || "—"}</div>
                 </div>
                 <div>
-                  <div className="text-muted-foreground">Email</div>
-                  <div className="font-medium">{selected.contact?.email || "—"}</div>
+                  <div className="text-muted-foreground mb-1">Email</div>
+                  <div className="font-medium break-all">{selected.contact?.email || "—"}</div>
                 </div>
                 <div>
-                  <div className="text-muted-foreground">Phone</div>
+                  <div className="text-muted-foreground mb-1">Phone</div>
                   <div className="font-medium">{selected.contact?.phone || "—"}</div>
                 </div>
-                <div className="col-span-2">
-                  <div className="text-muted-foreground">Address</div>
+                <div className="col-span-1 sm:col-span-2">
+                  <div className="text-muted-foreground mb-1">Address</div>
                   <div className="font-medium">{selected.address || "—"}</div>
                 </div>
               </div>
-              <div className="border rounded-lg">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted/30">
-                    <tr>
-                      <th className="p-2 text-left">Order ID</th>
-                      <th className="p-2 text-left">Date</th>
-                      <th className="p-2 text-left">Items</th>
-                      <th className="p-2 text-left">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {customerOrders.map((o) => {
-                      const total = (o.items || []).reduce((s, it) => s + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
-                      return (
-                        <tr key={o.id} className="border-t">
-                          <td className="p-2">{o.id}</td>
-                          <td className="p-2">{o.orderDate}</td>
-                          <td className="p-2">{(o.items || []).map((it) => it.name).join(", ")}</td>
-                          <td className="p-2 font-medium">{formatCurrency(total)}</td>
+              <div className="border rounded-lg overflow-hidden">
+                <div className="overflow-x-auto scrollbar-hide">
+                  <table className="w-full text-xs sm:text-sm min-w-[500px]">
+                    <thead className="bg-muted/30">
+                      <tr>
+                        <th className="p-2 text-left">Order ID</th>
+                        <th className="p-2 text-left hidden sm:table-cell">Date</th>
+                        <th className="p-2 text-left">Items</th>
+                        <th className="p-2 text-left">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {customerOrders.map((o) => {
+                        const total = (o.items || []).reduce((s, it) => s + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
+                        return (
+                          <tr key={o.id} className="border-t">
+                            <td className="p-2">{o.id}</td>
+                            <td className="p-2 hidden sm:table-cell">{o.orderDate}</td>
+                            <td className="p-2">
+                              <div className="max-w-[200px] sm:max-w-none truncate sm:whitespace-normal">
+                                {(o.items || []).map((it) => it.name).join(", ")}
+                              </div>
+                            </td>
+                            <td className="p-2 font-medium">{formatCurrency(total)}</td>
+                          </tr>
+                        );
+                      })}
+                      {customerOrders.length === 0 && (
+                        <tr>
+                          <td colSpan={4} className="p-4 text-center text-gray-500 text-xs sm:text-sm">
+                            No orders found.
+                          </td>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setViewOpen(false)}>Close</Button>
-                <Button onClick={() => exportCsv(selected)} className="bg-[#F36E16] hover:bg-[#e06212]">Export</Button>
+              <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0 pt-2">
+                <Button variant="outline" onClick={() => setViewOpen(false)} className="w-full sm:w-auto text-sm">Close</Button>
+                <Button onClick={() => exportCsv(selected)} className="bg-[#F36E16] hover:bg-[#e06212] w-full sm:w-auto text-sm">Export</Button>
               </DialogFooter>
             </div>
           )}
@@ -368,19 +480,43 @@ export default function CustomersTable({ orders = [] }) {
 
       {/* Edit Modal */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-w-md p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle>Edit Customer</DialogTitle>
-            <DialogDescription>Update contact and address</DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Edit Customer</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">Update contact and address</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
-            <Input placeholder="Email" value={editForm.email} onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))} />
-            <Input placeholder="Phone" value={editForm.phone} onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))} />
-            <Input placeholder="Address" value={editForm.address} onChange={(e) => setEditForm((f) => ({ ...f, address: e.target.value }))} />
+          <div className="space-y-3 sm:space-y-4">
+            <div>
+              <label className="text-xs sm:text-sm text-gray-600 mb-1.5 block">Email</label>
+              <Input
+                placeholder="Email"
+                value={editForm.email}
+                onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
+                className="text-sm"
+              />
+            </div>
+            <div>
+              <label className="text-xs sm:text-sm text-gray-600 mb-1.5 block">Phone</label>
+              <Input
+                placeholder="Phone"
+                value={editForm.phone}
+                onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))}
+                className="text-sm"
+              />
+            </div>
+            <div>
+              <label className="text-xs sm:text-sm text-gray-600 mb-1.5 block">Address</label>
+              <Input
+                placeholder="Address"
+                value={editForm.address}
+                onChange={(e) => setEditForm((f) => ({ ...f, address: e.target.value }))}
+                className="text-sm"
+              />
+            </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditOpen(false)}>Cancel</Button>
-            <Button onClick={saveEdit} className="bg-[#F36E16] hover:bg-[#e06212]">Save</Button>
+          <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0 pt-4">
+            <Button variant="outline" onClick={() => setEditOpen(false)} className="w-full sm:w-auto text-sm">Cancel</Button>
+            <Button onClick={saveEdit} className="bg-[#F36E16] hover:bg-[#e06212] w-full sm:w-auto text-sm">Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
