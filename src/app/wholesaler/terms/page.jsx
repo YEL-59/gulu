@@ -146,7 +146,7 @@ export default function WholesalerTermsPage() {
               <Button
                 className="bg-[#F36E16] hover:bg-[#e06212] w-full sm:w-auto"
                 disabled={!accepted}
-                onClick={() => router.push("/wholesaler/onboarding")}
+                onClick={() => router.push("/auth/signup?role_id=2")}
               >
                 Accept & Continue to Registration
               </Button>

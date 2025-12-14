@@ -67,9 +67,9 @@ export default function ResellerTermsPage() {
               <Button
                 className="bg-[#F36E16] hover:bg-[#e06212]"
                 disabled={!accepted}
-                onClick={() => router.push("/reseller/onboarding")}
+                onClick={() => router.push("/auth/signup?role_id=3")}
               >
-                Accept & Continue
+                Accept & Continue to Registration
               </Button>
             </div>
           </CardContent>

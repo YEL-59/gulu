@@ -8,6 +8,10 @@ import { usePathname } from "next/navigation";
 
 export default function AppChrome({ children }) {
   const pathname = usePathname();
+  
+  // Auth pages have their own full-page layout
+  const isAuthPage = pathname?.startsWith("/auth");
+  
   const isDashboard =
     pathname?.startsWith("/wholesaler/dashboard") ||
     pathname?.startsWith("/reseller/dashboard") ||
@@ -19,6 +23,11 @@ export default function AppChrome({ children }) {
     pathname?.startsWith("/reseller/transactions") ||
     pathname?.startsWith("/wholesaler/customers") ||
     pathname?.startsWith("/wholesaler/transactions");
+
+  // Auth pages render without any chrome
+  if (isAuthPage) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

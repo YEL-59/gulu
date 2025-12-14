@@ -289,3 +289,4 @@ If the loading indicator doesn't appear:
 3. Verify that `startLoading()` is called before the async operation
 4. Ensure `stopLoading()` is called in a `finally` block
 
+
