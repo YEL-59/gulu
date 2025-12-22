@@ -10,6 +10,8 @@ import StepBusiness from '@/components/reseller/onboarding/StepBusiness'
 import StepPayment from '@/components/reseller/onboarding/StepPayment'
 import StepStoreSetup from '@/components/reseller/onboarding/StepStoreSetup'
 import SuccessPanel from '@/components/reseller/onboarding/SuccessPanel'
+import { useResellerRegistration } from '@/hooks/auth.hook'
+import { Loader2 } from 'lucide-react'
 
 const steps = [
   { key: 0, label: "Basic info" },
@@ -20,39 +22,117 @@ const steps = [
 
 export default function ResellerOnboardingPage() {
   const [current, setCurrent] = useState(0)
-  const [submitted, setSubmitted] = useState(false)
   const router = useRouter()
+  const { submitRegistration, isPending, isSuccess } = useResellerRegistration()
 
   const methods = useForm({
     mode: 'onBlur',
     defaultValues: {
-      profile: {},
-      business: { type: 'individual', address: {} },
-      payment: { frequency: 'weekly' },
-      store: {},
+      profile: {
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      },
+      business: { 
+        type: 'individual', 
+        name: '',
+        registration: '',
+        industry: '',
+        documentType: 'identity', // Default document type
+        address: {
+          country: '',
+          state: '',
+          city: '',
+          zip: '',
+          line1: '',
+        },
+        documents: null,
+      },
+      payment: { 
+        accountHolder: '',
+        bankName: '',
+        accountNumber: '',
+        swift: '',
+        frequency: 'weekly',
+      },
+      store: {
+        name: '',
+        contactPhone: '',
+        description: '',
+        logo: null,
+        banner: null,
+      },
     },
   })
 
   const goToStep = async (stepIndex) => {
     // If going forward, validate current step first
     if (stepIndex > current) {
-      const valid = await methods.trigger()
-      if (!valid) {
-        // Show error message or toast here if needed
-        return
-      }
+      const valid = await validateCurrentStep()
+      if (!valid) return
     }
     setCurrent(stepIndex)
   }
 
+  // Validate fields for current step only
+  const validateCurrentStep = async () => {
+    let fieldsToValidate = []
+    
+    switch (current) {
+      case 0:
+        fieldsToValidate = [
+          'profile.firstName',
+          'profile.lastName',
+          'profile.phone',
+          'profile.email',
+          'profile.password',
+          'profile.confirmPassword',
+        ]
+        break
+      case 1:
+        fieldsToValidate = [
+          'business.name',
+          'business.address.country',
+          'business.address.state',
+          'business.address.city',
+          'business.address.zip',
+          'business.address.line1',
+        ]
+        // Add registration field validation if company type
+        if (methods.getValues('business.type') === 'company') {
+          fieldsToValidate.push('business.registration')
+        }
+        break
+      case 2:
+        fieldsToValidate = [
+          'payment.accountHolder',
+          'payment.bankName',
+          'payment.accountNumber',
+          'payment.swift',
+        ]
+        break
+      case 3:
+        fieldsToValidate = [
+          'store.name',
+          'store.description',
+        ]
+        break
+    }
+
+    const result = await methods.trigger(fieldsToValidate)
+    return result
+  }
+
   const next = async () => {
-    // Validate current step fields before proceeding
-    const valid = await methods.trigger()
+    const valid = await validateCurrentStep()
     if (!valid) {
-      // Scroll to first error if validation fails
-      const firstError = Object.keys(methods.formState.errors)[0]
-      if (firstError) {
-        const element = document.querySelector(`[name="${firstError}"]`)
+      // Scroll to first error
+      const firstErrorKey = Object.keys(methods.formState.errors)[0]
+      if (firstErrorKey) {
+        const element = document.querySelector(`[name="${firstErrorKey}"]`)
         element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
       return
@@ -61,34 +141,37 @@ export default function ResellerOnboardingPage() {
   }
 
   const back = () => {
-    // Allow going back without validation
     setCurrent((c) => Math.max(c - 1, 0))
   }
 
   const onSubmit = methods.handleSubmit(async (data) => {
-    try {
-      const res = await fetch('/api/reseller/onboarding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+    // Validate password match
+    if (data.profile.password !== data.profile.confirmPassword) {
+      methods.setError('profile.confirmPassword', {
+        type: 'manual',
+        message: 'Passwords do not match',
       })
-      if (!res.ok) throw new Error('Failed to submit form')
-      setSubmitted(true)
-    } catch (err) {
-      console.error('Submit error', err)
+      return
     }
+
+    // Submit to API
+    submitRegistration(data)
   })
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50'>
-      <div className='container mx-auto px-4 py-8 md:py-12 max-w-5xl'>
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50 relative overflow-hidden'>
+      {/* Decorative Background Elements */}
+      <div className='absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-emerald-200/20 to-transparent rounded-full blur-3xl'></div>
+      <div className='absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-200/20 to-transparent rounded-full blur-3xl'></div>
+
+      <div className='container mx-auto px-4 py-8 md:py-12 max-w-5xl relative z-10'>
         <StepperHeader
-          current={submitted ? 4 : current}
+          current={isSuccess ? 4 : current}
           onStepClick={goToStep}
         />
 
         <FormProvider {...methods}>
-          {!submitted ? (
+          {!isSuccess ? (
             <div className='mt-8'>
               <form onSubmit={onSubmit} className='space-y-8'>
                 <div className='animate-in fade-in slide-in-from-bottom-4 duration-500'>
@@ -103,7 +186,7 @@ export default function ResellerOnboardingPage() {
                     type='button'
                     variant='outline'
                     onClick={back}
-                    disabled={current === 0}
+                    disabled={current === 0 || isPending}
                     className='min-w-[120px] h-11 border-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-all'
                   >
                     ← Back
@@ -129,15 +212,24 @@ export default function ResellerOnboardingPage() {
                       type='button'
                       className='bg-gradient-to-r from-[#F36E16] to-[#e06212] hover:from-[#e06212] hover:to-[#d0560f] min-w-[120px] h-11 shadow-md hover:shadow-xl transition-all font-semibold'
                       onClick={next}
+                      disabled={isPending}
                     >
                       Next →
                     </Button>
                   ) : (
                     <Button
                       type='submit'
+                      disabled={isPending}
                       className='bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 min-w-[120px] h-11 shadow-md hover:shadow-xl transition-all font-semibold'
                     >
-                      Submit ✓
+                      {isPending ? (
+                        <>
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                          Submitting...
+                        </>
+                      ) : (
+                        'Submit ✓'
+                      )}
                     </Button>
                   )}
                 </div>
@@ -145,7 +237,7 @@ export default function ResellerOnboardingPage() {
             </div>
           ) : (
             <div className='mt-8'>
-              <SuccessPanel onContinue={() => router.push('/store')} />
+              <SuccessPanel onContinue={() => router.push('/auth/signin')} />
             </div>
           )}
         </FormProvider>

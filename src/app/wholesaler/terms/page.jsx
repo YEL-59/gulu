@@ -61,7 +61,7 @@ export default function WholesalerTermsPage() {
                 Eligibility Requirements
               </h2>
               <p className="text-sm text-blue-800 mb-4">
-                Our primary goal is to encourage users to become resellers, not wholesalers. 
+                Our primary goal is to encourage users to become resellers, not wholesalers.
                 Therefore, only the following types of businesses are eligible to become wholesalers:
               </p>
               <div className="space-y-3">
@@ -109,7 +109,7 @@ export default function WholesalerTermsPage() {
                     Not Eligible? Consider Becoming a Reseller
                   </div>
                   <div className="text-sm text-gray-700 mb-3">
-                    If you do not meet the above criteria, we strongly recommend choosing Reseller instead. 
+                    If you do not meet the above criteria, we strongly recommend choosing Reseller instead.
                     As a reseller, you can still sell products on our platform by sourcing from approved wholesalers.
                   </div>
                   <Link href="/reseller/terms">
@@ -130,8 +130,8 @@ export default function WholesalerTermsPage() {
                   className="mt-1"
                 />
                 <span className="text-gray-700">
-                  I have read and understood the eligibility requirements and important information above. 
-                  I confirm that I meet the criteria to become a wholesaler, and I understand that my application 
+                  I have read and understood the eligibility requirements and important information above.
+                  I confirm that I meet the criteria to become a wholesaler, and I understand that my application
                   may be rejected without specific explanation. I agree to proceed with the wholesaler registration.
                 </span>
               </label>
@@ -146,7 +146,7 @@ export default function WholesalerTermsPage() {
               <Button
                 className="bg-[#F36E16] hover:bg-[#e06212] w-full sm:w-auto"
                 disabled={!accepted}
-                onClick={() => router.push("/auth/signup?role_id=2")}
+                onClick={() => router.push("/wholesaler/onboarding")}
               >
                 Accept & Continue to Registration
               </Button>

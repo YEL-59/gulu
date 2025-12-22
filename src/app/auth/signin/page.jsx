@@ -12,8 +12,11 @@ import {
     EyeOff,
     ArrowRight,
     Shield,
-    Zap,
-    TrendingUp
+    ShoppingBag,
+    Store,
+    Users,
+    Heart,
+    Truck
 } from 'lucide-react'
 
 function SignInForm() {
@@ -48,27 +51,55 @@ function SignInForm() {
                             </span>
                         </h1>
                         <p className="text-lg text-slate-400 max-w-md">
-                            Sign in to access your dashboard, manage orders, and grow your business.
+                            Your one-stop marketplace for wholesalers, resellers, and shoppers. Sign in to continue your journey.
                         </p>
                     </div>
 
-                    {/* Features Cards */}
-                    <div className="space-y-4">
-                        {[
-                            { icon: Shield, title: 'Secure Access', desc: 'Your data is protected with enterprise-grade security', color: 'from-emerald-400 to-cyan-400' },
-                            { icon: Zap, title: 'Lightning Fast', desc: 'Optimized for speed and performance', color: 'from-amber-400 to-orange-400' },
-                            { icon: TrendingUp, title: 'Real-time Analytics', desc: 'Track your business growth instantly', color: 'from-violet-400 to-purple-400' },
-                        ].map((feature, i) => (
-                            <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-colors">
-                                <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${feature.color} flex items-center justify-center flex-shrink-0`}>
-                                    <feature.icon className="w-5 h-5 text-white" />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold text-white">{feature.title}</h3>
-                                    <p className="text-sm text-slate-400">{feature.desc}</p>
-                                </div>
+                    {/* User Type Cards */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-violet-400 to-purple-500 flex items-center justify-center flex-shrink-0">
+                                <Store className="w-5 h-5 text-white" />
                             </div>
-                        ))}
+                            <div>
+                                <h3 className="font-semibold text-white">Wholesalers</h3>
+                                <p className="text-sm text-slate-400">Sell in bulk & reach more resellers</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-emerald-400 to-teal-500 flex items-center justify-center flex-shrink-0">
+                                <Users className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-white">Resellers</h3>
+                                <p className="text-sm text-slate-400">Source products & grow your business</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-orange-400 to-amber-500 flex items-center justify-center flex-shrink-0">
+                                <ShoppingBag className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-white">Customers</h3>
+                                <p className="text-sm text-slate-400">Shop amazing products at great prices</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Trust badges */}
+                    <div className="mt-8 flex items-center gap-6 text-slate-400">
+                        <div className="flex items-center gap-2">
+                            <Shield className="w-4 h-4 text-emerald-400" />
+                            <span className="text-sm">Secure</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Truck className="w-4 h-4 text-cyan-400" />
+                            <span className="text-sm">Fast Delivery</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Heart className="w-4 h-4 text-pink-400" />
+                            <span className="text-sm">Trusted</span>
+                        </div>
                     </div>
                 </div>
             </div>

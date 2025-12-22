@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -53,18 +53,119 @@ import {
   LifeBuoy,
 } from "lucide-react";
 import { USER_ROLES } from "@/constants/roles";
-import { optional } from "zod";
+import { axiosPrivate } from "@/lib/api/axios";
+import { deleteCookie } from "@/lib/utils/cookies";
 
 export default function Navbar() {
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
-  // Session (for real auth) and local override to force avatar/sign-in UI
-  const { data: session, status } = useSession();
-  // null = follow session, true = always show avatar, false = always show Sign In
-  const [authViewOverride, setAuthViewOverride] = useState(true);
+
+  // User profile state
+  const [userProfile, setUserProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check authentication and fetch user profile
+  const checkAuthAndFetchProfile = async () => {
+    if (typeof window === "undefined") return;
+
+    const token = localStorage.getItem("token");
+    const tokenExpiry = localStorage.getItem("tokenExpiry");
+
+    // Check if token exists and is not expired
+    if (!token || !tokenExpiry || Date.now() > parseInt(tokenExpiry, 10)) {
+      setIsAuthenticated(false);
+      setUserProfile(null);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsAuthenticated(true);
+
+    try {
+      const response = await axiosPrivate.get("/me");
+      if (response.data?.success && response.data?.data?.profile) {
+        setUserProfile(response.data.data.profile);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user profile:", error);
+      // If we get 401, user is not authenticated
+      if (error.response?.status === 401) {
+        setIsAuthenticated(false);
+        setUserProfile(null);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle sign out
+  const handleSignOut = () => {
+    // Clear localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpiry");
+    localStorage.removeItem("user");
+    localStorage.removeItem("data");
+
+    // Clear sessionStorage
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("tokenExpiry");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("data");
+
+    // Clear cookies
+    deleteCookie("token");
+    deleteCookie("user");
+
+    // Update state
+    setIsAuthenticated(false);
+    setUserProfile(null);
+
+    // Dispatch auth change event
+    window.dispatchEvent(new Event("auth-change"));
+
+    // Redirect to home
+    router.push("/");
+  };
+
+  useEffect(() => {
+    checkAuthAndFetchProfile();
+
+    // Listen for auth changes (login/logout from other components)
+    const handleAuthChange = () => {
+      checkAuthAndFetchProfile();
+    };
+
+    window.addEventListener("auth-change", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("auth-change", handleAuthChange);
+    };
+  }, []);
+
+  // Get user initials for avatar fallback
+  const getUserInitials = () => {
+    if (!userProfile) return "U";
+    const name = userProfile.display_name || userProfile.full_name || userProfile.username;
+    if (!name) return "U";
+    return name.charAt(0).toUpperCase();
+  };
+
+  // Get user's stored role from localStorage
+  const getUserRole = () => {
+    if (typeof window === "undefined") return null;
+    try {
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      return userData?.role?.toUpperCase() || null;
+    } catch {
+      return null;
+    }
+  };
 
   const getRoleColor = (role) => {
-    switch (role) {
+    const normalizedRole = role?.toUpperCase();
+    switch (normalizedRole) {
       case USER_ROLES.ADMIN:
         return "bg-red-100 text-red-800";
       case USER_ROLES.WHOLESALER:
@@ -77,17 +178,20 @@ export default function Navbar() {
   };
 
   const getDashboardLink = (role) => {
-    switch (role) {
+    const normalizedRole = role?.toUpperCase();
+    switch (normalizedRole) {
       case USER_ROLES.ADMIN:
         return "/admin";
       case USER_ROLES.WHOLESALER:
-        return "/wholesaler";
+        return "/wholesaler/dashboard";
       case USER_ROLES.RESELLER:
-        return "/reseller";
+        return "/reseller/dashboard";
       default:
-        return "/profile";
+        return "/store/account/profile";
     }
   };
+
+  const userRole = getUserRole();
 
   return (
     <nav className="bg-primary-500 shadow-lg">
@@ -196,101 +300,15 @@ export default function Navbar() {
             </Link>
 
             {/* Authentication */}
-            {authViewOverride === true ? (
-              // Forced avatar view (no session required)
+            {isLoading ? (
+              <div className="animate-pulse bg-white/20 h-8 w-20 rounded"></div>
+            ) : isAuthenticated && userProfile ? (
               <div className="flex items-center space-x-4">
-                <Badge className={getRoleColor(USER_ROLES.RESELLER)}>
-                  Mock
-                </Badge>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="relative h-8 w-8 rounded-full"
-                    >
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="" alt="User" />
-                        <AvatarFallback>U</AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">User</p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          user@example.com
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/store/account/profile">
-                        <User className="mr-2 h-4 w-4" />
-                        <p className="text-sm font-medium leading-none hover:text-black">
-                          Profile
-                        </p>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/store/account/address">
-                        <MapPin className="mr-2 h-4 w-4" />
-                        <p className="text-sm font-medium leading-none hover:text-black">
-                          Address
-                        </p>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/store/account/change-password">
-                        <KeyRound className="mr-2 h-4 w-4" />
-                        <p className="text-sm font-medium leading-none hover:text-black">
-                          Change Password
-                        </p>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/store/customer-support">
-                        <LifeBuoy className="mr-2 h-4 w-4" />
-                        <p className="text-sm font-medium leading-none hover:text-black">
-                          Support
-                        </p>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/store/wishlist">
-                        <HeartPlusIcon className="mr-2 h-4 w-4" />
-                        <p className="text-sm font-medium leading-none hover:text-black">
-                          Wishlist
-                        </p>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/store/my-order">
-                        <ClipboardCheckIcon className="mr-2 h-4 w-4" />
-                        <p className="text-sm font-medium leading-none hover:text-black">
-                          My order
-                        </p>
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            ) : authViewOverride === false ? (
-              // Forced Sign In view
-              <div className="flex items-center space-x-4">
-                <Link href="/auth/signin">
-                  <Button variant="ghost" className="text-white font-normal">
-                    Sign In
-                  </Button>
-                </Link>
-              </div>
-            ) : status === "loading" ? (
-              <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
-            ) : session ? (
-              <div className="flex items-center space-x-4">
-                <Badge className={getRoleColor(session.user.role)}>
-                  {session.user.role}
-                </Badge>
+                {userRole && (
+                  <Badge className={getRoleColor(userRole)}>
+                    {userRole}
+                  </Badge>
+                )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -299,11 +317,11 @@ export default function Navbar() {
                     >
                       <Avatar className="h-8 w-8">
                         <AvatarImage
-                          src={session.user.image}
-                          alt={session.user.name}
+                          src={userProfile.profile_image}
+                          alt={userProfile.display_name || userProfile.username}
                         />
                         <AvatarFallback>
-                          {session.user.name?.charAt(0).toUpperCase()}
+                          {getUserInitials()}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
@@ -312,20 +330,22 @@ export default function Navbar() {
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          {session.user.name}
+                          {userProfile.display_name || userProfile.full_name || userProfile.username}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
-                          {session.user.email}
+                          {userProfile.email}
                         </p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href={getDashboardLink(session.user.role)}>
-                        <BarChart3 className="mr-2 h-4 w-4" />
-                        Dashboard
-                      </Link>
-                    </DropdownMenuItem>
+                    {userRole && (userRole === USER_ROLES.ADMIN || userRole === USER_ROLES.WHOLESALER || userRole === USER_ROLES.RESELLER) && (
+                      <DropdownMenuItem asChild>
+                        <Link href={getDashboardLink(userRole)}>
+                          <BarChart3 className="mr-2 h-4 w-4" />
+                          Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem asChild>
                       <Link href="/store/account/profile">
                         <User className="mr-2 h-4 w-4" />
@@ -350,38 +370,38 @@ export default function Navbar() {
                         Support
                       </Link>
                     </DropdownMenuItem>
-                    {session.user.role === USER_ROLES.RESELLER && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/wishlist">
+                        <HeartPlusIcon className="mr-2 h-4 w-4" />
+                        Wishlist
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/store/my-order">
+                        <ClipboardCheckIcon className="mr-2 h-4 w-4" />
+                        My Orders
+                      </Link>
+                    </DropdownMenuItem>
+                    {userRole === USER_ROLES.RESELLER && (
                       <DropdownMenuItem asChild>
-                        <Link href="/my-store">
+                        <Link href="/reseller/dashboard">
                           <Store className="mr-2 h-4 w-4" />
                           My Store
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    {session.user.role === USER_ROLES.WHOLESALER && (
+                    {userRole === USER_ROLES.WHOLESALER && (
                       <DropdownMenuItem asChild>
-                        <Link href="/my-products">
+                        <Link href="/wholesaler/dashboard">
                           <Package className="mr-2 h-4 w-4" />
                           My Products
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem asChild>
-                      <Link href="/orders">
-                        <ShoppingCart className="mr-2 h-4 w-4" />
-                        Orders
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/settings">
-                        <Settings className="mr-2 h-4 w-4" />
-                        Settings
-                      </Link>
-                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      onClick={() => signOut()}
-                      className="text-red-600 focus:text-red-600"
+                      onClick={handleSignOut}
+                      className="text-red-600 focus:text-red-600 cursor-pointer"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign out
@@ -443,40 +463,44 @@ export default function Navbar() {
                 Categories
               </Link>
 
-              {session ? (
+              {isAuthenticated && userProfile ? (
                 <div className="pt-4 pb-3 border-t border-gray-200">
                   <div className="flex items-center px-3">
                     <Avatar className="h-10 w-10">
                       <AvatarImage
-                        src={session.user.image}
-                        alt={session.user.name}
+                        src={userProfile.profile_image}
+                        alt={userProfile.display_name || userProfile.username}
                       />
                       <AvatarFallback>
-                        {session.user.name?.charAt(0).toUpperCase()}
+                        {getUserInitials()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="ml-3">
                       <div className="text-base font-medium text-gray-800">
-                        {session.user.name}
+                        {userProfile.display_name || userProfile.full_name || userProfile.username}
                       </div>
                       <div className="text-sm font-medium text-gray-500">
-                        {session.user.email}
+                        {userProfile.email}
                       </div>
                     </div>
-                    <Badge
-                      className={`ml-auto ${getRoleColor(session.user.role)}`}
-                    >
-                      {session.user.role}
-                    </Badge>
+                    {userRole && (
+                      <Badge
+                        className={`ml-auto ${getRoleColor(userRole)}`}
+                      >
+                        {userRole}
+                      </Badge>
+                    )}
                   </div>
                   <div className="mt-3 space-y-1 px-2">
-                    <Link
-                      href={getDashboardLink(session.user.role)}
-                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Dashboard
-                    </Link>
+                    {userRole && (userRole === USER_ROLES.ADMIN || userRole === USER_ROLES.WHOLESALER || userRole === USER_ROLES.RESELLER) && (
+                      <Link
+                        href={getDashboardLink(userRole)}
+                        className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                    )}
                     <Link
                       href="/store/account/profile"
                       className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
@@ -506,15 +530,22 @@ export default function Navbar() {
                       Support
                     </Link>
                     <Link
-                      href="/orders"
+                      href="/store/wishlist"
                       className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      Orders
+                      Wishlist
+                    </Link>
+                    <Link
+                      href="/store/my-order"
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      My Orders
                     </Link>
                     <Button
                       onClick={() => {
-                        signOut();
+                        handleSignOut();
                         setIsMobileMenuOpen(false);
                       }}
                       variant="ghost"

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Store, Mail, Phone, FileText, Image as ImageIcon, Upload } from 'lucide-react'
+import { Store, Phone, FileText, Image as ImageIcon, Upload } from 'lucide-react'
 
 export default function StepStoreSetup() {
   const { register } = useFormContext()
@@ -27,37 +27,13 @@ export default function StepStoreSetup() {
             <div className='space-y-2'>
               <Label className='text-sm font-semibold flex items-center gap-2'>
                 <Store className='h-4 w-4 text-gray-500' />
-                Store Name
+                Store Name <span className='text-red-500'>*</span>
               </Label>
               <Input 
-                {...register('store.name', { required: true })} 
+                {...register('store.name', { required: 'Store name is required' })} 
                 placeholder='Enter your store name' 
                 className='h-12 border-2 focus:border-[#F36E16] focus:ring-2 focus:ring-orange-100'
               />
-            </div>
-            <div className='space-y-2'>
-              <Label className='text-sm font-semibold flex items-center gap-2'>
-                <Mail className='h-4 w-4 text-gray-500' />
-                Contact Email
-              </Label>
-              <Input 
-                type='email' 
-                {...register('store.contactEmail', { required: true })} 
-                placeholder='store@example.com' 
-                className='h-12 border-2 focus:border-[#F36E16] focus:ring-2 focus:ring-orange-100'
-              />
-            </div>
-            <div className='space-y-2 md:col-span-2'>
-              <Label className='text-sm font-semibold flex items-center gap-2'>
-                <FileText className='h-4 w-4 text-gray-500' />
-                Store Description
-              </Label>
-              <Textarea 
-                {...register('store.description')} 
-                placeholder='Write a short description about your store, products, categories, and your brand values...' 
-                className='min-h-[120px] border-2 focus:border-[#F36E16] focus:ring-2 focus:ring-orange-100 resize-none'
-              />
-              <p className='text-xs text-gray-500'>This will be displayed on your store page</p>
             </div>
             <div className='space-y-2'>
               <Label className='text-sm font-semibold flex items-center gap-2'>
@@ -69,6 +45,18 @@ export default function StepStoreSetup() {
                 placeholder='+1 234 567 8900' 
                 className='h-12 border-2 focus:border-[#F36E16] focus:ring-2 focus:ring-orange-100'
               />
+            </div>
+            <div className='space-y-2 md:col-span-2'>
+              <Label className='text-sm font-semibold flex items-center gap-2'>
+                <FileText className='h-4 w-4 text-gray-500' />
+                Store Description <span className='text-red-500'>*</span>
+              </Label>
+              <Textarea 
+                {...register('store.description', { required: 'Store description is required' })} 
+                placeholder='Write a short description about your store, products, categories, and your brand values...' 
+                className='min-h-[120px] border-2 focus:border-[#F36E16] focus:ring-2 focus:ring-orange-100 resize-none'
+              />
+              <p className='text-xs text-gray-500'>This will be displayed on your store page</p>
             </div>
           </div>
         </div>

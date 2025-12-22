@@ -66,6 +66,282 @@ export const useSignUp = () => {
 };
 
 // ============================================
+// WHOLESALER REGISTRATION HOOK (Multi-step onboarding)
+// ============================================
+export const useWholesalerRegistration = () => {
+  const router = useRouter();
+
+  const { mutate, isPending, isSuccess, isError, error } = useMutation({
+    mutationFn: async (formData) => {
+      // Create FormData for file uploads
+      const payload = new FormData();
+
+      // Step 1: Basic Info (role_id = 2 for wholesaler)
+      payload.append("first_name", formData.profile?.firstName || "");
+      payload.append("last_name", formData.profile?.lastName || "");
+      payload.append("email", formData.profile?.email || "");
+      payload.append("password", formData.profile?.password || "");
+      payload.append("password_confirmation", formData.profile?.confirmPassword || "");
+      payload.append("role_id", "2"); // Fixed for wholesaler
+
+      // Step 2: Business Info
+      const businessType = formData.business?.type === "company" ? "Company" : "Individual";
+      payload.append("business[business_type]", businessType);
+      payload.append("business[business_name]", formData.business?.name || "");
+      
+      if (formData.business?.industry) {
+        payload.append("business[industry_category_id]", formData.business.industry);
+      }
+      
+      payload.append("business[business_address_country]", formData.business?.address?.country || "");
+      payload.append("business[business_address_state]", formData.business?.address?.state || "");
+      payload.append("business[business_address_city]", formData.business?.address?.city || "");
+      payload.append("business[business_address_zip]", formData.business?.address?.zip || "");
+      payload.append("business[business_address_street]", formData.business?.address?.line1 || "");
+
+      // Business documents - document_type is required
+      // Types: identity, passport, business_registration, tax_certificate
+      if (formData.business?.documents?.[0]) {
+        payload.append("business_documents[0][document]", formData.business.documents[0]);
+        // Use selected document type or default based on business type
+        const docType = formData.business?.documentType || 
+          (formData.business?.type === "company" ? "business_registration" : "identity");
+        payload.append("business_documents[0][document_type]", docType);
+        
+        // For company type, add registration number to the document entry
+        if (formData.business?.type === "company" && formData.business?.registration) {
+          payload.append("business_documents[0][document_name]", formData.business.registration);
+        }
+      }
+
+      // Step 3: Payment/Payout Info
+      payload.append("payout[account_holder_name]", formData.payment?.accountHolder || "");
+      payload.append("payout[bank_name]", formData.payment?.bankName || "");
+      payload.append("payout[account_number]", formData.payment?.accountNumber || "");
+      payload.append("payout[routing_code]", formData.payment?.swift || "");
+      
+      // Map frequency to API expected values
+      const frequencyMap = {
+        weekly: "weekly",
+        monthly: "monthly",
+        ondemand: "on-demand",
+      };
+      payload.append("payout[payment_preference]", frequencyMap[formData.payment?.frequency] || "weekly");
+
+      // Step 4: Storefront Info
+      payload.append("storefront[store_name]", formData.store?.name || "");
+      payload.append("storefront[store_description]", formData.store?.description || "");
+
+      // Store contact is optional
+      if (formData.store?.contactPhone) {
+        payload.append("store_contact", formData.store.contactPhone);
+      }
+
+      // Store logo and banner (file uploads) - these are optional
+      if (formData.store?.logo?.[0]) {
+        payload.append("storefront[logo]", formData.store.logo[0]);
+      }
+      if (formData.store?.banner?.[0]) {
+        payload.append("storefront[banner]", formData.store.banner[0]);
+      }
+
+      const res = await axiosPublic.post("/auth/register", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    },
+    onSuccess: (response) => {
+      const { success, message } = response;
+      if (success) {
+        toast.success(message || "Wholesaler registration submitted successfully!");
+      } else {
+        toast.error(message || "Registration failed");
+      }
+    },
+    onError: (error) => {
+      console.error("Wholesaler registration error:", error?.response?.data || error);
+      
+      const responseData = error?.response?.data;
+      const statusCode = error?.response?.status || responseData?.code;
+      
+      // Handle server errors (500)
+      if (statusCode === 500) {
+        // Check if error is a string (like "Your account is pending approval...")
+        if (responseData?.error && typeof responseData.error === 'string') {
+          toast.error(responseData.error);
+        } else {
+          toast.error(responseData?.message || "Server error occurred");
+        }
+        return;
+      }
+      
+      // Handle validation errors (422)
+      if (responseData?.error && typeof responseData.error === 'object') {
+        // Show each validation error
+        const errors = Object.entries(responseData.error);
+        errors.forEach(([field, messages]) => {
+          const errorMsg = Array.isArray(messages) ? messages[0] : messages;
+          toast.error(`${field}: ${errorMsg}`);
+        });
+        return;
+      }
+      
+      const message =
+        responseData?.message ||
+        error?.message ||
+        "Failed to register wholesaler";
+      toast.error(message);
+    },
+  });
+
+  const submitRegistration = (formData) => {
+    mutate(formData);
+  };
+
+  return { submitRegistration, isPending, isSuccess, isError, error };
+};
+
+// ============================================
+// RESELLER REGISTRATION HOOK (Multi-step onboarding)
+// ============================================
+export const useResellerRegistration = () => {
+  const router = useRouter();
+
+  const { mutate, isPending, isSuccess, isError, error } = useMutation({
+    mutationFn: async (formData) => {
+      // Create FormData for file uploads
+      const payload = new FormData();
+
+      // Step 1: Basic Info (role_id = 3 for reseller)
+      payload.append("first_name", formData.profile?.firstName || "");
+      payload.append("last_name", formData.profile?.lastName || "");
+      payload.append("email", formData.profile?.email || "");
+      payload.append("password", formData.profile?.password || "");
+      payload.append("password_confirmation", formData.profile?.confirmPassword || "");
+      payload.append("role_id", "3"); // Fixed for reseller
+
+      // Step 2: Business Info
+      const businessType = formData.business?.type === "company" ? "Company" : "Individual";
+      payload.append("business[business_type]", businessType);
+      payload.append("business[business_name]", formData.business?.name || "");
+      
+      if (formData.business?.industry) {
+        payload.append("business[industry_category_id]", formData.business.industry);
+      }
+      
+      payload.append("business[business_address_country]", formData.business?.address?.country || "");
+      payload.append("business[business_address_state]", formData.business?.address?.state || "");
+      payload.append("business[business_address_city]", formData.business?.address?.city || "");
+      payload.append("business[business_address_zip]", formData.business?.address?.zip || "");
+      payload.append("business[business_address_street]", formData.business?.address?.line1 || "");
+
+      // Business documents - document_type is required
+      // Types: identity, passport, business_registration, tax_certificate
+      if (formData.business?.documents?.[0]) {
+        payload.append("business_documents[0][document]", formData.business.documents[0]);
+        // Use selected document type or default based on business type
+        const docType = formData.business?.documentType || 
+          (formData.business?.type === "company" ? "business_registration" : "identity");
+        payload.append("business_documents[0][document_type]", docType);
+        
+        // For company type, add registration number to the document entry
+        if (formData.business?.type === "company" && formData.business?.registration) {
+          payload.append("business_documents[0][document_name]", formData.business.registration);
+        }
+      }
+
+      // Step 3: Payment/Payout Info
+      payload.append("payout[account_holder_name]", formData.payment?.accountHolder || "");
+      payload.append("payout[bank_name]", formData.payment?.bankName || "");
+      payload.append("payout[account_number]", formData.payment?.accountNumber || "");
+      payload.append("payout[routing_code]", formData.payment?.swift || "");
+      
+      // Map frequency to API expected values
+      const frequencyMap = {
+        weekly: "weekly",
+        monthly: "monthly",
+        ondemand: "on-demand",
+      };
+      payload.append("payout[payment_preference]", frequencyMap[formData.payment?.frequency] || "weekly");
+
+      // Step 4: Storefront Info
+      payload.append("storefront[store_name]", formData.store?.name || "");
+      payload.append("storefront[store_description]", formData.store?.description || "");
+
+      // Store contact is optional
+      if (formData.store?.contactPhone) {
+        payload.append("store_contact", formData.store.contactPhone);
+      }
+
+      // Store logo and banner (file uploads) - these are optional
+      if (formData.store?.logo?.[0]) {
+        payload.append("storefront[logo]", formData.store.logo[0]);
+      }
+      if (formData.store?.banner?.[0]) {
+        payload.append("storefront[banner]", formData.store.banner[0]);
+      }
+
+      const res = await axiosPublic.post("/auth/register", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    },
+    onSuccess: (response) => {
+      const { success, message } = response;
+      if (success) {
+        toast.success(message || "Reseller registration submitted successfully!");
+      } else {
+        toast.error(message || "Registration failed");
+      }
+    },
+    onError: (error) => {
+      console.error("Reseller registration error:", error?.response?.data || error);
+      
+      const responseData = error?.response?.data;
+      const statusCode = error?.response?.status || responseData?.code;
+      
+      // Handle server errors (500)
+      if (statusCode === 500) {
+        // Check if error is a string (like "Your account is pending approval...")
+        if (responseData?.error && typeof responseData.error === 'string') {
+          toast.error(responseData.error);
+        } else {
+          toast.error(responseData?.message || "Server error occurred");
+        }
+        return;
+      }
+      
+      // Handle validation errors (422)
+      if (responseData?.error && typeof responseData.error === 'object') {
+        // Show each validation error
+        const errors = Object.entries(responseData.error);
+        errors.forEach(([field, messages]) => {
+          const errorMsg = Array.isArray(messages) ? messages[0] : messages;
+          toast.error(`${field}: ${errorMsg}`);
+        });
+        return;
+      }
+      
+      const message =
+        responseData?.message ||
+        error?.message ||
+        "Failed to register reseller";
+      toast.error(message);
+    },
+  });
+
+  const submitRegistration = (formData) => {
+    mutate(formData);
+  };
+
+  return { submitRegistration, isPending, isSuccess, isError, error };
+};
+
+// ============================================
 // SIGN IN HOOK
 // ============================================
 export const useSignIn = () => {
@@ -93,6 +369,17 @@ export const useSignIn = () => {
       const { success, message, data } = response;
       
       if (success && data?.token) {
+        const userRole = data?.user?.role?.toLowerCase();
+        const isVerified = data?.verify;
+        
+        // For Wholesaler and Reseller, check if account is verified by admin
+        if ((userRole === "wholesaler" || userRole === "reseller") && !isVerified) {
+          // Account not verified yet - show error and don't store credentials
+          toast.error("Your account is pending approval. Please wait for admin verification before logging in.");
+          return;
+        }
+
+        // Account is verified (or is customer/admin who don't need verification)
         toast.success(message || "Sign in successfully");
 
         // Store token in both localStorage and cookie (expires in 2 hours)
@@ -101,11 +388,12 @@ export const useSignIn = () => {
         localStorage.setItem("tokenExpiry", tokenExpiry.toString());
         setCookie("token", data.token, 2 / 24); // Cookie expires in 2 hours
 
-        // Store user data from response.data.user
+        // Store user data from response.data.user (include verify status)
         if (data?.user) {
-          localStorage.setItem("data", JSON.stringify(data.user));
-          localStorage.setItem("user", JSON.stringify(data.user));
-          setCookie("user", JSON.stringify(data.user), 2 / 24);
+          const userData = { ...data.user, verify: isVerified };
+          localStorage.setItem("data", JSON.stringify(userData));
+          localStorage.setItem("user", JSON.stringify(userData));
+          setCookie("user", JSON.stringify(userData), 2 / 24);
         }
 
         // Dispatch custom event to notify Navbar of auth change
@@ -113,10 +401,28 @@ export const useSignIn = () => {
           window.dispatchEvent(new Event("auth-change"));
         }
 
-        if (redirectUrl) {
-          router.push(redirectUrl);
-        } else {
-          router.push("/");
+        // Role-based redirection
+        // Wholesalers and resellers should always go to their dashboard after login
+        // regardless of any redirect URL (they have their own dashboard to manage)
+        switch (userRole) {
+          case "wholesaler":
+            router.push("/wholesaler/dashboard");
+            break;
+          case "reseller":
+            router.push("/reseller/dashboard");
+            break;
+          case "admin":
+            router.push("/admin/dashboard");
+            break;
+          case "customer":
+          default:
+            // For customers, use redirect URL if available, otherwise go to home
+            if (redirectUrl) {
+              router.push(redirectUrl);
+            } else {
+              router.push("/");
+            }
+            break;
         }
       } else {
         toast.error(message || "Failed to sign in");
@@ -144,51 +450,55 @@ export const useSignOut = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  // Helper function to clear all auth data (localStorage, sessionStorage, cookies)
+  const clearAuthData = () => {
+    // Clear localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpiry");
+    localStorage.removeItem("user");
+    localStorage.removeItem("data");
+
+    // Clear sessionStorage for extra safety
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("tokenExpiry");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("data");
+
+    // Clear cookies
+    deleteCookie("token");
+    deleteCookie("user");
+
+    // Clear all queries cache
+    queryClient.clear();
+
+    // Dispatch auth change event
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("auth-change"));
+    }
+  };
+
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      // Call logout endpoint if your API has one
+      // Call logout API endpoint
       try {
-        await axiosPrivate.post("/logout");
+        await axiosPrivate.post("/auth/logout");
       } catch {
         // Continue with local logout even if API call fails
+        // (token might be expired, etc.)
       }
     },
     onSuccess: () => {
-      // Clear local storage
-      localStorage.removeItem("token");
-      localStorage.removeItem("tokenExpiry");
-      localStorage.removeItem("user");
-      localStorage.removeItem("data");
-
-      // Clear cookies
-      deleteCookie("token");
-      deleteCookie("user");
-
-      // Clear all queries
-      queryClient.clear();
-
-      // Dispatch auth change event
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new Event("auth-change"));
-      }
+      // Clear all auth data
+      clearAuthData();
 
       toast.success("Signed out successfully");
       router.push("/auth/signin");
     },
     onError: () => {
       // Still logout locally even if API fails
-      localStorage.removeItem("token");
-      localStorage.removeItem("tokenExpiry");
-      localStorage.removeItem("user");
-      localStorage.removeItem("data");
-      deleteCookie("token");
-      deleteCookie("user");
-      queryClient.clear();
+      clearAuthData();
 
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new Event("auth-change"));
-      }
-
+      toast.success("Signed out successfully");
       router.push("/auth/signin");
     },
   });

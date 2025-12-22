@@ -279,15 +279,47 @@ export default function StepBusiness() {
         <div className='space-y-4'>
           <Label className='text-sm font-semibold flex items-center gap-2'>
             <FileText className='h-4 w-4 text-gray-500' />
-            Upload Documents
+            Upload Documents <span className='text-red-500'>*</span>
           </Label>
+          
+          {/* Document Type Selector */}
+          <div className='space-y-2'>
+            <Label className='text-sm font-medium'>Document Type</Label>
+            <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+              {[
+                { value: 'identity', label: 'Identity Document' },
+                { value: 'passport', label: 'Passport' },
+                { value: 'business_registration', label: 'Business Registration' },
+                { value: 'tax_certificate', label: 'Tax Certificate' },
+              ].map((docType) => {
+                const selectedDocType = watch('business.documentType')
+                const isSelected = selectedDocType === docType.value
+                return (
+                  <button
+                    key={docType.value}
+                    type='button'
+                    onClick={() => setValue('business.documentType', docType.value)}
+                    className={`px-3 py-2 rounded-lg border-2 text-sm transition-all ${
+                      isSelected
+                        ? 'border-[#F36E16] bg-orange-50 text-[#F36E16] font-semibold'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    {docType.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+          
           <div className='border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gradient-to-br from-gray-50 to-gray-100 hover:border-[#F36E16] transition-colors'>
             <FileText className='h-12 w-12 text-gray-400 mx-auto mb-3' />
             <p className='text-sm font-medium text-gray-700 mb-1'>Upload business documents</p>
-            <p className='text-xs text-gray-500 mb-4'>Business license, tax documents, etc.</p>
+            <p className='text-xs text-gray-500 mb-4'>Accepted formats: PDF, JPG, JPEG, PNG</p>
             <input 
               type='file' 
               {...register('business.documents')} 
+              accept='.pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png'
               className='block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#F36E16] file:text-white hover:file:bg-[#e06212] cursor-pointer'
             />
           </div>

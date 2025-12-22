@@ -1,8 +1,42 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Search, User, LogOut, ShoppingBag } from "lucide-react";
+import { useSignOut } from "@/hooks/auth.hook";
 
 export default function DashboardNavbar() {
+  const [user, setUser] = useState(null);
+  const { mutate: signOut, isPending: isSigningOut } = useSignOut();
+
+  // Load user data from localStorage on mount
+  useEffect(() => {
+    const loadUser = () => {
+      try {
+        const userData = localStorage.getItem("user");
+        if (userData) {
+          setUser(JSON.parse(userData));
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      }
+    };
+
+    loadUser();
+
+    // Listen for auth changes
+    window.addEventListener("auth-change", loadUser);
+    return () => window.removeEventListener("auth-change", loadUser);
+  }, []);
+
+  // Get user's full name or fallback
+  const userName = user
+    ? `${user.first_name || ""} ${user.last_name || ""}`.trim() || "User"
+    : "User";
+
+  const handleLogout = () => {
+    signOut();
+  };
+
   return (
     <header className="sticky top-0 z-50 h-16 border-b bg-white flex items-center shadow-sm">
       <div className="w-full px-6 flex items-center justify-between">
@@ -16,7 +50,7 @@ export default function DashboardNavbar() {
           </div>
           <div className="hidden lg:flex flex-col ml-6">
             <span className="text-xs text-gray-500">Welcome back!</span>
-            <span className="text-sm font-semibold">Adam Smith</span>
+            <span className="text-sm font-semibold">{userName}</span>
           </div>
         </div>
 
@@ -26,12 +60,18 @@ export default function DashboardNavbar() {
 
           <div className="hidden md:flex items-center gap-2">
             <User className="w-5 h-5 text-gray-600" />
-            <span className="text-sm font-medium">Adam Smith</span>
+            <span className="text-sm font-medium">{userName}</span>
           </div>
 
-          <button className="flex items-center gap-2 text-sm font-medium text-gray-800 hover:text-gray-600 transition-colors">
+          <button
+            onClick={handleLogout}
+            disabled={isSigningOut}
+            className="flex items-center gap-2 text-sm font-medium text-gray-800 hover:text-gray-600 transition-colors disabled:opacity-50"
+          >
             <LogOut className="w-5 h-5" />
-            <span className="hidden md:inline">Logout</span>
+            <span className="hidden md:inline">
+              {isSigningOut ? "Logging out..." : "Logout"}
+            </span>
           </button>
         </div>
       </div>
